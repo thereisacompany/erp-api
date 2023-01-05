@@ -4,6 +4,8 @@
   <resultMap id="BaseResultMap" type="com.jsh.erp.datasource.entities.Supplier">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="supplier" jdbcType="VARCHAR" property="supplier" />
+    <result column="supplierall" jdbcType="VARCHAR" property="supplierall" />
+    <result column="taxid" jdbcType="VARCHAR" property="taxid" />
     <result column="contacts" jdbcType="VARCHAR" property="contacts" />
     <result column="phone_num" jdbcType="VARCHAR" property="phoneNum" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -86,7 +88,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, supplier, contacts, phone_num, email, description, isystem, type, enabled, advance_in, 
+    id, supplier, supplierall, taxid, contacts, phone_num, email, description, isystem, type, enabled, advance_in,
     begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, address, 
     tax_num, bank_name, account_number, tax_rate, sort, tenant_id, delete_flag
   </sql>
@@ -121,7 +123,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.jsh.erp.datasource.entities.Supplier">
-    insert into jsh_supplier (id, supplier, contacts, 
+    insert into jsh_supplier (id, supplier, supplierall, taxid, contacts,
       phone_num, email, description, 
       isystem, type, enabled, 
       advance_in, begin_need_get, begin_need_pay, 
@@ -130,7 +132,8 @@
       bank_name, account_number, tax_rate, 
       sort, tenant_id, delete_flag
       )
-    values (#{id,jdbcType=BIGINT}, #{supplier,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{supplier,jdbcType=VARCHAR}, #{supplierall,jdbcType=VARCHAR},
+      #{taxid,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR},
       #{phoneNum,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{isystem,jdbcType=TINYINT}, #{type,jdbcType=VARCHAR}, #{enabled,jdbcType=BIT}, 
       #{advanceIn,jdbcType=DECIMAL}, #{beginNeedGet,jdbcType=DECIMAL}, #{beginNeedPay,jdbcType=DECIMAL}, 
@@ -145,6 +148,12 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="supplierall != null">
+        supplierall,
+      </if>
+      <if test="taxid != null">
+        taxid,
       </if>
       <if test="supplier != null">
         supplier,
@@ -222,6 +231,12 @@
       </if>
       <if test="supplier != null">
         #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierall != null">
+        #{supplierall,jdbcType=VARCHAR},
+      </if>
+      <if test="taxid != null">
+        #{taxid,jdbcType=VARCHAR},
       </if>
       <if test="contacts != null">
         #{contacts,jdbcType=VARCHAR},
@@ -306,6 +321,12 @@
       <if test="record.supplier != null">
         supplier = #{record.supplier,jdbcType=VARCHAR},
       </if>
+      <if test="record.supplierall != null">
+        supplierall = #{record.supplierall,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxid != null">
+        taxid = #{record.taxid,jdbcType=VARCHAR},
+      </if>
       <if test="record.contacts != null">
         contacts = #{record.contacts,jdbcType=VARCHAR},
       </if>
@@ -381,6 +402,8 @@
     update jsh_supplier
     set id = #{record.id,jdbcType=BIGINT},
       supplier = #{record.supplier,jdbcType=VARCHAR},
+      supplierall = #{record.supplierall,jdbcType=VARCHAR},
+      taxid = #{record.taxid,jdbcType=VARCHAR},
       contacts = #{record.contacts,jdbcType=VARCHAR},
       phone_num = #{record.phoneNum,jdbcType=VARCHAR},
       email = #{record.email,jdbcType=VARCHAR},
@@ -412,6 +435,12 @@
     <set>
       <if test="supplier != null">
         supplier = #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierall != null">
+        supplierall = #{supplierall,jdbcType=VARCHAR},
+      </if>
+      <if test="taxid != null">
+        taxid = #{taxid,jdbcType=VARCHAR},
       </if>
       <if test="contacts != null">
         contacts = #{contacts,jdbcType=VARCHAR},
@@ -485,6 +514,8 @@
   <update id="updateByPrimaryKey" parameterType="com.jsh.erp.datasource.entities.Supplier">
     update jsh_supplier
     set supplier = #{supplier,jdbcType=VARCHAR},
+      supplierall = #{supplierall,jdbcType=VARCHAR},
+      taxid = #{taxid,jdbcType=VARCHAR},
       contacts = #{contacts,jdbcType=VARCHAR},
       phone_num = #{phoneNum,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},

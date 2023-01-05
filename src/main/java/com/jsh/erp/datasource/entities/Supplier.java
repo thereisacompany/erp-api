@@ -7,6 +7,10 @@ public class Supplier {
 
     private String supplier;
 
+    private String supplierall;
+
+    private String taxid;
+
     private String contacts;
 
     private String phoneNum;
@@ -66,6 +70,18 @@ public class Supplier {
     public void setSupplier(String supplier) {
         this.supplier = supplier == null ? null : supplier.trim();
     }
+
+    public String getSupplierall() {
+        return supplierall;
+    }
+
+    public void setSupplierall(String supplierall) { this.supplierall = supplierall == null ? null : supplierall.trim(); }
+
+    public String getTaxid() {
+        return taxid;
+    }
+
+    public void setTaxid(String taxid) { this.taxid = taxid == null ? null : taxid.trim(); }
 
     public String getContacts() {
         return contacts;
