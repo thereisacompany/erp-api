@@ -106,7 +106,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>jshERP</finalName>
+		<finalName>jshERP-1.0.0</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
