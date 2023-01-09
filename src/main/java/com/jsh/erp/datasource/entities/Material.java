@@ -45,6 +45,18 @@ public class Material {
 
     private String deleteFlag;
 
+    private String manufacturer;
+
+    private BigDecimal length;
+
+    private BigDecimal width;
+
+    private BigDecimal high;
+
+    private String volume;
+
+    private Integer warehousefee;
+
     public Long getId() {
         return id;
     }
@@ -212,4 +224,31 @@ public class Material {
     public void setDeleteFlag(String deleteFlag) {
         this.deleteFlag = deleteFlag == null ? null : deleteFlag.trim();
     }
+
+    public String getManufacturer() { return manufacturer; }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer == null ? null : manufacturer.trim();
+    }
+
+    public BigDecimal getLength() { return length; }
+
+    public void setLength(BigDecimal length) { this.length = length; }
+
+    public BigDecimal getWidth() { return width; }
+
+    public void setWidth(BigDecimal width) { this.width = width; }
+
+    public BigDecimal getHigh() { return high; }
+
+    public void setHigh(BigDecimal high) { this.high = high; }
+
+    public String getVolume() { return volume; }
+
+    public void setVolume(String volume) { this.volume = volume == null ? null : volume.trim(); }
+
+    public Integer getWarehousefee() { return warehousefee; }
+
+    public void setWarehousefee(Integer warehousefee) { this.warehousefee = warehousefee; }
+
 }
