@@ -47,13 +47,17 @@ public class Material {
 
     private String manufacturer;
 
+    private String manufacturertype;
+
     private BigDecimal length;
 
     private BigDecimal width;
 
     private BigDecimal high;
 
-    private String volume;
+    private BigDecimal volume;
+
+    private String warehousetype;
 
     private Integer warehousefee;
 
@@ -231,6 +235,12 @@ public class Material {
         this.manufacturer = manufacturer == null ? null : manufacturer.trim();
     }
 
+    public String getManufacturertype() { return manufacturertype; }
+
+    public void setManufacturertype(String manufacturertype) {
+        this.manufacturertype = manufacturertype == null ? null : manufacturertype.trim();
+    }
+
     public BigDecimal getLength() { return length; }
 
     public void setLength(BigDecimal length) { this.length = length; }
@@ -243,9 +253,13 @@ public class Material {
 
     public void setHigh(BigDecimal high) { this.high = high; }
 
-    public String getVolume() { return volume; }
+    public BigDecimal getVolume() { return volume; }
 
-    public void setVolume(String volume) { this.volume = volume == null ? null : volume.trim(); }
+    public void setVolume(BigDecimal volume) { this.volume = volume; }
+
+    public String getWarehousetype() { return warehousetype; }
+
+    public void setWarehousetype(String warehousetype) { this.warehousetype = warehousetype == null ? null : warehousetype.trim(); }
 
     public Integer getWarehousefee() { return warehousefee; }
 

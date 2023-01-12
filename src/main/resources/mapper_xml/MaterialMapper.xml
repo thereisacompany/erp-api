@@ -24,10 +24,12 @@
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
     <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="manufacturertype" jdbcType="VARCHAR" property="manufacturertype" />
     <result column="length" jdbcType="DECIMAL" property="length" />
     <result column="width" jdbcType="DECIMAL" property="width" />
     <result column="high" jdbcType="DECIMAL" property="high" />
-    <result column="volume" jdbcType="VARCHAR" property="volume" />
+    <result column="volume" jdbcType="DECIMAL" property="volume" />
+    <result column="warehousetype" jdbcType="VARCHAR" property="warehousetype" />
     <result column="warehousefee" jdbcType="INTEGER" property="warehousefee" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -91,7 +93,8 @@
   <sql id="Base_Column_List">
     id, category_id, name, mfrs, model, standard, color, unit, remark, img_name, unit_id, 
     expiry_num, weight, enabled, other_field1, other_field2, other_field3, enable_serial_number, 
-    enable_batch_number, tenant_id, delete_flag, manufacturer, length, width, high, volume, warehousefee
+    enable_batch_number, tenant_id, delete_flag, manufacturer, manufacturertype,
+    length, width, high, volume, warehousetype, warehousefee
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.MaterialExample" resultMap="BaseResultMap">
     select
@@ -130,7 +133,8 @@
       img_name, unit_id, expiry_num, 
       weight, enabled, other_field1, 
       other_field2, other_field3, enable_serial_number, 
-      enable_batch_number, tenant_id, delete_flag, manufacturer, length, width, high, volume, warehousefee
+      enable_batch_number, tenant_id, delete_flag, manufacturer, manufacturertype,
+      length, width, high, volume, warehousetype, warehousefee
       )
     values (#{id,jdbcType=BIGINT}, #{categoryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
       #{mfrs,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR}, 
@@ -139,8 +143,8 @@
       #{weight,jdbcType=DECIMAL}, #{enabled,jdbcType=BIT}, #{otherField1,jdbcType=VARCHAR}, 
       #{otherField2,jdbcType=VARCHAR}, #{otherField3,jdbcType=VARCHAR}, #{enableSerialNumber,jdbcType=VARCHAR}, 
       #{enableBatchNumber,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR},
-      #{manufacturer,jdbcType=VARCHAR}, #{length,jdbcType=DECIMAL}, #{width,jdbcType=DECIMAL},
-      #{high,jdbcType=DECIMAL}, #{volume,jdbcType=VARCHAR}, #{warehousefee,jdbcType=INTEGER}
+      #{manufacturer,jdbcType=VARCHAR}, #{manufacturertype,jdbcType=VARCHAR}, #{length,jdbcType=DECIMAL}, #{width,jdbcType=DECIMAL},
+      #{high,jdbcType=DECIMAL}, #{volume,jdbcType=DECIMAL}, #{warehousetype,jdbcType=VARCHAR}, #{warehousefee,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Material">
@@ -212,6 +216,9 @@
       <if test="manufacturer != null">
         manufacturer,
       </if>
+      <if test="manufacturertype != null">
+        manufacturertype,
+      </if>
       <if test="length != null">
         length,
       </if>
@@ -223,6 +230,9 @@
       </if>
       <if test="volume != null">
         volume,
+      </if>
+      <if test="warehousefee != null">
+        warehousetype,
       </if>
       <if test="warehousefee != null">
         warehousefee,
@@ -295,6 +305,9 @@
       <if test="manufacturer != null">
         #{manufacturer,jdbcType=VARCHAR},
       </if>
+      <if test="manufacturertype != null">
+        #{manufacturertype,jdbcType=VARCHAR},
+      </if>
       <if test="length != null">
         #{length,jdbcType=DECIMAL},
       </if>
@@ -305,7 +318,10 @@
         #{high,jdbcType=DECIMAL},
       </if>
       <if test="volume != null">
-        #{volume,jdbcType=VARCHAR},
+        #{volume,jdbcType=DECIMAL},
+      </if>
+      <if test="warehousetype != null">
+        #{warehousetype,jdbcType=VARCHAR},
       </if>
       <if test="warehousefee != null">
         #{warehousefee,jdbcType=INTEGER},
@@ -387,6 +403,9 @@
       <if test="record.manufacturer != null">
         manufacturer = #{record.manufacturer,jdbcType=VARCHAR},
       </if>
+      <if test="record.manufacturertype != null">
+        manufacturertype = #{record.manufacturertype,jdbcType=VARCHAR},
+      </if>
       <if test="record.length != null">
         length = #{record.length,jdbcType=DECIMAL},
       </if>
@@ -397,7 +416,10 @@
         high = #{record.high,jdbcType=DECIMAL},
       </if>
       <if test="record.volume != null">
-        volume = #{record.volume,jdbcType=VARCHAR},
+        volume = #{record.volume,jdbcType=DECIMAL},
+      </if>
+      <if test="record.warehousetype != null">
+        warehousetype = #{record.warehousetype,jdbcType=VARCHAR},
       </if>
       <if test="record.warehousefee != null">
         warehousefee = #{record.warehousefee,jdbcType=INTEGER},
@@ -431,10 +453,12 @@
       tenant_id = #{record.tenantId,jdbcType=BIGINT},
       delete_flag = #{record.deleteFlag,jdbcType=VARCHAR},
       manufacturer = #{record.manufacturer,jdbcType=VARCHAR},
+      manufacturertype = #{record.manufacturertype,jdbcType=VARCHAR},
       length = #{record.length,jdbcType=DECIMAL},
       width = #{record.width,jdbcType=DECIMAL},
       high = #{record.high,jdbcType=DECIMAL},
-      volume = #{record.volume,jdbcType=VARCHAR},
+      volume = #{record.volume,jdbcType=DECIMAL},
+      warehousetype = #{record.warehousetype,jdbcType=VARCHAR},
       warehousefee = #{record.warehousefee,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -506,6 +530,9 @@
       <if test="manufacturer != null">
         manufacturer = #{manufacturer,jdbcType=VARCHAR},
       </if>
+      <if test="manufacturertype != null">
+        manufacturertype = #{manufacturertype,jdbcType=VARCHAR},
+      </if>
       <if test="length != null">
         length = #{length,jdbcType=DECIMAL},
       </if>
@@ -516,7 +543,10 @@
         high = #{high,jdbcType=DECIMAL},
       </if>
       <if test="volume != null">
-        volume = #{volume,jdbcType=VARCHAR},
+        volume = #{volume,jdbcType=DECIMAL},
+      </if>
+      <if test="warehousefeetype != null">
+        warehousefeetype = #{warehousefeetype,jdbcType=VARCHAR},
       </if>
       <if test="warehousefee != null">
         warehousefee = #{warehousefee,jdbcType=INTEGER},
@@ -547,10 +577,12 @@
       tenant_id = #{tenantId,jdbcType=BIGINT},
       delete_flag = #{deleteFlag,jdbcType=VARCHAR},
       manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      manufacturertype = #{manufacturertype,jdbcType=VARCHAR},
       length = #{length,jdbcType=DECIMAL},
       width = #{width,jdbcType=DECIMAL},
       high = #{high,jdbcType=DECIMAL},
-      volume = #{volume,jdbcType=VARCHAR},
+      volume = #{volume,jdbcType=DECIMAL},
+      warehousefeetype = #{warehousefeetype,jdbcType=VARCHAR},
       warehousefee = #{warehousefee,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

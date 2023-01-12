@@ -208,6 +208,9 @@
             <if test="manufacturer != null">
                 manufacturer,
             </if>
+            <if test="manufacturertype != null">
+                manufacturertype,
+            </if>
             <if test="length != null">
                 length,
             </if>
@@ -219,6 +222,9 @@
             </if>
             <if test="volume != null">
                 volume,
+            </if>
+            <if test="warehousetype != null">
+                warehousetype,
             </if>
             <if test="warehousefee != null">
                 warehousefee,
@@ -291,6 +297,9 @@
             <if test="manufacturer != null">
                 #{manufacturer,jdbcType=VARCHAR},
             </if>
+            <if test="manufacturertype != null">
+                #{manufacturertype,jdbcType=VARCHAR},
+            </if>
             <if test="length != null">
                 #{length,jdbcType=DECIMAL},
             </if>
@@ -301,7 +310,10 @@
                 #{high,jdbcType=DECIMAL},
             </if>
             <if test="volume != null">
-                #{volume,jdbcType=VARCHAR},
+                #{volume,jdbcType=DECIMAL},
+            </if>
+            <if test="warehousetype != null">
+                #{warehousetype,jdbcType=VARCHAR},
             </if>
             <if test="warehousefee != null">
                 #{warehousefee,jdbcType=INTEGER},
