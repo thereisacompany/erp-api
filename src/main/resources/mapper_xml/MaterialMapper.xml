@@ -545,8 +545,8 @@
       <if test="volume != null">
         volume = #{volume,jdbcType=DECIMAL},
       </if>
-      <if test="warehousefeetype != null">
-        warehousefeetype = #{warehousefeetype,jdbcType=VARCHAR},
+      <if test="warehousetype != null">
+        warehousetype = #{warehousetype,jdbcType=VARCHAR},
       </if>
       <if test="warehousefee != null">
         warehousefee = #{warehousefee,jdbcType=INTEGER},
@@ -582,7 +582,7 @@
       width = #{width,jdbcType=DECIMAL},
       high = #{high,jdbcType=DECIMAL},
       volume = #{volume,jdbcType=DECIMAL},
-      warehousefeetype = #{warehousefeetype,jdbcType=VARCHAR},
+      warehousetype = #{warehousetype,jdbcType=VARCHAR},
       warehousefee = #{warehousefee,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
