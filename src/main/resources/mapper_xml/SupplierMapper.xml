@@ -149,14 +149,14 @@
       <if test="id != null">
         id,
       </if>
+      <if test="supplier != null">
+        supplier,
+      </if>
       <if test="supplierall != null">
         supplierall,
       </if>
       <if test="taxid != null">
         taxid,
-      </if>
-      <if test="supplier != null">
-        supplier,
       </if>
       <if test="contacts != null">
         contacts,
