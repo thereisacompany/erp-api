@@ -86,10 +86,10 @@
     <insert id="addMaterialCategory" parameterType="com.jsh.erp.datasource.entities.MaterialCategory"
             useGeneratedKeys="true" keyProperty="id" keyColumn="id">
        insert into jsh_material_category
-        (name, category_level, parent_id, sort,status,serial_no,remark,
+        (name, category_level, parent_id, sort,serial_no,remark,
         create_time, update_time)
         values
-        (#{name},#{categoryLevel},#{parentId},#{sort},#{status},#{serialNo},#{remark},
+        (#{name},#{categoryLevel},#{parentId},#{sort},#{serialNo},#{remark},
         #{createTime},#{updateTime}
         )
     </insert>
