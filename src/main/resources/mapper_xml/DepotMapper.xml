@@ -118,7 +118,7 @@
       is_default)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{warehousing,jdbcType=DECIMAL}, #{truckage,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
-      #{telephone,jdbcType=VARCHAR}, #{fax,jdbc=VARCHAR},
+      #{telephone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR},
       #{sort,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{principal,jdbcType=BIGINT}, 
       #{enabled,jdbcType=BIT}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}, 
       #{isDefault,jdbcType=BIT})
