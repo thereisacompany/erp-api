@@ -8,6 +8,8 @@
     <result column="warehousing" jdbcType="DECIMAL" property="warehousing" />
     <result column="truckage" jdbcType="DECIMAL" property="truckage" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
     <result column="sort" jdbcType="VARCHAR" property="sort" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="principal" jdbcType="BIGINT" property="principal" />
@@ -75,7 +77,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, address, warehousing, truckage, type, sort, remark, principal, enabled, 
+    id, name, address, warehousing, truckage, type, telephone, fax, sort, remark, principal, enabled,
     tenant_id, delete_Flag, is_default
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.DepotExample" resultMap="BaseResultMap">
@@ -110,12 +112,13 @@
   </delete>
   <insert id="insert" parameterType="com.jsh.erp.datasource.entities.Depot">
     insert into jsh_depot (id, name, address, 
-      warehousing, truckage, type, 
+      warehousing, truckage, type, telephone, fax,
       sort, remark, principal, 
       enabled, tenant_id, delete_Flag, 
       is_default)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{warehousing,jdbcType=DECIMAL}, #{truckage,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, 
+      #{warehousing,jdbcType=DECIMAL}, #{truckage,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
+      #{telephone,jdbcType=VARCHAR}, #{fax,jdbc=VARCHAR},
       #{sort,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{principal,jdbcType=BIGINT}, 
       #{enabled,jdbcType=BIT}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}, 
       #{isDefault,jdbcType=BIT})
@@ -140,6 +143,12 @@
       </if>
       <if test="type != null">
         type,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="fax != null">
+        fax,
       </if>
       <if test="sort != null">
         sort,
@@ -181,6 +190,12 @@
       </if>
       <if test="type != null">
         #{type,jdbcType=INTEGER},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        #{fax,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
         #{sort,jdbcType=VARCHAR},
@@ -232,6 +247,12 @@
       <if test="record.type != null">
         type = #{record.type,jdbcType=INTEGER},
       </if>
+      <if test="record.telephone != null">
+        telephone = #{record.telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fax != null">
+        fax = #{record.fax,jdbcType=VARCHAR},
+      </if>
       <if test="record.sort != null">
         sort = #{record.sort,jdbcType=VARCHAR},
       </if>
@@ -266,6 +287,8 @@
       warehousing = #{record.warehousing,jdbcType=DECIMAL},
       truckage = #{record.truckage,jdbcType=DECIMAL},
       type = #{record.type,jdbcType=INTEGER},
+      telephone = #{record.telephone,jdbcType=VARCHAR},
+      fax = #{record.fax,jdbcType=VARCHAR},
       sort = #{record.sort,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
       principal = #{record.principal,jdbcType=BIGINT},
@@ -294,6 +317,12 @@
       </if>
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        fax = #{fax,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
         sort = #{sort,jdbcType=VARCHAR},
@@ -326,6 +355,8 @@
       warehousing = #{warehousing,jdbcType=DECIMAL},
       truckage = #{truckage,jdbcType=DECIMAL},
       type = #{type,jdbcType=INTEGER},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      fax = #{fax,jdbcType=VARCHAR},
       sort = #{sort,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       principal = #{principal,jdbcType=BIGINT},

@@ -13,6 +13,10 @@ public class Depot {
 
     private BigDecimal truckage;
 
+    private String telephone;
+
+    private String fax;
+
     private Integer type;
 
     private String sort;
