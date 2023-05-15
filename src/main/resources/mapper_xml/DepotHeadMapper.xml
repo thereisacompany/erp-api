@@ -27,10 +27,10 @@
     <result column="discount_last_money" jdbcType="DECIMAL" property="discountLastMoney" />
     <result column="other_money" jdbcType="DECIMAL" property="otherMoney" />
     <result column="deposit" jdbcType="DECIMAL" property="deposit" />
-    <result column="main_arrival" jdbcType="TIMESTAMP" property="mainArrival" />
-    <result column="extras_arrival" jdbcType="TIMESTAMP" property="extrasArrival" />
-    <result column="agreed_delivery" jdbcType="TIMESTAMP" property="agreedDelivery" />
-    <result column="delivered" jdbcType="TIMESTAMP" property="delivered" />
+    <result column="main_arrival" jdbcType="DATE" property="mainArrival" />
+    <result column="extras_arrival" jdbcType="DATE" property="extrasArrival" />
+    <result column="agreed_delivery" jdbcType="DATE" property="agreedDelivery" />
+    <result column="delivered" jdbcType="DATE" property="delivered" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="purchase_status" jdbcType="VARCHAR" property="purchaseStatus" />
     <result column="link_number" jdbcType="VARCHAR" property="linkNumber" />
@@ -152,8 +152,8 @@
       #{remark,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{salesMan,jdbcType=VARCHAR}, 
       #{accountIdList,jdbcType=VARCHAR}, #{accountMoneyList,jdbcType=VARCHAR}, #{discount,jdbcType=DECIMAL}, 
       #{discountMoney,jdbcType=DECIMAL}, #{discountLastMoney,jdbcType=DECIMAL}, #{otherMoney,jdbcType=DECIMAL}, 
-      #{deposit,jdbcType=DECIMAL}, #{mainArrival,jdbcType=TIMESTAMP}, #{extrasArrival,jdbcType=TIMESTAMP},
-      #{agreedDelivery,jdbcType=TIMESTAMP}, #{delivered,jdbcType=TIMESTAMP},
+      #{deposit,jdbcType=DECIMAL}, #{mainArrival,jdbcType=DATE}, #{extrasArrival,jdbcType=DATE},
+      #{agreedDelivery,jdbcType=DATE}, #{delivered,jdbcType=DATE},
       #{status,jdbcType=VARCHAR}, #{purchaseStatus,jdbcType=VARCHAR},
       #{linkNumber,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
       )
@@ -454,16 +454,16 @@
         deposit = #{record.deposit,jdbcType=DECIMAL},
       </if>
       <if test="record.mainArrival != null">
-        main_arrival = #{record.mainArrival,jdbcType=TIMESTAMP},
+        main_arrival = #{record.mainArrival,jdbcType=DATE},
       </if>
       <if test="record.extrasArrival != null">
-        extras_arrival = #{record.extrasArrival,jdbcType=TIMESTAMP},
+        extras_arrival = #{record.extrasArrival,jdbcType=DATE},
       </if>
       <if test="record.agreedDelivery != null">
-        agreed_delivery = #{record.agreedDelivery,jdbcType=TIMESTAMP},
+        agreed_delivery = #{record.agreedDelivery,jdbcType=DATE},
       </if>
       <if test="record.delivered != null">
-        delivered = #{record.delivered,jdbcType=TIMESTAMP},
+        delivered = #{record.delivered,jdbcType=DATE},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=VARCHAR},
@@ -512,10 +512,10 @@
       discount_last_money = #{record.discountLastMoney,jdbcType=DECIMAL},
       other_money = #{record.otherMoney,jdbcType=DECIMAL},
       deposit = #{record.deposit,jdbcType=DECIMAL},
-      main_arrival = #{record.mainArrival,jdbcType=TIMESTAMP},
-      extras_arrival = #{record.extrasArrival,jdbcType=TIMESTAMP},
-      agreed_delivery = #{record.agreedDelivery,jdbcType=TIMESTAMP},
-      delivered = #{record.delivered,jdbcType=TIMESTAMP},
+      main_arrival = #{record.mainArrival,jdbcType=DATE},
+      extras_arrival = #{record.extrasArrival,jdbcType=DATE},
+      agreed_delivery = #{record.agreedDelivery,jdbcType=DATE},
+      delivered = #{record.delivered,jdbcType=DATE},
       status = #{record.status,jdbcType=VARCHAR},
       purchase_status = #{record.purchaseStatus,jdbcType=VARCHAR},
       link_number = #{record.linkNumber,jdbcType=VARCHAR},
@@ -601,16 +601,16 @@
         deposit = #{deposit,jdbcType=DECIMAL},
       </if>
       <if test="mainArrival != null">
-        main_arrival = #{mainArrival,jdbcType=TIMESTAMP},
+        main_arrival = #{mainArrival,jdbcType=DATE},
       </if>
       <if test="extrasArrival != null">
-        extras_arrival = #{extrasArrival,jdbcType=TIMESTAMP},
+        extras_arrival = #{extrasArrival,jdbcType=DATE},
       </if>
       <if test="agreedDelivery != null">
-        agreed_delivery = #{agreedDelivery,jdbcType=TIMESTAMP},
+        agreed_delivery = #{agreedDelivery,jdbcType=DATE},
       </if>
       <if test="delivered != null">
-        delivered = #{delivered,jdbcType=TIMESTAMP},
+        delivered = #{delivered,jdbcType=DATE},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=VARCHAR},
@@ -656,10 +656,10 @@
       discount_last_money = #{discountLastMoney,jdbcType=DECIMAL},
       other_money = #{otherMoney,jdbcType=DECIMAL},
       deposit = #{deposit,jdbcType=DECIMAL},
-      main_arrival = #{mainArrival,jdbcType=TIMESTAMP},
-      extras_arrival = #{extrasArrival,jdbcType=TIMESTAMP},
-      agreed_delivery = #{agreedDelivery,jdbcType=TIMESTAMP},
-      delivered = #{record.jdbcType=TIMESTAMP},
+      main_arrival = #{mainArrival,jdbcType=DATE},
+      extras_arrival = #{extrasArrival,jdbcType=DATE},
+      agreed_delivery = #{agreedDelivery,jdbcType=DATE},
+      delivered = #{record.jdbcType=DATE},
       status = #{status,jdbcType=VARCHAR},
       purchase_status = #{purchaseStatus,jdbcType=VARCHAR},
       link_number = #{linkNumber,jdbcType=VARCHAR},

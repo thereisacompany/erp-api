@@ -73,6 +73,14 @@ public class Depot {
         this.truckage = truckage;
     }
 
+    public String getTelephone() { return telephone; }
+
+    public void setTelephone(String telephone) { this.telephone = telephone == null ? null : telephone.trim(); }
+
+    public String getFax() { return fax; }
+
+    public void setFax(String fax) { this.fax = fax == null ? null : fax.trim(); }
+
     public Integer getType() {
         return type;
     }

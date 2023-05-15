@@ -272,6 +272,38 @@ public class DepotHead {
         this.deposit = deposit;
     }
 
+    public String getMainArrival() {
+        return mainArrival;
+    }
+
+    public void setMainArrival(String mainArrival) {
+        this.mainArrival = mainArrival == null ? null : mainArrival.trim();
+    }
+
+    public String getExtrasArrival() {
+        return extrasArrival;
+    }
+
+    public void setExtrasArrival(String extrasArrival) {
+        this.extrasArrival = extrasArrival == null ? null : extrasArrival.trim();
+    }
+
+    public String getAgreedDelivery() {
+        return agreedDelivery;
+    }
+
+    public void setAgreedDelivery(String agreedDelivery) {
+        this.agreedDelivery = agreedDelivery == null ? null : agreedDelivery.trim();
+    }
+
+    public String getDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(String delivered) {
+        this.delivered = delivered == null ? null : delivered.trim();
+    }
+
     public String getStatus() {
         return status;
     }
