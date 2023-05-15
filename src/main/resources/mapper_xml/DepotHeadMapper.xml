@@ -17,6 +17,12 @@
     <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
     <result column="pay_type" jdbcType="VARCHAR" property="payType" />
     <result column="bill_type" jdbcType="VARCHAR" property="billType" />
+    <result column="noti_number" jdbcType="VARCHAR" property="notiNumber" />
+    <result column="buyer_name" jdbcType="VARCHAR" property="buyerName" />
+    <result column="receive_name" jdbcType="VARCHAR" property="receiveName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="sales_man" jdbcType="VARCHAR" property="salesMan" />
@@ -97,7 +103,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, type, sub_type, default_number, number, create_time, oper_time, organ_id, creator, 
-    account_id, change_amount, back_amount, total_price, pay_type, bill_type, remark, 
+    account_id, change_amount, back_amount, total_price, pay_type, bill_type,
+    noti_number, taxid, buyer_name, receive_name, telephone, cellphone, address, remark,
     file_name, sales_man, account_id_list, account_money_list, discount, discount_money, 
     discount_last_money, other_money, deposit, main_arrival, extras_arrival, agreed_delivery, delivered,
     status, purchase_status, link_number, tenant_id, delete_flag
@@ -137,7 +144,8 @@
       default_number, number, create_time, 
       oper_time, organ_id, creator, 
       account_id, change_amount, back_amount, 
-      total_price, pay_type, bill_type, 
+      total_price, pay_type, bill_type,
+      noti_number, taxid, buyer_name, receive_name, telephone, cellphone, address,
       remark, file_name, sales_man, 
       account_id_list, account_money_list, discount, 
       discount_money, discount_last_money, other_money, 
@@ -148,7 +156,10 @@
       #{defaultNumber,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{operTime,jdbcType=TIMESTAMP}, #{organId,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, 
       #{accountId,jdbcType=BIGINT}, #{changeAmount,jdbcType=DECIMAL}, #{backAmount,jdbcType=DECIMAL}, 
-      #{totalPrice,jdbcType=DECIMAL}, #{payType,jdbcType=VARCHAR}, #{billType,jdbcType=VARCHAR}, 
+      #{totalPrice,jdbcType=DECIMAL}, #{payType,jdbcType=VARCHAR}, #{billType,jdbcType=VARCHAR},
+      #{notiNumber,jdbcType=VARCHAR}, #{taxid,jdbcType=VARCHAR},
+      #{buyerName,jdbcType=VARCHAR}, #{receiveName,jdbcType=VARCHAR}
+      #{telephone,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}
       #{remark,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{salesMan,jdbcType=VARCHAR}, 
       #{accountIdList,jdbcType=VARCHAR}, #{accountMoneyList,jdbcType=VARCHAR}, #{discount,jdbcType=DECIMAL}, 
       #{discountMoney,jdbcType=DECIMAL}, #{discountLastMoney,jdbcType=DECIMAL}, #{otherMoney,jdbcType=DECIMAL}, 
@@ -205,6 +216,27 @@
       </if>
       <if test="billType != null">
         bill_type,
+      </if>
+      <if test="notiNumber != null">
+        noti_number,
+      </if>
+      <if test="taxid != null">
+        taxid,
+      </if>
+      <if test="buyerName != null">
+        buyer_name,
+      </if>
+      <if test="receiveName != null">
+        receive_name,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="cellphone != null">
+        cellphone,
+      </if>
+      <if test="address != null">
+        address,
       </if>
       <if test="remark != null">
         remark,
@@ -309,6 +341,27 @@
       </if>
       <if test="billType != null">
         #{billType,jdbcType=VARCHAR},
+      </if>
+      <if test="notiNumber != null">
+        #{notiNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taxid != null">
+        #{taxid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveName != null">
+        #{receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null">
+        #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -423,6 +476,27 @@
       <if test="record.billType != null">
         bill_type = #{record.billType,jdbcType=VARCHAR},
       </if>
+      <if test="record.notiNumber != null">
+        noti_number = #{record.notiNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxid != null">
+        taxid = #{record.taxid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerName != null">
+        buyer_name = #{record.buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiveName != null">
+        receive_name = #{record.receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.telephone != null">
+        telephone = #{record.telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cellphone != null">
+        cellphone = #{record.cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
       <if test="record.remark != null">
         remark = #{record.remark,jdbcType=VARCHAR},
       </if>
@@ -502,6 +576,13 @@
       total_price = #{record.totalPrice,jdbcType=DECIMAL},
       pay_type = #{record.payType,jdbcType=VARCHAR},
       bill_type = #{record.billType,jdbcType=VARCHAR},
+      noti_number = #{record.notiNumber,jdbcType=VARCHAR},
+      taxid = #{record.taxid,jdbcType=VARCHAR},
+      buyer_name = #{record.buyerName,jdbcType=VARCHAR},
+      receive_name = #{record.receiveName,jdbcType=VARCHAR},
+      telephone = #{record.telephone,jdbcType=VARCHAR},
+      cellphone = #{record.cellphone,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
       file_name = #{record.fileName,jdbcType=VARCHAR},
       sales_man = #{record.salesMan,jdbcType=VARCHAR},
@@ -569,6 +650,27 @@
       </if>
       <if test="billType != null">
         bill_type = #{billType,jdbcType=VARCHAR},
+      </if>
+      <if test="notiNumber != null">
+        noti_number = #{notiNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taxid != null">
+        taxid = #{taxid,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerName != null">
+        buyer_name = #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveName != null">
+        receive_name = #{receiveName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null">
+        cellphone = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
@@ -646,6 +748,13 @@
       total_price = #{totalPrice,jdbcType=DECIMAL},
       pay_type = #{payType,jdbcType=VARCHAR},
       bill_type = #{billType,jdbcType=VARCHAR},
+      noti_number = #{notiNumber,jdbcType=VARCHAR},
+      taxid = #{taxid,jdbcType=VARCHAR},
+      buyer_name = #{buyerName,jdbcType=VARCHAR},
+      receive_name = #{receiveName,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      cellphone = #{cellphone,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       file_name = #{fileName,jdbcType=VARCHAR},
       sales_man = #{salesMan,jdbcType=VARCHAR},
