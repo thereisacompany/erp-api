@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
+			<version>1.18.26</version>
 		</dependency>
 		<!-- 日志 -->
 		<dependency>
@@ -106,7 +106,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>jshERP-1.0.3</finalName>
+		<finalName>jshERP-1.0.4</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
