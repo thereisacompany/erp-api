@@ -54,6 +54,14 @@ public class DepotHead {
 
     private BigDecimal deposit;
 
+    private String mainArrival;
+
+    private String extrasArrival;
+
+    private String agreedDelivery;
+
+    private String delivered;
+
     private String status;
 
     private String purchaseStatus;
