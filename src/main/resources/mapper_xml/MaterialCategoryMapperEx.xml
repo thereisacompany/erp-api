@@ -57,7 +57,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, name
+        id, name, title
     </sql>
 
     <select id="getNextNodeTree" resultMap="NextTreeResultMap">
