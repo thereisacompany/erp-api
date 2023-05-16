@@ -10,6 +10,7 @@ import com.jsh.erp.datasource.entities.MaterialExtendExample;
 import com.jsh.erp.datasource.entities.User;
 import com.jsh.erp.datasource.mappers.MaterialExtendMapper;
 import com.jsh.erp.datasource.mappers.MaterialExtendMapperEx;
+import com.jsh.erp.datasource.mappers.MaterialMapperEx;
 import com.jsh.erp.datasource.vo.MaterialExtendVo4List;
 import com.jsh.erp.exception.BusinessParamCheckingException;
 import com.jsh.erp.exception.BusinessRunTimeException;
@@ -40,6 +41,8 @@ public class MaterialExtendService {
     private MaterialExtendMapper materialExtendMapper;
     @Resource
     private MaterialExtendMapperEx materialExtendMapperEx;
+    @Resource
+    private MaterialMapperEx materialMapperEx;
     @Resource
     private LogService logService;
     @Resource
@@ -128,6 +131,9 @@ public class MaterialExtendService {
                     } else {
                         materialExtend.setBarCode(tempInsertedJson.getString("barCode"));
                     }
+                } else {
+                    // TODO
+                    materialExtend.setBarCode(getMaxBarCode());
                 }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempInsertedJson.getString("commodityUnit"));
@@ -380,5 +386,14 @@ public class MaterialExtendService {
             list = materialExtendMapper.selectByExample(example);
         }
         return list;
+    }
+
+    private String getMaxBarCode() {
+        String maxBarCodeOld = materialMapperEx.getMaxBarCode();
+        if(StringUtil.isNotEmpty(maxBarCodeOld)) {
+            return (Long.parseLong(maxBarCodeOld)+1)+"";
+        } else {
+            return "1000";
+        }
     }
 }
