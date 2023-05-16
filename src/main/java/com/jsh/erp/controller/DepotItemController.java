@@ -215,7 +215,7 @@ public class DepotItemController {
                     item.put("operNumber", diEx.getOperNumber());
                     item.put("basicNumber", diEx.getBasicNumber());
                     item.put("preNumber", diEx.getOperNumber()); //原数量
-                    item.put("finishNumber", depotItemService.getFinishNumber(diEx.getMaterialExtendId(), diEx.getId(), diEx.getHeaderId(), unitInfo, materialUnit, linkType)); //已入库|已出库
+                    item.put("finishNumber", depotItemService.getFinishNumber(diEx.getMaterialExtendId(), diEx.getId(), diEx.getHeaderId(), unitInfo, materialUnit, linkType)); //已入庫|已出庫
                     item.put("purchaseDecimal", diEx.getPurchaseDecimal());  //采购价
                     if("basic".equals(linkType)) {
                         //正常情况显示金额，而以销定购的情况不能显示金额
@@ -468,10 +468,10 @@ public class DepotItemController {
             if (null != dataList) {
                 for (DepotItemVo4WithInfoEx diEx : dataList) {
                     JSONObject item = new JSONObject();
-                    BigDecimal InSum = depotItemService.buyOrSale("入库", "采购", diEx.getMId(), beginTime, endTime, creatorArray, "number");
-                    BigDecimal OutSum = depotItemService.buyOrSale("出库", "采购退货", diEx.getMId(), beginTime, endTime, creatorArray, "number");
-                    BigDecimal InSumPrice = depotItemService.buyOrSale("入库", "采购", diEx.getMId(), beginTime, endTime, creatorArray, "price");
-                    BigDecimal OutSumPrice = depotItemService.buyOrSale("出库", "采购退货", diEx.getMId(), beginTime, endTime, creatorArray, "price");
+                    BigDecimal InSum = depotItemService.buyOrSale("入庫", "采购", diEx.getMId(), beginTime, endTime, creatorArray, "number");
+                    BigDecimal OutSum = depotItemService.buyOrSale("出庫", "采购退货", diEx.getMId(), beginTime, endTime, creatorArray, "number");
+                    BigDecimal InSumPrice = depotItemService.buyOrSale("入庫", "采购", diEx.getMId(), beginTime, endTime, creatorArray, "price");
+                    BigDecimal OutSumPrice = depotItemService.buyOrSale("出庫", "采购退货", diEx.getMId(), beginTime, endTime, creatorArray, "price");
                     BigDecimal InOutSumPrice = InSumPrice.subtract(OutSumPrice);
                     item.put("barCode", diEx.getBarCode());
                     item.put("materialName", diEx.getMName());
@@ -540,14 +540,14 @@ public class DepotItemController {
             if (null != dataList) {
                 for (DepotItemVo4WithInfoEx diEx : dataList) {
                     JSONObject item = new JSONObject();
-                    BigDecimal OutSumRetail = depotItemService.buyOrSale("出库", "零售", diEx.getMId(), beginTime, endTime, creatorArray,"number");
-                    BigDecimal OutSum = depotItemService.buyOrSale("出库", "销售", diEx.getMId(), beginTime, endTime, creatorArray,"number");
-                    BigDecimal InSumRetail = depotItemService.buyOrSale("入库", "零售退货", diEx.getMId(), beginTime, endTime, creatorArray,"number");
-                    BigDecimal InSum = depotItemService.buyOrSale("入库", "销售退货", diEx.getMId(), beginTime, endTime, creatorArray,"number");
-                    BigDecimal OutSumRetailPrice = depotItemService.buyOrSale("出库", "零售", diEx.getMId(), beginTime, endTime, creatorArray,"price");
-                    BigDecimal OutSumPrice = depotItemService.buyOrSale("出库", "销售", diEx.getMId(), beginTime, endTime, creatorArray,"price");
-                    BigDecimal InSumRetailPrice = depotItemService.buyOrSale("入库", "零售退货", diEx.getMId(), beginTime, endTime, creatorArray,"price");
-                    BigDecimal InSumPrice = depotItemService.buyOrSale("入库", "销售退货", diEx.getMId(), beginTime, endTime, creatorArray,"price");
+                    BigDecimal OutSumRetail = depotItemService.buyOrSale("出庫", "零售", diEx.getMId(), beginTime, endTime, creatorArray,"number");
+                    BigDecimal OutSum = depotItemService.buyOrSale("出庫", "销售", diEx.getMId(), beginTime, endTime, creatorArray,"number");
+                    BigDecimal InSumRetail = depotItemService.buyOrSale("入庫", "零售退货", diEx.getMId(), beginTime, endTime, creatorArray,"number");
+                    BigDecimal InSum = depotItemService.buyOrSale("入庫", "销售退货", diEx.getMId(), beginTime, endTime, creatorArray,"number");
+                    BigDecimal OutSumRetailPrice = depotItemService.buyOrSale("出庫", "零售", diEx.getMId(), beginTime, endTime, creatorArray,"price");
+                    BigDecimal OutSumPrice = depotItemService.buyOrSale("出庫", "销售", diEx.getMId(), beginTime, endTime, creatorArray,"price");
+                    BigDecimal InSumRetailPrice = depotItemService.buyOrSale("入庫", "零售退货", diEx.getMId(), beginTime, endTime, creatorArray,"price");
+                    BigDecimal InSumPrice = depotItemService.buyOrSale("入庫", "销售退货", diEx.getMId(), beginTime, endTime, creatorArray,"price");
                     BigDecimal OutInSumPrice = (OutSumRetailPrice.add(OutSumPrice)).subtract(InSumRetailPrice.add(InSumPrice));
                     item.put("barCode", diEx.getBarCode());
                     item.put("materialName", diEx.getMName());
@@ -672,8 +672,8 @@ public class DepotItemController {
             JSONArray buyPriceList = new JSONArray();
             for(String month: list) {
                 JSONObject obj = new JSONObject();
-                BigDecimal outPrice = depotItemService.inOrOutPrice("入库", "采购", month, roleType);
-                BigDecimal inPrice = depotItemService.inOrOutPrice("出库", "采购退货", month, roleType);
+                BigDecimal outPrice = depotItemService.inOrOutPrice("入庫", "采购", month, roleType);
+                BigDecimal inPrice = depotItemService.inOrOutPrice("出庫", "采购退货", month, roleType);
                 obj.put("x", month);
                 obj.put("y", roleService.parsePriceByLimit(outPrice.subtract(inPrice), "buy", "***", request));
                 buyPriceList.add(obj);
@@ -682,8 +682,8 @@ public class DepotItemController {
             JSONArray salePriceList = new JSONArray();
             for(String month: list) {
                 JSONObject obj = new JSONObject();
-                BigDecimal outPrice = depotItemService.inOrOutPrice("出库", "销售", month, roleType);
-                BigDecimal inPrice = depotItemService.inOrOutPrice("入库", "销售退货", month, roleType);
+                BigDecimal outPrice = depotItemService.inOrOutPrice("出庫", "销售", month, roleType);
+                BigDecimal inPrice = depotItemService.inOrOutPrice("入庫", "销售退货", month, roleType);
                 obj.put("x", month);
                 obj.put("y", roleService.parsePriceByLimit(outPrice.subtract(inPrice), "sale", "***", request));
                 salePriceList.add(obj);
@@ -692,8 +692,8 @@ public class DepotItemController {
             JSONArray retailPriceList = new JSONArray();
             for(String month: list) {
                 JSONObject obj = new JSONObject();
-                BigDecimal outPrice = depotItemService.inOrOutRetailPrice("出库", "零售", month, roleType);
-                BigDecimal inPrice = depotItemService.inOrOutRetailPrice("入库", "零售退货", month, roleType);
+                BigDecimal outPrice = depotItemService.inOrOutRetailPrice("出庫", "零售", month, roleType);
+                BigDecimal inPrice = depotItemService.inOrOutRetailPrice("入庫", "零售退货", month, roleType);
                 obj.put("x", month);
                 obj.put("y", roleService.parsePriceByLimit(outPrice.subtract(inPrice), "retail", "***", request));
                 retailPriceList.add(obj);

@@ -398,7 +398,7 @@ public class DepotHeadService {
             //只有未审核的单据才能被删除
             if("0".equals(depotHead.getStatus())) {
                 User userInfo = userService.getCurrentUser();
-                //删除出库数据回收序列号
+                //删除出庫数据回收序列号
                 if (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
                         && !BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
                     //查询单据子表列表
@@ -417,7 +417,7 @@ public class DepotHeadService {
                         }
                     }
                 }
-                //对于零售出库单据，更新会员的预收款信息
+                //对于零售出庫单据，更新会员的预收款信息
                 if (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
                         && BusinessConstants.SUB_TYPE_RETAIL.equals(depotHead.getSubType())){
                     if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())) {
@@ -431,7 +431,7 @@ public class DepotHeadService {
                 depotItemMapperEx.batchDeleteDepotItemByDepotHeadIds(new Long[]{depotHead.getId()});
                 //删除单据主表信息
                 batchDeleteDepotHeadByIds(depotHead.getId().toString());
-                //将关联的单据置为审核状态-针对采购入库、销售出库和盘点复盘
+                //将关联的单据置为审核状态-针对采购入庫、销售出庫和盘点复盘
                 if(StringUtil.isNotEmpty(depotHead.getLinkNumber())){
                     if((BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType()) &&
                         BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType()))
@@ -607,7 +607,7 @@ public class DepotHeadService {
         List<DepotHeadVo4InOutMCount> list = null;
         try{
             String [] creatorArray = getCreatorArray(roleType);
-            String subType = "出库".equals(type)? "销售" : "";
+            String subType = "出庫".equals(type)? "销售" : "";
             String [] organArray = getOrganArray(subType, "");
             list =depotHeadMapperEx.findInOutMaterialCount(beginTime, endTime, type, materialParam, depotList, oId,
                     creatorArray, organArray, offset, rows);
@@ -622,7 +622,7 @@ public class DepotHeadService {
         int result = 0;
         try{
             String [] creatorArray = getCreatorArray(roleType);
-            String subType = "出库".equals(type)? "销售" : "";
+            String subType = "出庫".equals(type)? "销售" : "";
             String [] organArray = getOrganArray(subType, "");
             result =depotHeadMapperEx.findInOutMaterialCountTotal(beginTime, endTime, type, materialParam, depotList, oId,
                     creatorArray, organArray);
@@ -755,9 +755,9 @@ public class DepotHeadService {
         BigDecimal sum = BigDecimal.ZERO;
         String getS = supplierId.toString();
         if (("客户").equals(supType)) { //客户
-            sum = allMoney(getS, "出库", "销售", "合计",endTime).subtract(allMoney(getS, "出库", "销售", "实际",endTime));
+            sum = allMoney(getS, "出庫", "销售", "合计",endTime).subtract(allMoney(getS, "出庫", "销售", "实际",endTime));
         } else if (("供应商").equals(supType)) { //供应商
-            sum = allMoney(getS, "入库", "采购", "合计",endTime).subtract(allMoney(getS, "入库", "采购", "实际",endTime));
+            sum = allMoney(getS, "入庫", "采购", "合计",endTime).subtract(allMoney(getS, "入庫", "采购", "实际",endTime));
         }
         return sum;
     }
@@ -945,7 +945,7 @@ public class DepotHeadService {
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
-        /**入库和出库处理预付款信息*/
+        /**入庫和出庫处理预付款信息*/
         if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
             if(depotHead.getOrganId()!=null) {
                 BigDecimal currentAdvanceIn = supplierService.getSupplier(depotHead.getOrganId()).getAdvanceIn();
@@ -963,7 +963,7 @@ public class DepotHeadService {
         List<DepotHead> list = depotHeadMapper.selectByExample(dhExample);
         if(list!=null) {
             Long headId = list.get(0).getId();
-            /**入库和出库处理单据子表信息*/
+            /**入庫和出庫处理单据子表信息*/
             depotItemService.saveDetials(rows,headId, "add",request);
         }
         logService.insertLog("单据",
@@ -1028,7 +1028,7 @@ public class DepotHeadService {
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
-        /**入库和出库处理预付款信息*/
+        /**入庫和出庫处理预付款信息*/
         if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
             if(depotHead.getOrganId()!=null){
                 BigDecimal currentAdvanceIn = supplierService.getSupplier(depotHead.getOrganId()).getAdvanceIn();
@@ -1040,7 +1040,7 @@ public class DepotHeadService {
                 }
             }
         }
-        /**入库和出库处理单据子表信息*/
+        /**入庫和出庫处理单据子表信息*/
         depotItemService.saveDetials(rows,depotHead.getId(), "update",request);
         logService.insertLog("单据",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
@@ -1107,56 +1107,56 @@ public class DepotHeadService {
         String [] creatorArray = getCreatorArray(roleType);
         Map<String, Object> map = new HashMap<>();
         //今日
-        BigDecimal todayBuy = getBuyAndSaleBasicStatistics("入库", "采购",
-                1, today, getNow3(), creatorArray); //今日采购入库
-        BigDecimal todayBuyBack = getBuyAndSaleBasicStatistics("出库", "采购退货",
+        BigDecimal todayBuy = getBuyAndSaleBasicStatistics("入庫", "采购",
+                1, today, getNow3(), creatorArray); //今日采购入庫
+        BigDecimal todayBuyBack = getBuyAndSaleBasicStatistics("出庫", "采购退货",
                 1, today, getNow3(), creatorArray); //今日采购退货
-        BigDecimal todaySale = getBuyAndSaleBasicStatistics("出库", "销售",
-                1, today, getNow3(), creatorArray); //今日销售出库
-        BigDecimal todaySaleBack = getBuyAndSaleBasicStatistics("入库", "销售退货",
+        BigDecimal todaySale = getBuyAndSaleBasicStatistics("出庫", "销售",
+                1, today, getNow3(), creatorArray); //今日销售出庫
+        BigDecimal todaySaleBack = getBuyAndSaleBasicStatistics("入庫", "销售退货",
                 1, today, getNow3(), creatorArray); //今日销售退货
-        BigDecimal todayRetailSale = getBuyAndSaleRetailStatistics("出库", "零售",
-                today, getNow3(), creatorArray); //今日零售出库
-        BigDecimal todayRetailSaleBack = getBuyAndSaleRetailStatistics("入库", "零售退货",
+        BigDecimal todayRetailSale = getBuyAndSaleRetailStatistics("出庫", "零售",
+                today, getNow3(), creatorArray); //今日零售出庫
+        BigDecimal todayRetailSaleBack = getBuyAndSaleRetailStatistics("入庫", "零售退货",
                 today, getNow3(), creatorArray); //今日零售退货
         //本月
-        BigDecimal monthBuy = getBuyAndSaleBasicStatistics("入库", "采购",
-                1, monthFirstDay, getNow3(), creatorArray); //本月采购入库
-        BigDecimal monthBuyBack = getBuyAndSaleBasicStatistics("出库", "采购退货",
+        BigDecimal monthBuy = getBuyAndSaleBasicStatistics("入庫", "采购",
+                1, monthFirstDay, getNow3(), creatorArray); //本月采购入庫
+        BigDecimal monthBuyBack = getBuyAndSaleBasicStatistics("出庫", "采购退货",
                 1, monthFirstDay, getNow3(), creatorArray); //本月采购退货
-        BigDecimal monthSale = getBuyAndSaleBasicStatistics("出库", "销售",
-                1,monthFirstDay, getNow3(), creatorArray); //本月销售出库
-        BigDecimal monthSaleBack = getBuyAndSaleBasicStatistics("入库", "销售退货",
+        BigDecimal monthSale = getBuyAndSaleBasicStatistics("出庫", "销售",
+                1,monthFirstDay, getNow3(), creatorArray); //本月销售出庫
+        BigDecimal monthSaleBack = getBuyAndSaleBasicStatistics("入庫", "销售退货",
                 1,monthFirstDay, getNow3(), creatorArray); //本月销售退货
-        BigDecimal monthRetailSale = getBuyAndSaleRetailStatistics("出库", "零售",
-                monthFirstDay, getNow3(), creatorArray); //本月零售出库
-        BigDecimal monthRetailSaleBack = getBuyAndSaleRetailStatistics("入库", "零售退货",
+        BigDecimal monthRetailSale = getBuyAndSaleRetailStatistics("出庫", "零售",
+                monthFirstDay, getNow3(), creatorArray); //本月零售出庫
+        BigDecimal monthRetailSaleBack = getBuyAndSaleRetailStatistics("入庫", "零售退货",
                 monthFirstDay, getNow3(), creatorArray); //本月零售退货
         //昨日
-        BigDecimal yesterdayBuy = getBuyAndSaleBasicStatistics("入库", "采购",
-                1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日采购入库
-        BigDecimal yesterdayBuyBack = getBuyAndSaleBasicStatistics("出库", "采购退货",
+        BigDecimal yesterdayBuy = getBuyAndSaleBasicStatistics("入庫", "采购",
+                1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日采购入庫
+        BigDecimal yesterdayBuyBack = getBuyAndSaleBasicStatistics("出庫", "采购退货",
                 1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日采购退货
-        BigDecimal yesterdaySale = getBuyAndSaleBasicStatistics("出库", "销售",
-                1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日销售出库
-        BigDecimal yesterdaySaleBack = getBuyAndSaleBasicStatistics("入库", "销售退货",
+        BigDecimal yesterdaySale = getBuyAndSaleBasicStatistics("出庫", "销售",
+                1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日销售出庫
+        BigDecimal yesterdaySaleBack = getBuyAndSaleBasicStatistics("入庫", "销售退货",
                 1, yesterdayBegin, yesterdayEnd, creatorArray); //昨日销售退货
-        BigDecimal yesterdayRetailSale = getBuyAndSaleRetailStatistics("出库", "零售",
-                yesterdayBegin, yesterdayEnd, creatorArray); //昨日零售出库
-        BigDecimal yesterdayRetailSaleBack = getBuyAndSaleRetailStatistics("入库", "零售退货",
+        BigDecimal yesterdayRetailSale = getBuyAndSaleRetailStatistics("出庫", "零售",
+                yesterdayBegin, yesterdayEnd, creatorArray); //昨日零售出庫
+        BigDecimal yesterdayRetailSaleBack = getBuyAndSaleRetailStatistics("入庫", "零售退货",
                 yesterdayBegin, yesterdayEnd, creatorArray); //昨日零售退货
         //今年
-        BigDecimal yearBuy = getBuyAndSaleBasicStatistics("入库", "采购",
-                1, yearBegin, yearEnd, creatorArray); //今年采购入库
-        BigDecimal yearBuyBack = getBuyAndSaleBasicStatistics("出库", "采购退货",
+        BigDecimal yearBuy = getBuyAndSaleBasicStatistics("入庫", "采购",
+                1, yearBegin, yearEnd, creatorArray); //今年采购入庫
+        BigDecimal yearBuyBack = getBuyAndSaleBasicStatistics("出庫", "采购退货",
                 1, yearBegin, yearEnd, creatorArray); //今年采购退货
-        BigDecimal yearSale = getBuyAndSaleBasicStatistics("出库", "销售",
-                1, yearBegin, yearEnd, creatorArray); //今年销售出库
-        BigDecimal yearSaleBack = getBuyAndSaleBasicStatistics("入库", "销售退货",
+        BigDecimal yearSale = getBuyAndSaleBasicStatistics("出庫", "销售",
+                1, yearBegin, yearEnd, creatorArray); //今年销售出庫
+        BigDecimal yearSaleBack = getBuyAndSaleBasicStatistics("入庫", "销售退货",
                 1, yearBegin, yearEnd, creatorArray); //今年销售退货
-        BigDecimal yearRetailSale = getBuyAndSaleRetailStatistics("出库", "零售",
-                yearBegin, yearEnd, creatorArray); //今年零售出库
-        BigDecimal yearRetailSaleBack = getBuyAndSaleRetailStatistics("入库", "零售退货",
+        BigDecimal yearRetailSale = getBuyAndSaleRetailStatistics("出庫", "零售",
+                yearBegin, yearEnd, creatorArray); //今年零售出庫
+        BigDecimal yearRetailSaleBack = getBuyAndSaleRetailStatistics("入庫", "零售退货",
                 yearBegin, yearEnd, creatorArray); //今年零售退货
         map.put("todayBuy", roleService.parsePriceByLimit(todayBuy.subtract(todayBuyBack), "buy", "***", request));
         map.put("todaySale", roleService.parsePriceByLimit(todaySale.subtract(todaySaleBack), "sale", "***", request));

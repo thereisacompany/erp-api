@@ -34,11 +34,11 @@ public class BusinessConstants {
      */
     public static final Integer DEFAULT_PAGINATION_PAGE_SIZE = 10;
     /**
-     * 单据主表出入库类型 type 入库 出库 其它
+     * 单据主表出入庫类型 type 入庫 出庫 其它
      * depothead
      * */
-    public static final String DEPOTHEAD_TYPE_IN = "入库";
-    public static final String DEPOTHEAD_TYPE_OUT = "出库";
+    public static final String DEPOTHEAD_TYPE_IN = "入庫";
+    public static final String DEPOTHEAD_TYPE_OUT = "出庫";
     public static final String DEPOTHEAD_TYPE_OTHER = "其它";
     /**
      * 付款类型 payType //现付/预付款
@@ -79,7 +79,7 @@ public class BusinessConstants {
     public static final String PURCHASE_STATUS_SKIPED = "2";
     public static final String PURCHASE_STATUS_SKIPING = "3";
     /**
-     * 出入库分类
+     * 出入庫分类
      *采购、采购退货、其它、零售、销售、调拨、盘点复盘等
      * */
     public static final String SUB_TYPE_PURCHASE_ORDER = "采购订单";

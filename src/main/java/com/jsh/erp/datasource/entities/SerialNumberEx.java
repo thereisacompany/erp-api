@@ -27,7 +27,7 @@ public class SerialNumberEx extends SerialNumber{
     private String updaterName;
     /**单据编号*/
     private String depotHeadNumber;
-    /**单据类型（出库入库）*/
+    /**单据类型（出庫入庫）*/
     private String depotHeadType;
 
     private String depotName;

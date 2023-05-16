@@ -263,7 +263,7 @@ public class AccountService {
     }
 
     /**
-     * 单个账户的金额求和-入库和出库
+     * 单个账户的金额求和-入庫和出庫
      *
      * @param id
      * @return

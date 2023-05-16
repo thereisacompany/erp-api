@@ -75,7 +75,7 @@
     </select>
 
     <select id="findAccountInOutList" parameterType="com.jsh.erp.datasource.entities.AccountExample" resultMap="ResultInOutList">
-        <!--主表出入库涉及的账户 -->
+        <!--主表出入庫涉及的账户 -->
         select dh.number,concat(dh.sub_type,dh.type) as newType, 'bill' as fromType, s.supplier,dh.change_amount,date_format(dh.oper_time,'%Y-%m-%d %H:%i:%S') as oTime,'' as AList,'' as AMList
         from jsh_depot_head dh left join jsh_supplier s on dh.organ_id = s.id and ifnull(s.delete_flag,'0') !='1'
         where 1=1
@@ -140,7 +140,7 @@
     <select id="findAccountInOutListCount" resultType="java.lang.Integer">
         select sum(a) from
         (
-            <!--主表出入库涉及的账户 -->
+            <!--主表出入庫涉及的账户 -->
             select count(1) a
             from jsh_depot_head dh left join jsh_supplier s on dh.organ_id = s.id and ifnull(s.delete_flag,'0') !='1'
             where 1=1

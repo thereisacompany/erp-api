@@ -415,7 +415,7 @@
             ) or dh.sub_type='采购退货' or dh.sub_type='零售')
         </if>
         <if test="depotList.size()>0">
-            <if test="type == '入库'">
+            <if test="type == '入庫'">
                 and ((
                 dh.sub_type!='调拨' and di.depot_id in
                 <foreach collection="depotList" item="item" index="index" separator="," open="(" close=")">
@@ -428,7 +428,7 @@
                 </foreach>
                 ))
             </if>
-            <if test="type == '出库'">
+            <if test="type == '出庫'">
                 and di.depot_id in
                 <foreach collection="depotList" item="item" index="index" separator="," open="(" close=")">
                     #{item}
@@ -472,7 +472,7 @@
             ) or dh.sub_type='采购退货' or dh.sub_type='零售')
         </if>
         <if test="depotList.size()>0">
-            <if test="type == '入库'">
+            <if test="type == '入庫'">
                  and ((
                  dh.sub_type!='调拨' and di.depot_id in
                 <foreach collection="depotList" item="item" index="index" separator="," open="(" close=")">
@@ -485,7 +485,7 @@
                 </foreach>
                  ))
             </if>
-            <if test="type == '出库'">
+            <if test="type == '出庫'">
                 and di.depot_id in
                 <foreach collection="depotList" item="item" index="index" separator="," open="(" close=")">
                     #{item}

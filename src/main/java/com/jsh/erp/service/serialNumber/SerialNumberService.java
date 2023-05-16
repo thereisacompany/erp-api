@@ -241,8 +241,8 @@ public class SerialNumberService {
     public Long getSerialNumberMaterialIdByBarCode(String materialCode)throws Exception{
         if(StringUtil.isNotEmpty(materialCode)){
             //计算商品库存和目前占用的可用序列号数量关系
-            //库存=入库-出库
-            //入库数量
+            //库存=入庫-出庫
+            //入庫数量
             Long materialId = 0L;
             List<MaterialVo4Unit> list = materialService.getMaterialByBarCode(materialCode);
             if(list!=null && list.size()>0) {
@@ -256,7 +256,7 @@ public class SerialNumberService {
     /**
      * create by: cjl
      * description:
-     * 出库时判断序列号库存是否足够，
+     * 出庫时判断序列号库存是否足够，
      * 同时将对应的序列号绑定单据
      * create time: 2019/1/24 16:24
      * @Param: List<DepotItem>

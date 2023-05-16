@@ -79,7 +79,7 @@ public class DepotHeadController {
     }
 
     /**
-     * 入库出库明细接口
+     * 入庫出庫明细接口
      * @param currentPage
      * @param pageSize
      * @param oId
@@ -93,7 +93,7 @@ public class DepotHeadController {
      * @return
      */
     @GetMapping(value = "/findInOutDetail")
-    @ApiOperation(value = "入库出库明细接口")
+    @ApiOperation(value = "入庫出庫明细接口")
     public BaseResponseInfo findInOutDetail(@RequestParam("currentPage") Integer currentPage,
                                         @RequestParam("pageSize") Integer pageSize,
                                         @RequestParam(value = "organId", required = false) Integer oId,
@@ -122,7 +122,7 @@ public class DepotHeadController {
             }
             List<DepotHeadVo4InDetail> resList = new ArrayList<DepotHeadVo4InDetail>();
             String [] creatorArray = depotHeadService.getCreatorArray(roleType);
-            String subType = "出库".equals(type)? "销售" : "";
+            String subType = "出庫".equals(type)? "销售" : "";
             String [] organArray = depotHeadService.getOrganArray(subType, "");
             beginTime = Tools.parseDayToTime(beginTime, BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
@@ -149,7 +149,7 @@ public class DepotHeadController {
     }
 
     /**
-     * 入库出库统计接口
+     * 入庫出庫统计接口
      * @param currentPage
      * @param pageSize
      * @param oId
@@ -162,7 +162,7 @@ public class DepotHeadController {
      * @return
      */
     @GetMapping(value = "/findInOutMaterialCount")
-    @ApiOperation(value = "入库出库统计接口")
+    @ApiOperation(value = "入庫出庫统计接口")
     public BaseResponseInfo findInOutMaterialCount(@RequestParam("currentPage") Integer currentPage,
                                          @RequestParam("pageSize") Integer pageSize,
                                          @RequestParam(value = "organId", required = false) Integer oId,
@@ -305,14 +305,14 @@ public class DepotHeadController {
             String typeBack = "";
             String subTypeBack = "";
             if (("供应商").equals(supplierType)) {
-                type = "入库";
+                type = "入庫";
                 subType = "采购";
-                typeBack = "出库";
+                typeBack = "出庫";
                 subTypeBack = "采购退货";
             } else if (("客户").equals(supplierType)) {
-                type = "出库";
+                type = "出庫";
                 subType = "销售";
-                typeBack = "入库";
+                typeBack = "入庫";
                 subTypeBack = "销售退货";
             }
             String [] organArray = depotHeadService.getOrganArray(subType, "");

@@ -118,7 +118,7 @@ public class AccountHeadController {
     }
 
     /**
-     * 根据出入库单据id查询收付款单号
+     * 根据出入庫单据id查询收付款单号
      * @param billId
      * @param request
      * @return

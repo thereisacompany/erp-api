@@ -36,7 +36,7 @@ import java.util.*;
 public class DepotItemService {
     private Logger logger = LoggerFactory.getLogger(DepotItemService.class);
 
-    private final static String TYPE = "入库";
+    private final static String TYPE = "入庫";
     private final static String SUM_TYPE = "number";
     private final static String IN = "in";
     private final static String OUT = "out";
@@ -417,12 +417,12 @@ public class DepotItemService {
                         throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_ASSEMBLE_SELECT_ERROR_CODE,
                                 String.format(ExceptionConstants.MATERIAL_ASSEMBLE_SELECT_ERROR_MSG, barCode));
                     }
-                    //调拨单不能选择批号或序列号商品（该场景走出库和入库单）
+                    //调拨单不能选择批号或序列号商品（该场景走出庫和入庫单）
                     if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
                         throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_TRANSFER_SELECT_ERROR_CODE,
                                 String.format(ExceptionConstants.MATERIAL_TRANSFER_SELECT_ERROR_MSG, barCode));
                     }
-                    //盘点业务不能选择批号或序列号商品（该场景走出库和入库单）
+                    //盘点业务不能选择批号或序列号商品（该场景走出庫和入庫单）
                     if(BusinessConstants.SUB_TYPE_CHECK_ENTER.equals(depotHead.getSubType())
                        ||BusinessConstants.SUB_TYPE_REPLAY.equals(depotHead.getSubType())) {
                         throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_CHECK_ERROR_CODE,
@@ -437,7 +437,7 @@ public class DepotItemService {
                                 depotHead.getNumber(), materialExtend.getMaterialId(), depotId, depotItem.getSnList());
                     }
                 } else {
-                    //入库或出库
+                    //入庫或出庫
                     if(BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType()) ||
                             BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())) {
                         //序列号不能为空
@@ -450,7 +450,7 @@ public class DepotItemService {
                 if (StringUtil.isExist(rowObj.get("batchNumber"))) {
                     depotItem.setBatchNumber(rowObj.getString("batchNumber"));
                 } else {
-                    //入库或出库
+                    //入庫或出庫
                     if(BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType()) ||
                             BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())) {
                         //批号不能为空
@@ -509,7 +509,7 @@ public class DepotItemService {
                         Long preHeaderId = depotHeadService.getDepotHead(depotHead.getLinkNumber()).getId();
                         //前一个单据的数量
                         BigDecimal preNumber = getPreItemByHeaderIdAndMaterial(depotHead.getLinkNumber(), depotItem.getMaterialExtendId(), depotItem.getLinkId()).getOperNumber();
-                        //除去此单据之外的已入库|已出库
+                        //除去此单据之外的已入庫|已出庫
                         BigDecimal realFinishNumber = getRealFinishNumber(currentSubType, depotItem.getMaterialExtendId(), depotItem.getLinkId(), preHeaderId, headerId, unitInfo, unit);
                         if(depotItem.getOperNumber().add(realFinishNumber).compareTo(preNumber)>0) {
                             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE,
@@ -530,7 +530,7 @@ public class DepotItemService {
                         }
                     }
                 }
-                //如果是销售出库、销售退货、零售出库、零售退货则给采购单价字段赋值（如果是批次商品，则要根据批号去找之前的入库价）
+                //如果是销售出庫、销售退货、零售出庫、零售退货则给采购单价字段赋值（如果是批次商品，则要根据批号去找之前的入庫价）
                 if(BusinessConstants.SUB_TYPE_SALES.equals(depotHead.getSubType()) ||
                     BusinessConstants.SUB_TYPE_SALES_RETURN.equals(depotHead.getSubType()) ||
                     BusinessConstants.SUB_TYPE_RETAIL.equals(depotHead.getSubType()) ||
@@ -583,7 +583,7 @@ public class DepotItemService {
                 if (StringUtil.isExist(rowObj.get("remark"))) {
                     depotItem.setRemark(rowObj.getString("remark"));
                 }
-                //出库时判断库存是否充足
+                //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
@@ -595,7 +595,7 @@ public class DepotItemService {
                         throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
                                 String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
                     }
-                    //出库时处理序列号
+                    //出庫时处理序列号
                     if(!BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
                         //判断商品是否开启序列号，开启的售出序列号，未开启的跳过
                         if(BusinessConstants.ENABLE_SERIAL_NUMBER_ENABLED.equals(material.getEnableSerialNumber())) {
@@ -611,12 +611,12 @@ public class DepotItemService {
                 //更新商品的价格
                 updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj);
             }
-            //如果关联单据号非空则更新订单的状态,单据类型：采购入库单或销售出库单或盘点复盘单
+            //如果关联单据号非空则更新订单的状态,单据类型：采购入庫单或销售出庫单或盘点复盘单
             if(BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType())
                     || BusinessConstants.SUB_TYPE_SALES.equals(depotHead.getSubType())
                     || BusinessConstants.SUB_TYPE_REPLAY.equals(depotHead.getSubType())) {
                 if(StringUtil.isNotEmpty(depotHead.getLinkNumber())) {
-                    //单据状态:是否全部完成 2-全部完成 3-部分完成（针对订单的分批出入库）
+                    //单据状态:是否全部完成 2-全部完成 3-部分完成（针对订单的分批出入庫）
                     String billStatus = getBillStatusByParam(depotHead);
                     changeBillStatus(depotHead, billStatus);
                 }
@@ -750,13 +750,13 @@ public class DepotItemService {
         if(actionType.equals("update")) {
             User userInfo = userService.getCurrentUser();
             if(BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType())){
-                //入库逻辑
+                //入庫逻辑
                 String number = depotHead.getNumber();
                 SerialNumberExample example = new SerialNumberExample();
                 example.createCriteria().andInBillNoEqualTo(number);
                 serialNumberService.deleteByExample(example);
             } else if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
-                //出库逻辑
+                //出庫逻辑
                 DepotItemExample example = new DepotItemExample();
                 example.createCriteria().andHeaderIdEqualTo(headerId).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
                 List<DepotItem> depotItemList = depotItemMapper.selectByExample(example);
@@ -890,7 +890,7 @@ public class DepotItemService {
     }
 
     /**
-     * 统计时间段内的入库和出库数量-多仓库
+     * 统计时间段内的入庫和出庫数量-多仓库
      * @param depotList
      * @param mId
      * @param beginTime
@@ -919,7 +919,7 @@ public class DepotItemService {
         if(stockCheckSum.compareTo(BigDecimal.ZERO)>0) {
             inSum = inSum.add(stockCheckSum);
         } else {
-            //盘点复盘数量为负数代表出库
+            //盘点复盘数量为负数代表出庫
             outSum = outSum.subtract(stockCheckSum);
         }
         intervalMap.put("inSum", inSum);
@@ -976,19 +976,19 @@ public class DepotItemService {
                 goToType = BusinessConstants.SUB_TYPE_PURCHASE_ORDER;
             }
         } else {
-            //采购订单转采购入库
+            //采购订单转采购入庫
             if(BusinessConstants.SUB_TYPE_PURCHASE_ORDER.equals(depotHead.getSubType())) {
                 goToType = BusinessConstants.SUB_TYPE_PURCHASE;
             }
-            //销售订单转销售出库
+            //销售订单转销售出庫
             if(BusinessConstants.SUB_TYPE_SALES_ORDER.equals(depotHead.getSubType())) {
                 goToType = BusinessConstants.SUB_TYPE_SALES;
             }
-            //采购入库转采购退货
+            //采购入庫转采购退货
             if(BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType())) {
                 goToType = BusinessConstants.SUB_TYPE_PURCHASE_RETURN;
             }
-            //销售出库转销售退货
+            //销售出庫转销售退货
             if(BusinessConstants.SUB_TYPE_SALES.equals(depotHead.getSubType())) {
                 goToType = BusinessConstants.SUB_TYPE_SALES_RETURN;
             }
@@ -1008,7 +1008,7 @@ public class DepotItemService {
     }
 
     /**
-     * 除去此单据之外的已入库|已出库|已转采购
+     * 除去此单据之外的已入庫|已出庫|已转采购
      * @param currentSubType
      * @param meId
      * @param linkId

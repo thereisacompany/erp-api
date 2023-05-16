@@ -141,8 +141,8 @@
         select tb.* from
         (select dh.number,me.bar_code,m.name material_name,dh.type,dh.sub_type,
         case
-            when type='入库' then ifnull(di.basic_number,0)
-            when type='出库' then 0-di.basic_number
+            when type='入庫' then ifnull(di.basic_number,0)
+            when type='出庫' then 0-di.basic_number
             when dh.sub_type='组装单' and di.material_type='组合件' then ifnull(di.basic_number,0)
             when dh.sub_type='组装单' and di.material_type='普通子件' then 0-di.basic_number
             when dh.sub_type='拆卸单' and di.material_type='普通子件' then ifnull(di.basic_number,0)
@@ -172,7 +172,7 @@
         and di.material_id = #{mId}
         and ifnull(dh.delete_flag,'0') !='1'
         union all
-        --单独构造记录：调拨入库
+        --单独构造记录：调拨入庫
         select dh.number,me.bar_code,m.name material_name,dh.type,dh.sub_type,
         ifnull(di.basic_number,0) as b_num,
         (select concat(name,'[调入]') from jsh_depot d where d.id=di.another_depot_id and ifnull(d.delete_flag,'0') !='1') as depotName,
@@ -181,7 +181,7 @@
         left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_material m on di.material_id=m.id and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_extend me on me.id=di.material_extend_id and ifnull(me.delete_Flag,'0') !='1'
-        where dh.type='出库' and dh.sub_type='调拨'
+        where dh.type='出庫' and dh.sub_type='调拨'
         <if test="depotIdArray != null">
             and di.another_depot_id in (
             <foreach collection="depotIdArray" item="depotId" separator=",">#{depotId}</foreach>
@@ -217,10 +217,10 @@
         and di.material_id =#{mId}
         and ifnull(dh.delete_flag,'0') !='1'
         union all
-        --单独构造记录：调拨入库
+        --单独构造记录：调拨入庫
         select dh.number from jsh_depot_head dh
         left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'
-        where dh.type='出库' and dh.sub_type='调拨'
+        where dh.type='出庫' and dh.sub_type='调拨'
         <if test="depotIdArray != null">
             and di.another_depot_id in (
             <foreach collection="depotIdArray" item="depotId" separator=",">#{depotId}</foreach>
@@ -459,8 +459,8 @@
 
     <select id="getSkuStockByParam" resultMap="stockMap">
         select
-        sum(case when dh.type='入库' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as inTotal,
-        sum(case when dh.type='出库' and dh.sub_type!='调拨' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.type='入庫' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as inTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='调拨' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as outTotal,
         sum(case when dh.sub_type='调拨' <if test="depotId != null">and di.another_depot_id=#{depotId}</if> then di.basic_number else 0 end) as transfInTotal,
         sum(case when dh.sub_type='调拨' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as transfOutTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <if test="depotId != null">and di.depot_id=#{depotId}</if> then di.basic_number else 0 end) as assemInTotal,
@@ -496,8 +496,8 @@
 
     <select id="getStockByParamWithDepotList" resultMap="stockMap">
         select
-        sum(case when dh.type='入库' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
-        sum(case when dh.type='出库' and dh.sub_type!='调拨' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.type='入庫' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='调拨' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
         sum(case when dh.sub_type='调拨' <include refid="anotherDepotParam" /> then di.basic_number else 0 end) as transfInTotal,
         sum(case when dh.sub_type='调拨' <include refid="depotParam" /> then di.basic_number else 0 end) as transfOutTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
@@ -687,7 +687,7 @@
     <select id="getBatchNumberList" resultMap="batchNumberListMap">
         select id, bar_code, name, standard, model, batch_number, expiration_date, sum(oper_number) total_num  from
         (select di.batch_number id, me.bar_code, m.name, m.standard, m.model,di.batch_number,di.expiration_date,
-        di.oper_number*(case dh.type when '入库' then 1 when '出库' then -1 end) as oper_number
+        di.oper_number*(case dh.type when '入庫' then 1 when '出庫' then -1 end) as oper_number
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id=di.header_id
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_flag, '0') != '1'
@@ -750,6 +750,6 @@
         where 1=1
         and ifnull(dh.delete_flag,'0') !='1'
         and di.batch_number = #{batchNumber}
-        and dh.type = '入库'
+        and dh.type = '入庫'
     </select>
 </mapper>
