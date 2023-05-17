@@ -39,6 +39,8 @@ public class Supplier {
 
     private String telephone;
 
+    private String emergencyPhone;
+
     private String address;
 
     private String taxNum;
@@ -195,6 +197,9 @@ public class Supplier {
         this.telephone = telephone == null ? null : telephone.trim();
     }
 
+    public String getEmergencyPhone() { return emergencyPhone; }
+
+    public void setEmergencyPhone(String phone) {this.emergencyPhone = phone == null ? null : phone.trim(); }
     public String getAddress() {
         return address;
     }
