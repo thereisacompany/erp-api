@@ -167,7 +167,7 @@ public class MaterialService {
         try{
             materialMapperEx.insertSelectiveEx(m);
             Long mId = m.getId();
-            materialExtendService.saveDetials(obj, obj.getString("sortList"), mId, "insert");
+            materialExtendService.saveDetails(obj, obj.getString("sortList"), mId, "insert");
             if(obj.get("stock")!=null) {
                 JSONArray stockArr = obj.getJSONArray("stock");
                 for (int i = 0; i < stockArr.size(); i++) {
@@ -214,7 +214,7 @@ public class MaterialService {
             if(material.getExpiryNum() == null) {
                 materialMapperEx.setExpiryNumToNull(material.getId());
             }
-            materialExtendService.saveDetials(obj, obj.getString("sortList"),material.getId(), "update");
+            materialExtendService.saveDetails(obj, obj.getString("sortList"),material.getId(), "update");
             if(obj.get("stock")!=null) {
                 JSONArray stockArr = obj.getJSONArray("stock");
                 for (int i = 0; i < stockArr.size(); i++) {

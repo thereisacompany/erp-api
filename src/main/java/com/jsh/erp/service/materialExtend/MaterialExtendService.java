@@ -12,7 +12,6 @@ import com.jsh.erp.datasource.mappers.MaterialExtendMapper;
 import com.jsh.erp.datasource.mappers.MaterialExtendMapperEx;
 import com.jsh.erp.datasource.mappers.MaterialMapperEx;
 import com.jsh.erp.datasource.vo.MaterialExtendVo4List;
-import com.jsh.erp.exception.BusinessParamCheckingException;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.log.LogService;
@@ -83,12 +82,26 @@ public class MaterialExtendService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public String saveDetials(JSONObject obj, String sortList, Long materialId, String type) throws Exception {
+    public String saveDetails(JSONObject obj, String sortList, Long materialId, String type) throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        JSONArray meArr = obj.getJSONArray("meList");
+        JSONArray meArr = null;
+        if(obj.containsKey("meList")) {
+            meArr = obj.getJSONArray("meList");
+        } else {
+            meArr = new JSONArray();
+            if("insert".equals(type)) {
+                JSONObject barCodeJson = new JSONObject();
+                barCodeJson.put("barCode", getMaxBarCode());
+                meArr.add(barCodeJson);
+            }
+        }
         JSONArray insertedJson = new JSONArray();
         JSONArray updatedJson = new JSONArray();
-        JSONArray deletedJson = obj.getJSONArray("meDeleteIdList");
+
+        JSONArray deletedJson = null;
+        if(obj.containsKey("meDeleteIdList")) {
+            deletedJson = obj.getJSONArray("meDeleteIdList");
+        }
         JSONArray sortJson = JSONArray.parseArray(sortList);
         if (null != meArr) {
             if("insert".equals(type)){
@@ -131,9 +144,6 @@ public class MaterialExtendService {
                     } else {
                         materialExtend.setBarCode(tempInsertedJson.getString("barCode"));
                     }
-                } else {
-                    // TODO
-                    materialExtend.setBarCode(getMaxBarCode());
                 }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempInsertedJson.getString("commodityUnit"));
