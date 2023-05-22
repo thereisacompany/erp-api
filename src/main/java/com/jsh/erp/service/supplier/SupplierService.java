@@ -146,10 +146,24 @@ public class SupplierService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int insertSupplier(JSONObject obj, HttpServletRequest request)throws Exception {
         Supplier supplier = JSONObject.parseObject(obj.toJSONString(), Supplier.class);
-        int result=0;
+        supplier.setEnabled(true);
+
+        int result=supplierMapper.insertSelective(supplier);
+
+        // 新增供應商時，一併新增一筆資料至客戶
+        if("供應商".equals(supplier.getType())) {
+            supplier.setType("客戶");
+            supplierMapper.insertSelective(supplier);
+        }
+        insertUserBusiness(supplier, request);
+
+        logService.insertLog("商家",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(supplier.getSupplier()).toString(),request);
+        return result;
+    }
+
+    private void insertUserBusiness(Supplier supplier, HttpServletRequest request) {
         try{
-            supplier.setEnabled(true);
-            result=supplierMapper.insertSelective(supplier);
             //新增客户时给当前用户自动授权
             if("客户".equals(supplier.getType())) {
                 Long userId = userService.getUserId(request);
@@ -172,12 +186,9 @@ public class SupplierService {
                     userBusinessService.updateUserBusiness(ubObj, request);
                 }
             }
-            logService.insertLog("商家",
-                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(supplier.getSupplier()).toString(),request);
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
-        return result;
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
