@@ -189,6 +189,7 @@ public class DepotItemController {
                     item.put("materialExtendId", diEx.getMaterialExtendId() == null ? "" : diEx.getMaterialExtendId());
                     item.put("barCode", diEx.getBarCode());
                     item.put("name", diEx.getMName());
+                    item.put("categoryName", diEx.getCategoryName());
                     item.put("standard", diEx.getMStandard());
                     item.put("model", diEx.getMModel());
                     item.put("color", diEx.getMColor());

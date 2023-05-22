@@ -28,6 +28,8 @@ public class DepotItemVo4WithInfoEx extends DepotItem{
 
     private String enableBatchNumber;
 
+    private String categoryName;
+
     private String DepotName;
 
     private String AnotherDepotName;
@@ -143,6 +145,10 @@ public class DepotItemVo4WithInfoEx extends DepotItem{
     public void setEnableBatchNumber(String enableBatchNumber) {
         this.enableBatchNumber = enableBatchNumber;
     }
+
+    public String getCategoryName() { return categoryName; }
+
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
     public String getDepotName() {
         return DepotName;
