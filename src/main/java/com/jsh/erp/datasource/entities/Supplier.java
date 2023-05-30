@@ -43,6 +43,8 @@ public class Supplier {
 
     private String address;
 
+    private String licensePlate;
+
     private String taxNum;
 
     private String bankName;
@@ -206,6 +208,12 @@ public class Supplier {
 
     public void setAddress(String address) {
         this.address = address == null ? null : address.trim();
+    }
+
+    public String getLicensePlate() { return licensePlate; }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate == null ? null : licensePlate.trim();
     }
 
     public String getTaxNum() {
