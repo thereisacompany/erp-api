@@ -45,6 +45,7 @@ public class DepotHeadComponent implements ICommonQuery {
         Long organId = StringUtil.parseStrLong(StringUtil.getInfo(search, "organId"));
         Long creator = StringUtil.parseStrLong(StringUtil.getInfo(search, "creator"));
         Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
+        // TODO counter id or counter name
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
         return depotHeadService.select(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,

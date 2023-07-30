@@ -231,6 +231,8 @@ public class DepotItemController {
                     item.put("linkId", diEx.getLinkId());
                     item.put("depotId", diEx.getDepotId() == null ? "" : diEx.getDepotId());
                     item.put("depotName", diEx.getDepotId() == null ? "" : diEx.getDepotName());
+                    item.put("counterId", diEx.getCounterId() == null ? "" : diEx.getCounterId());
+                    item.put("counterName", diEx.getCounterName() == null ? "" : diEx.getCounterName());
                     item.put("anotherDepotId", diEx.getAnotherDepotId() == null ? "" : diEx.getAnotherDepotId());
                     item.put("anotherDepotName", diEx.getAnotherDepotId() == null ? "" : diEx.getAnotherDepotName());
                     item.put("mType", diEx.getMaterialType());
