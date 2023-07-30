@@ -7,6 +7,7 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="warehousing" jdbcType="DECIMAL" property="warehousing" />
     <result column="truckage" jdbcType="DECIMAL" property="truckage" />
+    <result column="space" jdbcType="DECIMAL" property="space" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="fax" jdbcType="VARCHAR" property="fax" />
@@ -77,7 +78,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, address, warehousing, truckage, type, telephone, fax, sort, remark, principal, enabled,
+    id, name, address, warehousing, truckage, space, type, telephone, fax, sort, remark, principal, enabled,
     tenant_id, delete_Flag, is_default
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.DepotExample" resultMap="BaseResultMap">
@@ -112,12 +113,12 @@
   </delete>
   <insert id="insert" parameterType="com.jsh.erp.datasource.entities.Depot">
     insert into jsh_depot (id, name, address, 
-      warehousing, truckage, type, telephone, fax,
+      warehousing, truckage, space, type, telephone, fax,
       sort, remark, principal, 
       enabled, tenant_id, delete_Flag, 
       is_default)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{warehousing,jdbcType=DECIMAL}, #{truckage,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
+      #{warehousing,jdbcType=DECIMAL}, #{truckage,jdbcType=DECIMAL},  #{space,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
       #{telephone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR},
       #{sort,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{principal,jdbcType=BIGINT}, 
       #{enabled,jdbcType=BIT}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}, 
@@ -140,6 +141,9 @@
       </if>
       <if test="truckage != null">
         truckage,
+      </if>
+      <if test="space != null">
+        space,
       </if>
       <if test="type != null">
         type,
@@ -187,6 +191,9 @@
       </if>
       <if test="truckage != null">
         #{truckage,jdbcType=DECIMAL},
+      </if>
+      <if test="space != null">
+        #{space,jdbcType=DECIMAL},
       </if>
       <if test="type != null">
         #{type,jdbcType=INTEGER},
@@ -244,6 +251,9 @@
       <if test="record.truckage != null">
         truckage = #{record.truckage,jdbcType=DECIMAL},
       </if>
+      <if test="record.space != null">
+        space = #{record.space,jdbcType=DECIMAL},
+      </if>
       <if test="record.type != null">
         type = #{record.type,jdbcType=INTEGER},
       </if>
@@ -286,6 +296,7 @@
       address = #{record.address,jdbcType=VARCHAR},
       warehousing = #{record.warehousing,jdbcType=DECIMAL},
       truckage = #{record.truckage,jdbcType=DECIMAL},
+      space = #{record.space,jdbcType=DECIMAL},
       type = #{record.type,jdbcType=INTEGER},
       telephone = #{record.telephone,jdbcType=VARCHAR},
       fax = #{record.fax,jdbcType=VARCHAR},
@@ -314,6 +325,9 @@
       </if>
       <if test="truckage != null">
         truckage = #{truckage,jdbcType=DECIMAL},
+      </if>
+      <if test="space != null">
+        space = #{space,jdbcType=DECIMAL},
       </if>
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
@@ -354,6 +368,7 @@
       address = #{address,jdbcType=VARCHAR},
       warehousing = #{warehousing,jdbcType=DECIMAL},
       truckage = #{truckage,jdbcType=DECIMAL},
+      space = #{space,jdbcType=DECIMAL},
       type = #{type,jdbcType=INTEGER},
       telephone = #{telephone,jdbcType=VARCHAR},
       fax = #{fax,jdbcType=VARCHAR},

@@ -1,7 +1,10 @@
 package com.jsh.erp.datasource.entities;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class Depot {
     private Long id;
 
@@ -12,6 +15,8 @@ public class Depot {
     private BigDecimal warehousing;
 
     private BigDecimal truckage;
+
+    private BigDecimal space;
 
     private String telephone;
 
