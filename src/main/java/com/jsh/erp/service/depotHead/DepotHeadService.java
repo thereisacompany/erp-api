@@ -892,17 +892,32 @@ public class DepotHeadService {
                                       HttpServletRequest request) throws Exception {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
-        String subType = depotHead.getSubType();
-        //结算账户校验
-        if("采购".equals(subType) || "采购退货".equals(subType) || "销售".equals(subType) || "销售退货".equals(subType)) {
-            if (StringUtil.isEmpty(depotHead.getAccountIdList()) && depotHead.getAccountId() == null) {
-                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ACCOUNT_FAILED_CODE,
-                        String.format(ExceptionConstants.DEPOT_HEAD_ACCOUNT_FAILED_MSG));
+        if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
+            if(depotHead.getDefaultNumber().contains("QTRK")) {
+                depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_IN);
+            } else if (depotHead.getDefaultNumber().contains("QTCK")) {
+                depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
             }
         }
-        //欠款校验
-        if("采购退货".equals(subType) || "销售退货".equals(subType)) {
-            checkDebtByParam(beanJson, depotHead);
+        String subType = depotHead.getSubType();
+        if(subType == null||subType.isEmpty()) {
+            if(depotHead.getDefaultNumber().contains("QTRK")) {
+                depotHead.setSubType(BusinessConstants.DEPOTHEAD_SUBTYPE_IN);
+            } else if (depotHead.getDefaultNumber().contains("QTCK")) {
+                depotHead.setSubType(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT);
+            }
+        } else {
+            //结算账户校验
+            if ("采购".equals(subType) || "采购退货".equals(subType) || "销售".equals(subType) || "销售退货".equals(subType)) {
+                if (StringUtil.isEmpty(depotHead.getAccountIdList()) && depotHead.getAccountId() == null) {
+                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ACCOUNT_FAILED_CODE,
+                            String.format(ExceptionConstants.DEPOT_HEAD_ACCOUNT_FAILED_MSG));
+                }
+            }
+            //欠款校验
+            if ("采购退货".equals(subType) || "销售退货".equals(subType)) {
+                checkDebtByParam(beanJson, depotHead);
+            }
         }
         //判断用户是否已经登录过，登录过不再处理
         User userInfo=userService.getCurrentUser();
