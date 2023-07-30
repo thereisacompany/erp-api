@@ -28,6 +28,7 @@
     <result column="length" jdbcType="DECIMAL" property="length" />
     <result column="width" jdbcType="DECIMAL" property="width" />
     <result column="high" jdbcType="DECIMAL" property="high" />
+    <result column="base" jdbcType="DECIMAL" property="base" />
     <result column="volume" jdbcType="DECIMAL" property="volume" />
     <result column="warehousetype" jdbcType="VARCHAR" property="warehousetype" />
     <result column="warehousefee" jdbcType="INTEGER" property="warehousefee" />
@@ -94,7 +95,7 @@
     id, category_id, name, mfrs, model, standard, color, unit, remark, img_name, unit_id, 
     expiry_num, weight, enabled, other_field1, other_field2, other_field3, enable_serial_number, 
     enable_batch_number, tenant_id, delete_flag, manufacturer, manufacturertype,
-    length, width, high, volume, warehousetype, warehousefee
+    length, width, high, base, volume, warehousetype, warehousefee
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.MaterialExample" resultMap="BaseResultMap">
     select
@@ -134,7 +135,7 @@
       weight, enabled, other_field1, 
       other_field2, other_field3, enable_serial_number, 
       enable_batch_number, tenant_id, delete_flag, manufacturer, manufacturertype,
-      length, width, high, volume, warehousetype, warehousefee
+      length, width, high, base, volume, warehousetype, warehousefee
       )
     values (#{id,jdbcType=BIGINT}, #{categoryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
       #{mfrs,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR}, 
@@ -144,7 +145,8 @@
       #{otherField2,jdbcType=VARCHAR}, #{otherField3,jdbcType=VARCHAR}, #{enableSerialNumber,jdbcType=VARCHAR}, 
       #{enableBatchNumber,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR},
       #{manufacturer,jdbcType=VARCHAR}, #{manufacturertype,jdbcType=VARCHAR}, #{length,jdbcType=DECIMAL}, #{width,jdbcType=DECIMAL},
-      #{high,jdbcType=DECIMAL}, #{volume,jdbcType=DECIMAL}, #{warehousetype,jdbcType=VARCHAR}, #{warehousefee,jdbcType=INTEGER}
+      #{high,jdbcType=DECIMAL}, #{base,jdbcType=DECIMAL}, #{volume,jdbcType=DECIMAL},
+    #{warehousetype,jdbcType=VARCHAR}, #{warehousefee,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Material">
@@ -227,6 +229,9 @@
       </if>
       <if test="high != null">
         high,
+      </if>
+      <if test="base != null">
+        base,
       </if>
       <if test="volume != null">
         volume,
@@ -316,6 +321,9 @@
       </if>
       <if test="high != null">
         #{high,jdbcType=DECIMAL},
+      </if>
+      <if test="base != null">
+        #{base,jdbcType=DECIMAL},
       </if>
       <if test="volume != null">
         #{volume,jdbcType=DECIMAL},
@@ -415,6 +423,9 @@
       <if test="record.high != null">
         high = #{record.high,jdbcType=DECIMAL},
       </if>
+      <if test="record.base != null">
+        base = #{record.base,jdbcType=DECIMAL},
+      </if>
       <if test="record.volume != null">
         volume = #{record.volume,jdbcType=DECIMAL},
       </if>
@@ -457,6 +468,7 @@
       length = #{record.length,jdbcType=DECIMAL},
       width = #{record.width,jdbcType=DECIMAL},
       high = #{record.high,jdbcType=DECIMAL},
+      base = #{record.base,jdbcType=DECIMAL},
       volume = #{record.volume,jdbcType=DECIMAL},
       warehousetype = #{record.warehousetype,jdbcType=VARCHAR},
       warehousefee = #{record.warehousefee,jdbcType=INTEGER}
@@ -542,6 +554,9 @@
       <if test="high != null">
         high = #{high,jdbcType=DECIMAL},
       </if>
+      <if test="base != null">
+        base = #{base,jdbcType=DECIMAL},
+      </if>
       <if test="volume != null">
         volume = #{volume,jdbcType=DECIMAL},
       </if>
@@ -581,6 +596,7 @@
       length = #{length,jdbcType=DECIMAL},
       width = #{width,jdbcType=DECIMAL},
       high = #{high,jdbcType=DECIMAL},
+      base = #{base,jdbcType=DECIMAL},
       volume = #{volume,jdbcType=DECIMAL},
       warehousetype = #{warehousetype,jdbcType=VARCHAR},
       warehousefee = #{warehousefee,jdbcType=INTEGER}
