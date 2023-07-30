@@ -555,6 +555,12 @@ public class DepotItemService {
                                 String.format(ExceptionConstants.DEPOT_HEAD_DEPOT_FAILED_MSG));
                     }
                 }
+                if (StringUtil.isExist(rowObj.get("counterId"))) {
+                    depotItem.setCounterId(rowObj.getLong("counterId"));
+                }
+                if (StringUtil.isExist(rowObj.get("counterName"))) {
+                    depotItem.setCounterName(rowObj.getString("counterName"));
+                }
                 if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
                     if (StringUtil.isExist(rowObj.get("anotherDepotId"))) {
                         if(rowObj.getLong("anotherDepotId").equals(rowObj.getLong("depotId"))) {

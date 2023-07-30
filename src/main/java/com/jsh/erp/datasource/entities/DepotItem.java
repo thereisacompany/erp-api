@@ -1,8 +1,11 @@
 package com.jsh.erp.datasource.entities;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
 public class DepotItem {
     private Long id;
 
@@ -31,6 +34,10 @@ public class DepotItem {
     private String remark;
 
     private Long depotId;
+
+    private Long counterId;
+
+    private String counterName;
 
     private Long anotherDepotId;
 
