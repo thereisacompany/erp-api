@@ -1,5 +1,9 @@
 package com.jsh.erp.datasource.vo;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaterialsListVo {
 
     private Long headerId;
@@ -15,7 +19,15 @@ public class MaterialsListVo {
     }
 
     public String getMaterialsList() {
-        return materialsList;
+        List<String> retList = new ArrayList<>();
+        String[] list = materialsList.split(",");
+        for(String str : list) {
+            String[] data = str.split("[|]");
+            double number = Double.parseDouble(data[1]);
+            retList.add(data[0] + "     *" + (int)number);
+        }
+
+        return String.join(",", retList);
     }
 
     public void setMaterialsList(String materialsList) {

@@ -22,6 +22,7 @@
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="emergency_phone" jdbcType="VARCHAR" property="emergencyPhone" />
     <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="license_plate" jdbcType="VARCHAR" property="licensePlate" />
     <result column="tax_num" jdbcType="VARCHAR" property="taxNum" />
     <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
     <result column="account_number" jdbcType="VARCHAR" property="accountNumber" />
@@ -90,7 +91,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, supplier, supplierall, taxid, contacts, phone_num, email, description, isystem, type, enabled, advance_in,
-    begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, emergency_phone, address,
+    begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, emergency_phone, address, license_plate,
     tax_num, bank_name, account_number, tax_rate, sort, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultMap="BaseResultMap">
@@ -129,7 +130,7 @@
       isystem, type, enabled, 
       advance_in, begin_need_get, begin_need_pay, 
       all_need_get, all_need_pay, fax, 
-      telephone, emergency_phone, address, tax_num,
+      telephone, emergency_phone, address, license_plate, tax_num,
       bank_name, account_number, tax_rate, 
       sort, tenant_id, delete_flag
       )
@@ -139,7 +140,8 @@
       #{isystem,jdbcType=TINYINT}, #{type,jdbcType=VARCHAR}, #{enabled,jdbcType=BIT}, 
       #{advanceIn,jdbcType=DECIMAL}, #{beginNeedGet,jdbcType=DECIMAL}, #{beginNeedPay,jdbcType=DECIMAL}, 
       #{allNeedGet,jdbcType=DECIMAL}, #{allNeedPay,jdbcType=DECIMAL}, #{fax,jdbcType=VARCHAR}, 
-      #{telephone,jdbcType=VARCHAR}, #{emergencyPhone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{taxNum,jdbcType=VARCHAR},
+      #{telephone,jdbcType=VARCHAR}, #{emergencyPhone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{licensePlate,jdbcType=VARCHAR}, #{taxNum,jdbcType=VARCHAR},
       #{bankName,jdbcType=VARCHAR}, #{accountNumber,jdbcType=VARCHAR}, #{taxRate,jdbcType=DECIMAL}, 
       #{sort,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
       )
@@ -206,6 +208,9 @@
       </if>
       <if test="address != null">
         address,
+      </if>
+      <if test="licensePlate != null">
+        license_plate,
       </if>
       <if test="taxNum != null">
         tax_num,
@@ -289,6 +294,9 @@
       </if>
       <if test="address != null">
         #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="licensePlate != null">
+        #{licensePlate,jdbcType=VARCHAR},
       </if>
       <if test="taxNum != null">
         #{taxNum,jdbcType=VARCHAR},
@@ -382,6 +390,9 @@
       <if test="record.address != null">
         address = #{record.address,jdbcType=VARCHAR},
       </if>
+      <if test="record.licensePlate != null">
+        license_plate = #{record.licensePlate,jdbcType=VARCHAR},
+      </if>
       <if test="record.taxNum != null">
         tax_num = #{record.taxNum,jdbcType=VARCHAR},
       </if>
@@ -430,6 +441,7 @@
       telephone = #{record.telephone,jdbcType=VARCHAR},
       emergency_phone = #{record.emergencyPhone,jdbcType=VARCHAR},
       address = #{record.address,jdbcType=VARCHAR},
+      license_plate = #{record.licensePlate,jdbcType=VARCHAR},
       tax_num = #{record.taxNum,jdbcType=VARCHAR},
       bank_name = #{record.bankName,jdbcType=VARCHAR},
       account_number = #{record.accountNumber,jdbcType=VARCHAR},
@@ -501,6 +513,9 @@
       <if test="address != null">
         address = #{address,jdbcType=VARCHAR},
       </if>
+      <if test="licensePlate != null">
+        license_plate = #{licensePlate,jdbcType=VARCHAR},
+      </if>
       <if test="taxNum != null">
         tax_num = #{taxNum,jdbcType=VARCHAR},
       </if>
@@ -546,6 +561,7 @@
       telephone = #{telephone,jdbcType=VARCHAR},
       emergency_phone = #{emergencyPhone,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
+      license_plate = #{licensePlate,jdbcType=VARCHAR},
       tax_num = #{taxNum,jdbcType=VARCHAR},
       bank_name = #{bankName,jdbcType=VARCHAR},
       account_number = #{accountNumber,jdbcType=VARCHAR},
