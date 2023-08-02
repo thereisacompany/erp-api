@@ -1,7 +1,10 @@
 package com.jsh.erp.datasource.entities;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class Material {
     private Long id;
 
@@ -54,6 +57,8 @@ public class Material {
     private BigDecimal width;
 
     private BigDecimal high;
+
+    private BigDecimal base;
 
     private BigDecimal volume;
 
