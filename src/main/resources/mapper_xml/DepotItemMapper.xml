@@ -138,7 +138,8 @@
       #{materialExtendId,jdbcType=BIGINT}, #{materialUnit,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, 
       #{operNumber,jdbcType=DECIMAL}, #{basicNumber,jdbcType=DECIMAL}, #{unitPrice,jdbcType=DECIMAL}, 
       #{purchaseUnitPrice,jdbcType=DECIMAL}, #{taxUnitPrice,jdbcType=DECIMAL}, #{allPrice,jdbcType=DECIMAL}, 
-      #{remark,jdbcType=VARCHAR}, #{depotId,jdbcType=BIGINT}, #{anotherDepotId,jdbcType=BIGINT}, 
+      #{remark,jdbcType=VARCHAR}, #{depotId,jdbcType=BIGINT}, #{counterId,jdbcType=BIGINT},
+      #{counterName,jdbcType=BIGINT}, #{anotherDepotId,jdbcType=BIGINT},
       #{taxRate,jdbcType=DECIMAL}, #{taxMoney,jdbcType=DECIMAL}, #{taxLastMoney,jdbcType=DECIMAL}, 
       #{materialType,jdbcType=VARCHAR}, #{snList,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, 
       #{expirationDate,jdbcType=TIMESTAMP}, #{linkId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
@@ -271,6 +272,12 @@
       </if>
       <if test="depotId != null">
         #{depotId,jdbcType=BIGINT},
+      </if>
+      <if test="counterId != null">
+        #{counterId,jdbcType=BIGINT},
+      </if>
+      <if test="counterName != null">
+        #{counterName,jdbcType=VARCHAR},
       </if>
       <if test="anotherDepotId != null">
         #{anotherDepotId,jdbcType=BIGINT},
