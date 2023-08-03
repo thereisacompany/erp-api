@@ -19,7 +19,7 @@
         where ub.type='UserRole' and ub.key_id=tb.id limit 0,1) roleName
         from (
         select user.id, user.username, user.login_name, user.position, user.email, user.phonenum,
-        user.description, user.remark,user.isystem,org.id as orgaId,user.tenant_id,user.status,org.org_abr,
+        user.description, user.remark,user.isystem,org.id as orgaId,user.tenant_id,user.status,user.auth_list,org.org_abr,
         rel.user_blng_orga_dspl_seq,rel.id as orgaUserRelId
         FROM jsh_user user
         left join jsh_orga_user_rel rel on user.id=rel.user_id and ifnull(rel.delete_flag,'0') !='1'
@@ -55,7 +55,7 @@
         </if>
     </select>
     <select id="getUserListByUserNameOrLoginName" resultMap="com.jsh.erp.datasource.mappers.UserMapper.BaseResultMap">
-        select user.id, user.username, user.login_name, user.position, user.email, user.phonenum,
+        select user.id, user.username, user.login_name, user.position, user.email, user.phonenum, user.auth_list,
         user.description, user.remark,user.isystem
         FROM jsh_user user
         where 1=1
