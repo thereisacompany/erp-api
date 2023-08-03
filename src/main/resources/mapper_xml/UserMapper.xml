@@ -13,6 +13,7 @@
     <result column="ismanager" jdbcType="TINYINT" property="ismanager" />
     <result column="isystem" jdbcType="TINYINT" property="isystem" />
     <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="user_list" jdbcType="VARCHAR" property="userList" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -77,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, username, login_name, password, position, department, email, phonenum, ismanager, 
-    isystem, Status, description, remark, tenant_id
+    isystem, Status, user_list, description, remark, tenant_id
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.UserExample" resultMap="BaseResultMap">
     select
@@ -113,13 +114,13 @@
     insert into jsh_user (id, username, login_name, 
       password, position, department, 
       email, phonenum, ismanager, 
-      isystem, Status, description, 
+      isystem, Status, user_list, description,
       remark, tenant_id)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR}, #{ismanager,jdbcType=TINYINT}, 
-      #{isystem,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{description,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT})
+      #{isystem,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{userList, jdbcType=VARCHAR},
+      #{description,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.User">
     insert into jsh_user
@@ -156,6 +157,9 @@
       </if>
       <if test="status != null">
         Status,
+      </if>
+      <if test="userList != null">
+        user_list,
       </if>
       <if test="description != null">
         description,
@@ -254,6 +258,9 @@
       <if test="record.status != null">
         Status = #{record.status,jdbcType=TINYINT},
       </if>
+      <if test="record.userList != null">
+        user_list = #{record.userList,jdbcType=VARCHAR},
+      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
@@ -281,6 +288,7 @@
       ismanager = #{record.ismanager,jdbcType=TINYINT},
       isystem = #{record.isystem,jdbcType=TINYINT},
       Status = #{record.status,jdbcType=TINYINT},
+      user_list = #{record.userList,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
       tenant_id = #{record.tenantId,jdbcType=BIGINT}
@@ -321,6 +329,9 @@
       <if test="status != null">
         Status = #{status,jdbcType=TINYINT},
       </if>
+      <if test="userList != null">
+        user_list = #{userList,jdbcType=VARCHAR},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
@@ -345,6 +356,7 @@
       ismanager = #{ismanager,jdbcType=TINYINT},
       isystem = #{isystem,jdbcType=TINYINT},
       Status = #{status,jdbcType=TINYINT},
+      user_list = #{userList,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       tenant_id = #{tenantId,jdbcType=BIGINT}

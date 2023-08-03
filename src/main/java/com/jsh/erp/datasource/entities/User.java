@@ -1,5 +1,8 @@
 package com.jsh.erp.datasource.entities;
 
+import lombok.Data;
+
+@Data
 public class User {
     private Long id;
 
@@ -22,6 +25,8 @@ public class User {
     private Byte isystem;
 
     private Byte status;
+
+    private String authList;
 
     private String description;
 
