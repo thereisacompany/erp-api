@@ -3,6 +3,7 @@ package com.jsh.erp.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.jsh.erp.datasource.entities.Vehicle;
 import com.jsh.erp.service.vehicle.VehicleService;
+import com.jsh.erp.utils.BaseResponseInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/vehicle")
@@ -30,11 +33,24 @@ public class VehicleController {
     @GetMapping(value = "/getList")
     @ApiOperation(value = "取得車輛列表")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "ok", response = Vehicle.class, responseContainer = "List")})
-    public JSONArray getVehicleList(HttpServletRequest request) {
-        JSONArray dataArray = new JSONArray();
+    public BaseResponseInfo getVehicleList(HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+        try {
+            Map<String, Object> data = new HashMap<>();
+            List<Vehicle> dataList = vehicleService.getVehicle();
+            if (null != dataList) {
+                data.put("vehicleList", dataList);
+            }
+            res.code = 200;
+            res.data = data;
 
-        List<Vehicle> list = vehicleService.getVehicle();
-
-        return dataArray;
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取失敗";
+        }
+        return res;
     }
+
+
 }

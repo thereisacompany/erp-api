@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsh.erp.datasource.mappers.VehicleMapper">
+
+    <select id="selectByConditionVehicle" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="com.jsh.erp.datasource.mappers.VehicleMapper.BaseResultMap">
+        select *
+        FROM jsh_vehicle
+        where 1=1
+        <if test="license != null and license != ''">
+            <bind name="bindLicense" value="'%'+license+'%'"/>
+            and license_plate_number like #{bindLicense}
+        </if>
+        <if test="brand != null and brand != ''">
+            <bind name="bindBrand" value="'%'+brand+'%'"/>
+            and brand_model like #{bindBrand}
+        </if>
+        <if test="driver != null and driver != ''">
+            <bind name="bindDriver" value="'%'+driver+'%'"/>
+            and driver like #{bindDriver}
+        </if>
+        order by id desc
+        <if test="offset != null and rows != null">
+            limit #{offset},#{rows}
+        </if>
+    </select>
+
+    <select id="countsByVehicle" resultType="java.lang.Long">
+        SELECT
+        COUNT(id)
+        FROM jsh_vehicle
+        WHERE 1=1
+        <if test="license != null and license != ''">
+            <bind name="bindLicense" value="'%'+license+'%'"/>
+            and license_plate_number like #{bindLicense}
+        </if>
+        <if test="brand != null and brand != ''">
+            <bind name="bindBrand" value="'%'+brand+'%'"/>
+            and brand_model like #{bindBrand}
+        </if>
+        <if test="driver != null and driver != ''">
+            <bind name="bindDriver" value="'%'+driver+'%'"/>
+            and driver like #{bindDriver}
+        </if>
+    </select>
+</mapper>
