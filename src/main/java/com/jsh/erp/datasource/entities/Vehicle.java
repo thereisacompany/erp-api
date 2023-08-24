@@ -54,4 +54,7 @@ public class Vehicle {
 
     @ApiModelProperty(value = "歸屬(1:公司 2:私人 3:租用")
     private Integer ownership;
+
+    @JsonProperty("tenant_id")
+    private Long tenantId;
 }

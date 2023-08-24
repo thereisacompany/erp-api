@@ -16,6 +16,7 @@
         <result column="price" jdbcType="INTEGER" property="price" />
         <result column="status" jdbcType="TINYINT" property="status" />
         <result column="ownership" jdbcType="TINYINT" property="ownership" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     </resultMap>
 
     <sql id="Example_Where_Clause">
@@ -50,7 +51,7 @@
 
     <sql id="Base_Column_List">
         id, license_plate_number, brand_model, driver, color, mileage, engine_number, manufacture, test_date,
-        insurance_date, emissions, price, status, ownership
+        insurance_date, emissions, price, status, ownership, tenant_id
     </sql>
 
     <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="BaseResultMap">
@@ -96,13 +97,13 @@
             <if test="engineNumber != null">
                 engine_number,
             </if>
-            <if test="manufacture != null">
+            <if test="manufacture != null and !manufacture.isEmpty()">
                 manufacture,
             </if>
-            <if test="testDate != null">
+            <if test="testDate != null and !testDate.isEmpty()">
                 test_date,
             </if>
-            <if test="insuranceDate != null">
+            <if test="insuranceDate != null and !insuranceDate.isEmpty()">
                 insurance_date,
             </if>
             <if test="emissions != null">
@@ -116,6 +117,9 @@
             </if>
             <if test="ownership != null">
                 ownership,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -140,13 +144,13 @@
             <if test="engineNumber != null">
                 #{engineNumber,jdbcType=VARCHAR},
             </if>
-            <if test="manufacture != null">
+            <if test="manufacture != null and !manufacture.isEmpty()">
                 #{manufacture,jdbcType=DATE},
             </if>
-            <if test="testDate != null">
+            <if test="testDate != null and !testDate.isEmpty()">
                 #{testDate,jdbcType=DATE},
             </if>
-            <if test="insuranceDate != null">
+            <if test="insuranceDate != null and !insuranceDate.isEmpty()">
                 #{insuranceDate,jdbcType=DATE},
             </if>
             <if test="emissions != null">
@@ -160,6 +164,9 @@
             </if>
             <if test="ownership != null">
                 #{ownership,jdbcType=TINYINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
@@ -193,13 +200,34 @@
                 engine_number = #{engineNumber,jdbcType=VARCHAR},
             </if>
             <if test="manufacture != null">
-                manufacture = #{manufacture,jdbcType=DATE},
+                <choose>
+                    <when test="manufacture.isEmpty()">
+                        manufacture = null,
+                    </when>
+                    <otherwise>
+                        manufacture = #{manufacture,jdbcType=DATE},
+                    </otherwise>
+                </choose>
             </if>
             <if test="testDate != null">
-                test_date = #{testDate,jdbcType=DATE},
+                <choose>
+                    <when test="testDate.isEmpty()">
+                        test_date = null,
+                    </when>
+                    <otherwise>
+                        test_date = #{testDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
             </if>
             <if test="insuranceDate != null">
-                insurance_date = #{insuranceDate,jdbcType=DATE},
+                <choose>
+                    <when test="insuranceDate.isEmpty()">
+                        insurance_date = null,
+                    </when>
+                    <otherwise>
+                        insurance_date = #{insuranceDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
             </if>
             <if test="emissions != null">
                 emissions = #{emissions,jdbcType=INTEGER},
@@ -212,6 +240,9 @@
             </if>
             <if test="ownership != null">
                 ownership = #{ownership,jdbcType=TINYINT},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}

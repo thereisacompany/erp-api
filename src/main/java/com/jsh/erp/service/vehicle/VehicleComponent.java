@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service(value = "vehicle_component")
-@UserResource
+@VehicleResource
 public class VehicleComponent implements ICommonQuery {
 
     @Resource
