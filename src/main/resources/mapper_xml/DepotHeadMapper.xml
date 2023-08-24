@@ -274,10 +274,10 @@
       <if test="extrasArrival != null">
         extras_arrival,
       </if>
-      <if test="agreedDelivery != null">
+      <if test="agreedDelivery != null and !agreedDelivery.isEmpty()">
         agreed_delivery,
       </if>
-      <if test="delivered != null">
+      <if test="delivered != null and !delivered.isEmpty()">
         delivered,
       </if>
       <if test="status != null">
@@ -399,10 +399,10 @@
       <if test="extrasArrival != null">
         #{extrasArrival,jdbcType=TIMESTAMP},
       </if>
-      <if test="agreedDelivery != null">
+      <if test="agreedDelivery != null and !agreedDelivery.isEmpty()">
         #{agreedDelivery,jdbcType=TIMESTAMP},
       </if>
-      <if test="delivered != null">
+      <if test="delivered != null and !delivered.isEmpty()">
         #{delivered,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
@@ -534,10 +534,24 @@
         extras_arrival = #{record.extrasArrival,jdbcType=DATE},
       </if>
       <if test="record.agreedDelivery != null">
-        agreed_delivery = #{record.agreedDelivery,jdbcType=DATE},
+        <choose>
+          <when test="record.agreedDelivery.isEmpty()">
+            agreed_delivery = null,
+          </when>
+          <otherwise>
+            agreed_delivery = #{record.agreedDelivery,jdbcType=DATE},
+          </otherwise>
+        </choose>
       </if>
       <if test="record.delivered != null">
-        delivered = #{record.delivered,jdbcType=DATE},
+        <choose>
+          <when test="record.delivered.isEmpty()">
+            delivered = null,
+          </when>
+          <otherwise>
+            delivered = #{record.delivered,jdbcType=DATE},
+          </otherwise>
+        </choose>
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=VARCHAR},

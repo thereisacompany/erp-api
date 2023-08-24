@@ -23,7 +23,10 @@ public class MaterialsListVo {
         String[] list = materialsList.split(",");
         for(String str : list) {
             String[] data = str.split("[|]");
-            double number = Double.parseDouble(data[1]);
+            double number = 0.0;
+            if(data.length > 1) {
+                number = Double.parseDouble(data[1]);
+            }
             retList.add(data[0] + "     *" + (int)number);
         }
 
