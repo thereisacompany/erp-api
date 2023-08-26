@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsh.erp.datasource.mappers.VehicleMapper">
+    <resultMap id="BaseResultMap" type="com.jsh.erp.datasource.entities.Vehicle">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="license_plate_number" jdbcType="VARCHAR" property="licensePlateNumber" />
+        <result column="brand_model" jdbcType="VARCHAR" property="brandModel" />
+        <result column="driver" jdbcType="VARCHAR" property="driver" />
+        <result column="color" jdbcType="VARCHAR" property="color" />
+        <result column="mileage" jdbcType="INTEGER" property="mileage" />
+        <result column="engine_number" jdbcType="VARCHAR" property="engineNumber" />
+        <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
+        <result column="test_date" jdbcType="DATE" property="testDate" />
+        <result column="insurance_date" jdbcType="DATE" property="insuranceDate" />
+        <result column="emissions" jdbcType="INTEGER" property="emissions" />
+        <result column="price" jdbcType="INTEGER" property="price" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="ownership" jdbcType="TINYINT" property="ownership" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+        id, license_plate_number, brand_model, driver, color, mileage, engine_number, manufacture, test_date,
+        insurance_date, emissions, price, status, ownership, tenant_id
+    </sql>
+
+    <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jsh_vehicle
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jsh_vehicle
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Vehicle">
+        insert into jsh_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="licensePlateNumber != null">
+                license_plate_number,
+            </if>
+            <if test="brandModel != null">
+                brand_model,
+            </if>
+            <if test="driver != null">
+                driver,
+            </if>
+            <if test="color != null">
+                color,
+            </if>
+            <if test="mileage != null">
+                mileage,
+            </if>
+            <if test="engineNumber != null">
+                engine_number,
+            </if>
+            <if test="manufacture != null and !manufacture.isEmpty()">
+                manufacture,
+            </if>
+            <if test="testDate != null and !testDate.isEmpty()">
+                test_date,
+            </if>
+            <if test="insuranceDate != null and !insuranceDate.isEmpty()">
+                insurance_date,
+            </if>
+            <if test="emissions != null">
+                emissions,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="ownership != null">
+                ownership,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="licensePlateNumber != null">
+                #{licensePlateNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="brandModel != null">
+                #{brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="driver != null">
+                #{driver,jdbcType=VARCHAR},
+            </if>
+            <if test="color != null">
+                #{color,jdbcType=VARCHAR},
+            </if>
+            <if test="mileage != null">
+                #{mileage,jdbcType=INTEGER},
+            </if>
+            <if test="engineNumber != null">
+                #{engineNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacture != null and !manufacture.isEmpty()">
+                #{manufacture,jdbcType=DATE},
+            </if>
+            <if test="testDate != null and !testDate.isEmpty()">
+                #{testDate,jdbcType=DATE},
+            </if>
+            <if test="insuranceDate != null and !insuranceDate.isEmpty()">
+                #{insuranceDate,jdbcType=DATE},
+            </if>
+            <if test="emissions != null">
+                #{emissions,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="ownership != null">
+                #{ownership,jdbcType=TINYINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultType="java.lang.Long">
+        select count(*) from jsh_vehicle
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.jsh.erp.datasource.entities.Vehicle">
+        update jsh_vehicle
+        <set>
+            <if test="licensePlateNumber != null">
+                license_plate_number = #{licensePlateNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="brandModel != null">
+                brand_model = #{brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="driver != null">
+                driver = #{driver,jdbcType=VARCHAR},
+            </if>
+            <if test="color != null">
+                color = #{color,jdbcType=VARCHAR},
+            </if>
+            <if test="mileage != null">
+                mileage = #{mileage,jdbcType=INTEGER},
+            </if>
+            <if test="engineNumber != null">
+                engine_number = #{engineNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacture != null">
+                <choose>
+                    <when test="manufacture.isEmpty()">
+                        manufacture = null,
+                    </when>
+                    <otherwise>
+                        manufacture = #{manufacture,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="testDate != null">
+                <choose>
+                    <when test="testDate.isEmpty()">
+                        test_date = null,
+                    </when>
+                    <otherwise>
+                        test_date = #{testDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="insuranceDate != null">
+                <choose>
+                    <when test="insuranceDate.isEmpty()">
+                        insurance_date = null,
+                    </when>
+                    <otherwise>
+                        insurance_date = #{insuranceDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="emissions != null">
+                emissions = #{emissions,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="ownership != null">
+                ownership = #{ownership,jdbcType=TINYINT},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
