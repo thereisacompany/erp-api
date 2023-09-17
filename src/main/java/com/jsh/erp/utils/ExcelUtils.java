@@ -1,10 +1,16 @@
 package com.jsh.erp.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import jxl.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 import jxl.format.*;
 import jxl.write.Label;
@@ -16,6 +22,67 @@ import jxl.write.WritableWorkbook;
 public class ExcelUtils {
 
 	public static WritableFont arial14font = null;
+
+	public static File exportHAConfirm() {
+		File excelFile = null;
+
+		try {
+			FileInputStream templateFile = new FileInputStream("./excelFile/家電-空白確認書.xlsx");
+			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
+			XSSFSheet sheet = workbook.getSheetAt(0);
+
+			Row row1 = sheet.getRow(1);
+			row1.getCell(1).setCellValue("陳先生");
+			row1.getCell(3).setCellValue("0988123456");
+			row1.getCell(5).setCellValue("2023-09-10");
+			row1.getCell(7).setCellValue(1234567);
+
+			Row row2 = sheet.getRow(2);
+			row2.getCell(1).setCellValue("台中市南屯區");
+			row2.getCell(7).setCellValue("\u2713 扣庫存  \u25A1_____到貨");
+
+			Row row4 = sheet.getRow(4);
+			row4.getCell(0).setCellValue("一台大冰箱");
+			row4.getCell(4).setCellValue("1.0");
+			row4.getCell(6).setCellValue("\u2713 是 \u25A1 否");
+			row4.getCell(7).setCellValue("LG");
+			row4.getCell(8).setCellValue("QRCode");
+
+//			Row row5 = sheet.getRow(5);
+//			row5.getCell(0).setCellValue("一台大冰箱");
+//			row5.getCell(4).setCellValue("1.0");
+
+//			Row row6 = sheet.getRow(6);
+//			row6.getCell(0).setCellValue("一台大冰箱");
+//			row6.getCell(4).setCellValue("1.0");
+
+			Row row7 = sheet.getRow(7);
+			row7.getCell(1).setCellValue("memo");
+
+//			for (int i =1 ;i < 8;i++) {
+//				Row row = sheet.getRow(i);
+//				for(org.apache.poi.ss.usermodel.Cell cell : row) {
+//					System.out.println(cell.getRowIndex()+"--"+cell.getColumnIndex()+">>"+cell.toString());
+//				}
+//			}
+
+			FileOutputStream outputStream = new FileOutputStream("filled_excel1.xlsx");
+			workbook.write(outputStream);
+
+			excelFile = new File("filled_excel.xlsx");
+
+			outputStream.close();
+
+			templateFile.close();
+
+//			workbook.write();
+//			workbook.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+//			throw new RuntimeException(e);
+		}
+		return excelFile;
+	}
 
 	public static File exportObjects(String fileName, String[] names,
 			String title, List<String[]> objects) throws Exception {
@@ -251,5 +318,8 @@ public class ExcelUtils {
 	public static void main(String[] args) throws Exception {
 		String msg = "12345";
 		System.out.println(msg.indexOf("@"));
+
+
+		exportHAConfirm();
 	}
 }
