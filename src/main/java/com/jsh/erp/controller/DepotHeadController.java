@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.DecimalFormat;
@@ -524,6 +526,27 @@ public class DepotHeadController {
         } else {
             objectMap.put("rows", new ArrayList<>());
             return returnJson(objectMap, "查找不到数据", ErpInfo.OK.code);
+        }
+    }
+
+    @GetMapping(value = "/export")
+    @ApiOperation(value = "匯出(家電、冷氣)確認書")
+    public void export(@RequestParam(value = "配送單單號") String number,
+                       @RequestParam(value = "匯出類型(1 家電 2 冷氣)") int type,
+                       @RequestParam(value = "舊機是否回收 0 否 1 是") boolean isRecycle,
+                       @RequestParam(value = "舊機品牌", required = false) String brand,
+                       HttpServletRequest request, HttpServletResponse response) {
+        try {
+            DepotHeadVo4List dhl = new DepotHeadVo4List();
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(number);
+            if (list.size() == 1) {
+                dhl = list.get(0);
+            }
+
+            File file = ExcelUtils.exportHAConfirm(type, dhl, isRecycle, brand);
+            ExportExecUtil.showExec(file, file.getName(), response);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
