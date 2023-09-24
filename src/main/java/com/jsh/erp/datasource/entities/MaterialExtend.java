@@ -10,6 +10,10 @@ public class MaterialExtend {
 
     private String barCode;
 
+    private String barcode;
+
+    private String number;
+
     private String commodityUnit;
 
     private String sku;
@@ -58,6 +62,22 @@ public class MaterialExtend {
 
     public void setBarCode(String barCode) {
         this.barCode = barCode == null ? null : barCode.trim();
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode == null ? null : barcode.trim();
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number == null ? null : number.trim();
     }
 
     public String getCommodityUnit() {

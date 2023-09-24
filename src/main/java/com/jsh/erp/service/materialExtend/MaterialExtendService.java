@@ -145,6 +145,12 @@ public class MaterialExtendService {
                         materialExtend.setBarCode(tempInsertedJson.getString("barCode"));
                     }
                 }
+                if (StringUtils.isNotEmpty(tempInsertedJson.getString("barcode"))) {
+                    materialExtend.setBarcode(tempInsertedJson.getString("barcode"));
+                }
+                if (StringUtils.isNotEmpty(tempInsertedJson.getString("number"))) {
+                    materialExtend.setNumber(tempInsertedJson.getString("number"));
+                }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempInsertedJson.getString("commodityUnit"));
                 }
@@ -179,6 +185,12 @@ public class MaterialExtendService {
                     } else {
                         materialExtend.setBarCode(tempUpdatedJson.getString("barCode"));
                     }
+                }
+                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("barcode"))) {
+                    materialExtend.setBarcode(tempUpdatedJson.getString("barcode"));
+                }
+                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("number"))) {
+                    materialExtend.setNumber(tempUpdatedJson.getString("number"));
                 }
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempUpdatedJson.getString("commodityUnit"));

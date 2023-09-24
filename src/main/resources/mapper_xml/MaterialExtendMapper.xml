@@ -5,6 +5,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="material_id" jdbcType="BIGINT" property="materialId" />
     <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
     <result column="commodity_unit" jdbcType="VARCHAR" property="commodityUnit" />
     <result column="sku" jdbcType="VARCHAR" property="sku" />
     <result column="purchase_decimal" jdbcType="DECIMAL" property="purchaseDecimal" />
@@ -78,7 +80,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, material_id, bar_code, commodity_unit, sku, purchase_decimal, commodity_decimal, 
+    id, material_id, bar_code, barcode, number, commodity_unit, sku, purchase_decimal, commodity_decimal,
     wholesale_decimal, low_decimal, default_flag, create_time, create_serial, update_serial, 
     update_time, tenant_id, delete_Flag
   </sql>
@@ -113,13 +115,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.jsh.erp.datasource.entities.MaterialExtend">
-    insert into jsh_material_extend (id, material_id, bar_code, 
+    insert into jsh_material_extend (id, material_id, bar_code, barcode, number,
       commodity_unit, sku, purchase_decimal, 
       commodity_decimal, wholesale_decimal, low_decimal, 
       default_flag, create_time, create_serial, 
       update_serial, update_time, tenant_id, 
       delete_Flag)
-    values (#{id,jdbcType=BIGINT}, #{materialId,jdbcType=BIGINT}, #{barCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{materialId,jdbcType=BIGINT}, #{barCode,jdbcType=VARCHAR},
+      #{barcode,jdbcType=VARCHAR},#{number,jdbcType=VARCHAR},
       #{commodityUnit,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{purchaseDecimal,jdbcType=DECIMAL}, 
       #{commodityDecimal,jdbcType=DECIMAL}, #{wholesaleDecimal,jdbcType=DECIMAL}, #{lowDecimal,jdbcType=DECIMAL}, 
       #{defaultFlag,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createSerial,jdbcType=VARCHAR}, 
@@ -137,6 +140,12 @@
       </if>
       <if test="barCode != null">
         bar_code,
+      </if>
+      <if test="barcode != null">
+        barcode,
+      </if>
+      <if test="number != null">
+        number,
       </if>
       <if test="commodityUnit != null">
         commodity_unit,
@@ -187,6 +196,12 @@
       </if>
       <if test="barCode != null">
         #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null">
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=VARCHAR},
       </if>
       <if test="commodityUnit != null">
         #{commodityUnit,jdbcType=VARCHAR},
@@ -247,6 +262,12 @@
       <if test="record.barCode != null">
         bar_code = #{record.barCode,jdbcType=VARCHAR},
       </if>
+      <if test="record.barcode != null">
+        barcode = #{record.barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.number != null">
+        number = #{record.number,jdbcType=VARCHAR},
+      </if>
       <if test="record.commodityUnit != null">
         commodity_unit = #{record.commodityUnit,jdbcType=VARCHAR},
       </if>
@@ -296,6 +317,8 @@
     set id = #{record.id,jdbcType=BIGINT},
       material_id = #{record.materialId,jdbcType=BIGINT},
       bar_code = #{record.barCode,jdbcType=VARCHAR},
+      barcode = #{record.barcode,jdbcType=VARCHAR},
+      number = #{record.number,jdbcType=VARCHAR},
       commodity_unit = #{record.commodityUnit,jdbcType=VARCHAR},
       sku = #{record.sku,jdbcType=VARCHAR},
       purchase_decimal = #{record.purchaseDecimal,jdbcType=DECIMAL},
@@ -321,6 +344,12 @@
       </if>
       <if test="barCode != null">
         bar_code = #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null">
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=VARCHAR},
       </if>
       <if test="commodityUnit != null">
         commodity_unit = #{commodityUnit,jdbcType=VARCHAR},
@@ -368,6 +397,8 @@
     update jsh_material_extend
     set material_id = #{materialId,jdbcType=BIGINT},
       bar_code = #{barCode,jdbcType=VARCHAR},
+      barcode = #{barcode,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
       commodity_unit = #{commodityUnit,jdbcType=VARCHAR},
       sku = #{sku,jdbcType=VARCHAR},
       purchase_decimal = #{purchaseDecimal,jdbcType=DECIMAL},

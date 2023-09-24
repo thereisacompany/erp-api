@@ -24,6 +24,10 @@ public class MaterialVo4Unit extends Material{
 
     private String mBarCode;
 
+    private String barcode;
+
+    private String number;
+
     private String commodityUnit;
 
     private Long meId;
@@ -121,6 +125,22 @@ public class MaterialVo4Unit extends Material{
 
     public void setmBarCode(String mBarCode) {
         this.mBarCode = mBarCode;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getCommodityUnit() {

@@ -5,6 +5,8 @@
         <result column="unitName" jdbcType="VARCHAR" property="unitName" />
         <result column="categoryName" jdbcType="VARCHAR" property="categoryName" />
         <result column="bar_code" jdbcType="VARCHAR" property="mBarCode" />
+        <result column="barcode" jdbcType="VARCHAR" property="barcode" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
         <result column="commodity_unit" jdbcType="VARCHAR" property="commodityUnit" />
         <result column="purchase_decimal" jdbcType="VARCHAR" property="purchaseDecimal" />
         <result column="commodity_decimal" jdbcType="VARCHAR" property="commodityDecimal" />
@@ -36,7 +38,7 @@
     </resultMap>
 
     <select id="selectByConditionMaterial" parameterType="com.jsh.erp.datasource.entities.MaterialExample" resultMap="ResultMapList">
-        select m.*,u.name unitName, mc.name categoryName, me.bar_code,
+        select m.*,u.name unitName, mc.name categoryName, me.bar_code, me.barcode, me.number,
         me.purchase_decimal, me.commodity_decimal, me.wholesale_decimal,me.low_decimal,me.sku
         FROM jsh_material m
         left JOIN jsh_material_extend me on m.id = me.material_id and ifnull(me.delete_Flag,'0') !='1'
