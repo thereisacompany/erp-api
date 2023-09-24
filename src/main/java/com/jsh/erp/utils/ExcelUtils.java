@@ -1,31 +1,28 @@
 package com.jsh.erp.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
-import com.jsh.erp.datasource.vo.MaterialExtendVo4List;
 import jxl.*;
+import jxl.format.Alignment;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.format.*;
+import jxl.write.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
-import jxl.format.*;
-import jxl.write.Label;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import sun.util.resources.LocaleData;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.lang.Boolean;
 
 public class ExcelUtils {
 
