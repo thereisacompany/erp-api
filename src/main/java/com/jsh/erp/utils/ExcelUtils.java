@@ -97,7 +97,7 @@ public class ExcelUtils {
 			Row row7 = sheet.getRow(7);
 			row7.getCell(1).setCellValue(item.getRemark());	// 配送備註
 
-			FileOutputStream outputStream = new FileOutputStream("filled_excel1.xlsx");
+			FileOutputStream outputStream = new FileOutputStream("filled_excel.xlsx");
 			workbook.write(outputStream);
 
 			excelFile = new File("filled_excel.xlsx");

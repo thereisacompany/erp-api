@@ -21,6 +21,7 @@ import com.jsh.erp.service.supplier.SupplierService;
 import com.jsh.erp.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -531,10 +532,10 @@ public class DepotHeadController {
 
     @GetMapping(value = "/export")
     @ApiOperation(value = "匯出(家電、冷氣)確認書")
-    public void export(@RequestParam(value = "配送單單號") String number,
-                       @RequestParam(value = "匯出類型(1 家電 2 冷氣)") int type,
-                       @RequestParam(value = "舊機是否回收 0 否 1 是") boolean isRecycle,
-                       @RequestParam(value = "舊機品牌", required = false) String brand,
+    public void export(@ApiParam(value = "配送單單號") @RequestParam(value = "number") String number,
+                       @ApiParam(value = "匯出類型(1 家電 2 冷氣)") @RequestParam(value = "type") int type,
+                       @ApiParam(value = "舊機是否回收 0 否 1 是") @RequestParam(value = "isRecycle") boolean isRecycle,
+                       @ApiParam(value = "舊機品牌") @RequestParam(value = "brand", required = false) String brand,
                        HttpServletRequest request, HttpServletResponse response) {
         try {
             DepotHeadVo4List dhl = new DepotHeadVo4List();

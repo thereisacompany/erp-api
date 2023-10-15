@@ -51,6 +51,8 @@ public class MaterialExtendController {
                     JSONObject item = new JSONObject();
                     item.put("id", md.getId());
                     item.put("barCode", md.getBarCode());
+                    item.put("barcode", md.getBarcode());
+                    item.put("number", md.getNumber());
                     item.put("commodityUnit", md.getCommodityUnit());
                     if(StringUtil.isNotEmpty(md.getSku())){
                         item.put("sku", md.getSku());

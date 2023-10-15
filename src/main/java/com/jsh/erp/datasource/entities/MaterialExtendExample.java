@@ -296,6 +296,8 @@ public class MaterialExtendExample {
             return (Criteria) this;
         }
 
+
+
         public Criteria andCommodityUnitIsNull() {
             addCriterion("commodity_unit is null");
             return (Criteria) this;

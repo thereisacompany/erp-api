@@ -238,6 +238,12 @@ public class MaterialExtendService {
                     materialExtend.setId(meList.get(i).getId());
                     if(i==0) {
                         materialExtend.setDefaultFlag("1"); //默认
+                        if (StringUtils.isNotEmpty(obj.getString("barcode"))) {
+                            materialExtend.setBarcode(obj.getString("barcode"));
+                        }
+                        if (StringUtils.isNotEmpty(obj.getString("number"))) {
+                            materialExtend.setNumber(obj.getString("number"));
+                        }
                     } else {
                         materialExtend.setDefaultFlag("0"); //非默认
                     }
