@@ -40,6 +40,7 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="purchase_status" jdbcType="VARCHAR" property="purchaseStatus" />
     <result column="link_number" jdbcType="VARCHAR" property="linkNumber" />
+    <result column="import_flag" jdbcType="VARCHAR" property="importFlag" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
   </resultMap>
@@ -107,7 +108,7 @@
     noti_number, taxid, buyer_name, receive_name, telephone, cellphone, address, remark,
     file_name, sales_man, account_id_list, account_money_list, discount, discount_money, 
     discount_last_money, other_money, deposit, main_arrival, extras_arrival, agreed_delivery, delivered,
-    status, purchase_status, link_number, tenant_id, delete_flag
+    status, purchase_status, link_number, import_flag, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="BaseResultMap">
     select
@@ -150,7 +151,7 @@
       account_id_list, account_money_list, discount, 
       discount_money, discount_last_money, other_money, 
       deposit, main_arrival, extras_arrival, agreed_delivery, delivered,
-      status, purchase_status, link_number, tenant_id, delete_flag
+      status, purchase_status, link_number,import_flag, tenant_id, delete_flag
       )
     values (#{id,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, #{subType,jdbcType=VARCHAR}, 
       #{defaultNumber,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -166,7 +167,7 @@
       #{deposit,jdbcType=DECIMAL}, #{mainArrival,jdbcType=DATE}, #{extrasArrival,jdbcType=DATE},
       #{agreedDelivery,jdbcType=DATE}, #{delivered,jdbcType=DATE},
       #{status,jdbcType=VARCHAR}, #{purchaseStatus,jdbcType=VARCHAR},
-      #{linkNumber,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
+      #{linkNumber,jdbcType=VARCHAR}, #{importFlag,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.DepotHead">
@@ -288,6 +289,9 @@
       </if>
       <if test="linkNumber != null">
         link_number,
+      </if>
+      <if test="importFlag != null">
+        import_flag,
       </if>
       <if test="tenantId != null">
         tenant_id,
@@ -413,6 +417,9 @@
       </if>
       <if test="linkNumber != null">
         #{linkNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="importFlag != null">
+        #{importFlag,jdbcType=VARCHAR},
       </if>
       <if test="tenantId != null">
         #{tenantId,jdbcType=BIGINT},
@@ -614,6 +621,7 @@
       status = #{record.status,jdbcType=VARCHAR},
       purchase_status = #{record.purchaseStatus,jdbcType=VARCHAR},
       link_number = #{record.linkNumber,jdbcType=VARCHAR},
+      import_flag = #{record.importFlag,jdbcType=VARCHAR},
       tenant_id = #{record.tenantId,jdbcType=BIGINT},
       delete_flag = #{record.deleteFlag,jdbcType=VARCHAR}
     <if test="_parameter != null">
@@ -737,6 +745,9 @@
       <if test="linkNumber != null">
         link_number = #{linkNumber,jdbcType=VARCHAR},
       </if>
+      <if test="importFlag != null">
+        import_flag = #{importFlag,jdbcType=VARCHAR},
+      </if>
       <if test="tenantId != null">
         tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
@@ -786,6 +797,7 @@
       status = #{status,jdbcType=VARCHAR},
       purchase_status = #{purchaseStatus,jdbcType=VARCHAR},
       link_number = #{linkNumber,jdbcType=VARCHAR},
+      import_flag = #{importFlag,jdbcType=VARCHAR},
       tenant_id = #{tenantId,jdbcType=BIGINT},
       delete_flag = #{deleteFlag,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}

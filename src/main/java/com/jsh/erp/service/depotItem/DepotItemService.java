@@ -19,7 +19,6 @@ import com.jsh.erp.service.role.RoleService;
 import com.jsh.erp.service.serialNumber.SerialNumberService;
 import com.jsh.erp.service.systemConfig.SystemConfigService;
 import com.jsh.erp.service.user.UserService;
-import com.jsh.erp.utils.QueryUtils;
 import com.jsh.erp.utils.StringUtil;
 import com.jsh.erp.utils.Tools;
 import org.slf4j.Logger;
@@ -390,7 +389,7 @@ public class DepotItemService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void saveDetials(String rows, Long headerId, String actionType, HttpServletRequest request) throws Exception{
+    public void saveDetails(String rows, Long headerId, String actionType, HttpServletRequest request) throws Exception{
         //查询单据主表信息
         DepotHead depotHead =depotHeadMapper.selectByPrimaryKey(headerId);
         //删除序列号和回收序列号

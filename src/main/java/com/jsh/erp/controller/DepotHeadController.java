@@ -6,41 +6,33 @@ import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
-import com.jsh.erp.datasource.entities.Supplier;
 import com.jsh.erp.datasource.vo.DepotHeadVo4InDetail;
 import com.jsh.erp.datasource.vo.DepotHeadVo4InOutMCount;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
 import com.jsh.erp.datasource.vo.DepotHeadVo4StatementAccount;
-import com.jsh.erp.exception.BusinessParamCheckingException;
-import com.jsh.erp.service.accountHead.AccountHeadService;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotHead.DepotHeadService;
-import com.jsh.erp.service.log.LogService;
 import com.jsh.erp.service.redis.RedisService;
-import com.jsh.erp.service.supplier.SupplierService;
 import com.jsh.erp.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
-import static com.jsh.erp.utils.Tools.getNow3;
 
 /**
  * @author ji-sheng-hua 752*718*920
@@ -549,5 +541,18 @@ public class DepotHeadController {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @PostMapping(value = "/importExcel")
+    @ApiOperation(value = "excel表格匯入出貨單")
+    public BaseResponseInfo importExcel(MultipartFile file,
+                                        HttpServletRequest request, HttpServletResponse response) throws Exception{
+        BaseResponseInfo res = new BaseResponseInfo();
+        try {
+            res = depotHeadService.importExcel(file, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 }

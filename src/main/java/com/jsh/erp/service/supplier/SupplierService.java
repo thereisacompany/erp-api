@@ -331,7 +331,7 @@ public class SupplierService {
 
     public List<Supplier> findBySelectSup()throws Exception {
         SupplierExample example = new SupplierExample();
-        example.createCriteria().andTypeLike("供应商").andEnabledEqualTo(true)
+        example.createCriteria().andTypeLike("供應商").andEnabledEqualTo(true)
                 .andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         example.setOrderByClause("sort asc, id desc");
         List<Supplier> list=null;
@@ -345,7 +345,7 @@ public class SupplierService {
 
     public List<Supplier> findBySelectRetail()throws Exception {
         SupplierExample example = new SupplierExample();
-        example.createCriteria().andTypeLike("会员").andEnabledEqualTo(true)
+        example.createCriteria().andTypeLike("會員").andEnabledEqualTo(true)
                 .andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         example.setOrderByClause("sort asc, id desc");
         List<Supplier> list=null;
@@ -415,7 +415,7 @@ public class SupplierService {
     }
 
     public void importVendor(MultipartFile file, HttpServletRequest request) throws Exception{
-        String type = "供应商";
+        String type = "供應商";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
         Sheet src = workbook.getSheet(0);
         //'名称', '联系人', '手机号码', '联系电话', '电子邮箱', '传真', '期初应付', '纳税人识别号', '税率(%)', '开户行', '账号', '地址', '备注', '排序', '状态'
@@ -481,7 +481,7 @@ public class SupplierService {
     }
 
     public void importMember(MultipartFile file, HttpServletRequest request) throws Exception{
-        String type = "会员";
+        String type = "會員";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
         Sheet src = workbook.getSheet(0);
         //'名称', '联系人', '手机号码', '联系电话', '电子邮箱', '备注', '排序', '状态'
@@ -546,7 +546,7 @@ public class SupplierService {
     }
 
     public File exportExcel(List<Supplier> dataList, String type) throws Exception {
-        if("供应商".equals(type)) {
+        if("供應商".equals(type)) {
             return exportExcelVendorOrCustomer(dataList, type);
         } else if("客户".equals(type)) {
             return exportExcelVendorOrCustomer(dataList, type);
@@ -577,7 +577,7 @@ public class SupplierService {
     private File exportExcelVendorOrCustomer(List<Supplier> dataList, String type) throws Exception {
         String beginNeedStr = "";
         String allNeedStr = "";
-        if("供应商".equals(type)) {
+        if("供應商".equals(type)) {
             beginNeedStr = "期初应付";
             allNeedStr = "期末应付";
         } else if("客户".equals(type)) {
@@ -607,7 +607,7 @@ public class SupplierService {
                 if(("客户").equals(s.getType())) {
                     sum = sum.add(beginNeedGet);
                     s.setAllNeedGet(sum);
-                } else if(("供应商").equals(s.getType())) {
+                } else if(("供應商").equals(s.getType())) {
                     sum = sum.add(beginNeedPay);
                     s.setAllNeedPay(sum);
                 }
@@ -621,7 +621,7 @@ public class SupplierService {
                 if(("客户").equals(s.getType())) {
                     objs[6] = s.getBeginNeedGet() == null? "" : s.getBeginNeedGet().toString();
                     objs[7] = s.getAllNeedGet() == null? "" : s.getAllNeedGet().toString();
-                } else if(("供应商").equals(s.getType())) {
+                } else if(("供應商").equals(s.getType())) {
                     objs[6] = s.getBeginNeedPay() == null? "" : s.getBeginNeedPay().toString();
                     objs[7] = s.getAllNeedPay() == null? "" : s.getAllNeedPay().toString();
                 }

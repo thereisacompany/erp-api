@@ -85,6 +85,8 @@ public class DepotHead {
 
     private String linkNumber;
 
+    private String importFlag;
+
     private Long tenantId;
 
     private String deleteFlag;

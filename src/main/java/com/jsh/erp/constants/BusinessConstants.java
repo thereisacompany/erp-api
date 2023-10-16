@@ -40,7 +40,7 @@ public class BusinessConstants {
     public static final String DEPOTHEAD_TYPE_IN = "入庫";
     public static final String DEPOTHEAD_SUBTYPE_IN = "進貨單";
     public static final String DEPOTHEAD_TYPE_OUT = "出庫";
-    public static final String DEPOTHEAD_SUBTYPE_OUT = "出貨單";
+    public static final String DEPOTHEAD_SUBTYPE_OUT = "配送單";
     public static final String DEPOTHEAD_TYPE_OTHER = "其它";
     /**
      * 付款类型 payType //现付/预付款
