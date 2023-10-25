@@ -46,6 +46,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
@@ -54,6 +57,12 @@ import static com.jsh.erp.utils.Tools.getNow3;
 @Service
 public class DepotHeadService {
     private Logger logger = LoggerFactory.getLogger(DepotHeadService.class);
+
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy HH:mm:ss");
+    private static DateTimeFormatter formatterChange = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private static DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("M/d/yy");
+    private static DateTimeFormatter formatterChangeDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Resource
     private DepotHeadMapper depotHeadMapper;
@@ -1317,7 +1326,7 @@ public class DepotHeadService {
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
             Sheet materialData = workbook.getSheet(1); // 商品資料
-            for (int i = 2; i < mainData.getRows(); i++) {
+            for (int i = 1; i < mainData.getRows(); i++) {
                 JSONObject beanJson = new JSONObject();
                 String excelNum = ExcelUtils.getContent(mainData, i, 0); //excel單號
 
@@ -1327,12 +1336,29 @@ public class DepotHeadService {
                 if(supplier.isPresent()) {
                     organId = supplier.get().getId();
                 }
-                String operTime = ExcelUtils.getContent(mainData, i, 2)
-                        .concat(" ").concat(ExcelUtils.getContent(mainData, i, 3)); // 出庫時間
+                String date = ExcelUtils.getContent(mainData, i, 2);
+                String time = ExcelUtils.getContent(mainData, i, 3);
+                if(custom.isEmpty() && date.isEmpty() && time.isEmpty()) {
+                    continue;
+                }
+
+                String operTime = LocalDateTime.parse(date.concat(" ").concat(time), formatter).format(formatterChange); // 出庫時間
                 String mainArrival = ExcelUtils.getContent(mainData, i, 4); // 主商品到貨日
+                if(!mainArrival.isEmpty()) {
+                    mainArrival = LocalDate.parse(mainArrival, formatterDate).format(formatterChangeDate);
+                }
                 String extrasArrival = ExcelUtils.getContent(mainData, i, 5); // 贈品到貨日
+                if(!extrasArrival.isEmpty()) {
+                    extrasArrival = LocalDate.parse(extrasArrival, formatterDate).format(formatterChangeDate);
+                }
                 String agreedDelivery = ExcelUtils.getContent(mainData, i, 6); // 約配日
+                if(!agreedDelivery.isEmpty()) {
+                    agreedDelivery = LocalDate.parse(agreedDelivery, formatterDate).format(formatterChangeDate);
+                }
                 String delivered = ExcelUtils.getContent(mainData, i, 7); // 配達日
+                if(!delivered.isEmpty()) {
+                    delivered = LocalDate.parse(delivered, formatterDate).format(formatterChangeDate);
+                }
                 String notiNumber = ExcelUtils.getContent(mainData, i, 8); // 通知單號
                 String taxId = ExcelUtils.getContent(mainData, i, 9); // 買家統編
                 String buyerName = ExcelUtils.getContent(mainData, i, 10); // 買家名稱
@@ -1359,10 +1385,10 @@ public class DepotHeadService {
                 beanJson.put("extrasArrival", extrasArrival);
                 beanJson.put("agreedDelivery", agreedDelivery);
                 beanJson.put("delivered", delivered);
-                beanJson.put("tenantId", 63);
+//                beanJson.put("tenantId", 63);
 
                 JSONArray ary = new JSONArray();
-                for(int j = 2; j < materialData.getRows();j++) {
+                for(int j = 1; j < materialData.getRows();j++) {
                     String excelMaterialNum = ExcelUtils.getContent(materialData, j, 0); //excel單號
                     if (excelNum.equals(excelMaterialNum)) {
                         JSONObject obj = new JSONObject();
@@ -1374,6 +1400,9 @@ public class DepotHeadService {
                         String gold = ExcelUtils.getContent(materialData, j, 6); // 金額
                         String remark2 = ExcelUtils.getContent(materialData, j, 7); // 備註
 
+                        if(materialName.isEmpty()) {
+                            continue;
+                        }
                         Optional<Material> material = materialList.stream().filter(m->m.getName().equals(materialName)).findFirst();
                         if(material.isPresent()) {
                             Long materialId = material.get().getId();
@@ -1418,5 +1447,17 @@ public class DepotHeadService {
         }
 
         return info;
+    }
+
+    public static void main(String[] args) {
+        String datetimeStr = "10/10/23 17:10:10";
+        String dateStr = "12/4/23";
+
+        System.out.println(">>>"+LocalDateTime.parse(datetimeStr, formatter).format(formatterChange));
+//        System.out.println(LocalDate.parse(dateStr));
+        System.out.println(">>>"+LocalDate.parse(dateStr, formatterDate));
+        System.out.println(">>>"+ LocalDate.parse(dateStr, formatterDate).format(formatterChangeDate));
+
+        String a = "【】";
     }
 }
