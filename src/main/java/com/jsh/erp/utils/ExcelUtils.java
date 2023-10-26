@@ -1,5 +1,6 @@
 package com.jsh.erp.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
 import jxl.*;
 import jxl.format.Alignment;
@@ -29,20 +30,22 @@ public class ExcelUtils {
 	public static WritableFont arial14font = null;
 
 	/**
-	 *
-	 * @param type 1 家電 2 冷氣
 	 * @param item
-	 * @param isRecycle 舊機是否回收
-	 * @param brandName 舊機品牌
 	 * @return
 	 */
-	public static File exportHAConfirm(int type, DepotHeadVo4List item, boolean isRecycle, String brandName) {
+	public static File exportHAConfirm(DepotHeadVo4List item) {
 		File excelFile = null;
 
+		System.out.println("exportHAConfirm item >>>"+item);
+
 		try {
-			String filePath = "./excelFile/家電-空白確認書.xlsx";
-			if(type == 2) { // 冷氣
-				filePath = "./excelFile/冷氣-安裝確認書.xlsx";
+			JSONObject json = JSONObject.parseObject(item.getRemark());
+
+			String filePath = "./excelFile/2023家電-安裝確認書.xlsx";
+			String outputName = "%s家電-安裝確認書.xlsx";
+			if(json.getString("confirm").contains("冷氣")) { // 冷氣
+				filePath = "./excelFile/2023冷氣-安裝確認書.xlsx";
+				outputName = "%s冷氣-安裝確認書.xlsx";
 			}
 			FileInputStream templateFile = new FileInputStream(filePath);
 			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
@@ -53,54 +56,54 @@ public class ExcelUtils {
 			row1.getCell(3).setCellValue(item.getCellphone());	// 電話
 			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
 			row1.getCell(7).setCellValue(item.getNumber());		// 客單編號
+			outputName = String.format(outputName, item.getNumber());
 
 			Row row2 = sheet.getRow(2);
 			row2.getCell(1).setCellValue(item.getAddress()); // 裝機地址
 			// 商品貨態
-			if(item.getMainArrival() == null ||item.getMainArrival().isEmpty()) {
-				row2.getCell(7).setCellValue("\u2611 扣庫存  \u2610_____到貨");
-			} else {
-				row2.getCell(7).setCellValue("\u2610 扣庫存  \u2611 "+item.getMainArrival()+" 到貨");
-			}
+//			if(item.getMainArrival() == null ||item.getMainArrival().isEmpty()) {
+//				row2.getCell(7).setCellValue("\u2611 扣庫存  \u2610_____到貨");
+//			} else {
+//				row2.getCell(7).setCellValue("\u2610 扣庫存  \u2611 "+item.getMainArrival()+" 到貨");
+//			}
+			// 出貨倉別
+			row2.getCell(7).setCellValue(item.getDepotList());
 
 			Row row4 = sheet.getRow(4);
+			//品號
+			if(!item.getMaterialNumber().isEmpty()) {
+				String[] n = item.getMaterialNumber().split("[|]");
+				String numStr = n[0].concat(n[1]);
+				row4.getCell(0).setCellValue(numStr);
+			}
+
 			String[] list = item.getMaterialsList().split(",");
 			if(list.length >= 1) {
 				String[] detail = list[0].split("[*]");
-				row4.getCell(0).setCellValue(detail[0]); // 商品型號
-				row4.getCell(4).setCellValue(detail[1]);        // 數量
+
+				row4.getCell(1).setCellValue(detail[0]);		// 商品型號
+				row4.getCell(4).setCellValue(detail[1]);		// 數量
 			}
 
-			if(list.length >= 2) {
-				Row row5 = sheet.getRow(5);
-				String[] detail = list[1].split("[*]");
-				row5.getCell(0).setCellValue(detail[0]);
-				row5.getCell(4).setCellValue(detail[1]);
-			}
+			// 安裝方式
+			row4.getCell(5).setCellValue(json.getString("install"));
 
-			if(list.length >= 3) {
-				Row row6 = sheet.getRow(6);
-				String[] detail = list[2].split("[*]");
-				row6.getCell(0).setCellValue(detail[0]);
-				row6.getCell(4).setCellValue(detail[1]);
-			}
-
-			if(isRecycle) {
+			if(json.getString("recycle").equals("是")) {
 				row4.getCell(6).setCellValue("\u2611 是 \u2610 否");	// 舊機回收
-				row4.getCell(7).setCellValue("LG");		// 舊機品牌
+//				row4.getCell(7).setCellValue("LG");		// 舊機品牌
 			} else {
 				row4.getCell(6).setCellValue("\u2610 是 \u2611 否");	// 舊機回收
 			}
 
-			row4.getCell(8).setCellValue("QRCode");	// QRCode
+			row4.getCell(7).setCellValue("QRCode");	// QRCode
 
 			Row row7 = sheet.getRow(7);
-			row7.getCell(1).setCellValue(item.getRemark());	// 配送備註
+			row7.getCell(1).setCellValue(json.getString("memo"));	// 配送備註
 
-			FileOutputStream outputStream = new FileOutputStream("filled_excel.xlsx");
+			FileOutputStream outputStream = new FileOutputStream(outputName);
 			workbook.write(outputStream);
 
-			excelFile = new File("filled_excel.xlsx");
+			excelFile = new File(outputName);
 
 			outputStream.close();
 
@@ -349,21 +352,28 @@ public class ExcelUtils {
 
 		DepotHeadVo4List item = new DepotHeadVo4List();
 		item.setId(9l);
-		item.setReceiveName("");
-		item.setCellphone("");
+		item.setReceiveName("aaa");
+		item.setCellphone("09123456789");
 		ZonedDateTime dateTime = ZonedDateTime.parse("2023-08-24T06:13:57.000+0000",
 				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 		LocalDate localDate = dateTime.toLocalDate();
 		item.setCreateTime(java.sql.Date.valueOf(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 		item.setNumber("QTCK00000001387");
 		item.setAddress("");
-		LocalDateTime aDateTime = LocalDateTime.parse("2023-08-24 00:00:00.0",
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+		LocalDateTime aDateTime = LocalDateTime.parse("2023-08-24 00:00:00",
+				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 //		item.setMainArrival(aDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
 		item.setMaterialsList("大河 4-6坪一級變頻冷暖分離式空調 TAG-S28CYO/TAG-S28CYI     *1");
-		item.setRemark("test");
+		item.setDepotList("台北倉");
+		item.setMaterialNumber("25|00001");
+		JSONObject json = new JSONObject();
+		json.put("memo", "test");
+		json.put("confirm", "冷氣確認書");
+		json.put("install", "標準安裝");
+		json.put("recycle", "是");
+		item.setRemark(json.toJSONString());
 
 
-		exportHAConfirm(2, item, Boolean.TRUE, "日立");
+		exportHAConfirm(item);
 	}
 }

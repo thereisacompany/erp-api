@@ -19,6 +19,12 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String materialsList;
 
+    private Long categoryId;
+
+    private String materialNumber;
+
+    private String depotList;
+
     private String salesManStr;
 
     private String operTimeStr;
@@ -103,6 +109,30 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setMaterialsList(String materialsList) {
         this.materialsList = materialsList;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setMaterialNumber(String materialNumber) {
+        this.materialNumber = materialNumber;
+    }
+
+    public String getMaterialNumber() {
+        return materialNumber;
+    }
+
+    public String getDepotList() {
+        return depotList;
+    }
+
+    public void setDepotList(String depotList) {
+        this.depotList = depotList;
     }
 
     public String getSalesManStr() {

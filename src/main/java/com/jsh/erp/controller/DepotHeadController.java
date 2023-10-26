@@ -362,9 +362,14 @@ public class DepotHeadController {
         BaseResponseInfo res = new BaseResponseInfo();
         DepotHeadVo4List dhl = new DepotHeadVo4List();
         try {
-            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(number);
+            String[] numbers = new String[] {number};
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
             if(list.size() == 1) {
                 dhl = list.get(0);
+                if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+                    JSONObject json = JSONObject.parseObject(dhl.getRemark());
+                    dhl.setRemark(json.getString("memo"));
+                }
             }
             res.code = 200;
             res.data = dhl;
@@ -413,7 +418,8 @@ public class DepotHeadController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.addDepotHeadAndDetail(beanJson, rows, request);
+        String categoryName = body.getCategoryName();
+        depotHeadService.addDepotHeadAndDetail(beanJson, rows, categoryName, request);
         return result;
     }
 
@@ -430,7 +436,8 @@ public class DepotHeadController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.updateDepotHeadAndDetail(beanJson,rows,request);
+        String categoryName = body.getCategoryName();
+        depotHeadService.updateDepotHeadAndDetail(beanJson,rows, categoryName, request);
         return result;
     }
 
@@ -531,13 +538,38 @@ public class DepotHeadController {
                        HttpServletRequest request, HttpServletResponse response) {
         try {
             DepotHeadVo4List dhl = new DepotHeadVo4List();
-            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(number);
+            String[] numbers = new String[]{number};
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
             if (list.size() == 1) {
                 dhl = list.get(0);
             }
 
-            File file = ExcelUtils.exportHAConfirm(type, dhl, isRecycle, brand);
+            File file = ExcelUtils.exportHAConfirm(dhl);
             ExportExecUtil.showExec(file, file.getName(), response);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping(value = "/export/list")
+    @ApiOperation(value = "批次匯出確認書")
+    public void exportList(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
+                           HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+
+            for (DepotHeadVo4List depotHeadVo4List : list) {
+
+                File file = ExcelUtils.exportHAConfirm(depotHeadVo4List);
+                ExportExecUtil.showExec(file, file.getName(), response);
+                if(list.size() == 1) {
+                    ExportExecUtil.showExec(file, file.getName(), response);
+                } else {
+                    List<File> files = new ArrayList<>();
+                    ExportExecUtil.showExecs(files, response);
+                }
+            }
+
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -555,4 +587,6 @@ public class DepotHeadController {
         }
         return res;
     }
+
+
 }

@@ -153,7 +153,7 @@ public class DepotHeadService {
                 Map<String,BigDecimal> finishDepositMap = getFinishDepositMapByNumberList(numberList);
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<Long,String> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
                 Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
@@ -204,7 +204,7 @@ public class DepotHeadService {
                     }
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()));
+                        dh.setMaterialsList(materialsListMap.get(dh.getId()).getMaterialsList());
                     }
                     //商品总数量
                     if(materialCountListMap!=null) {
@@ -582,11 +582,11 @@ public class DepotHeadService {
         return result;
     }
 
-    public Map<Long,String> findMaterialsListMapByHeaderIdList(List<Long> idList)throws Exception {
+    public Map<Long, MaterialsListVo> findMaterialsListMapByHeaderIdList(List<Long> idList)throws Exception {
         List<MaterialsListVo> list = depotHeadMapperEx.findMaterialsListMapByHeaderIdList(idList);
-        Map<Long,String> materialsListMap = new HashMap<>();
+        Map<Long, MaterialsListVo> materialsListMap = new HashMap<>();
         for(MaterialsListVo materialsListVo : list){
-            materialsListMap.put(materialsListVo.getHeaderId(), materialsListVo.getMaterialsList());
+            materialsListMap.put(materialsListVo.getHeaderId(), materialsListVo);
         }
         return materialsListMap;
     }
@@ -784,7 +784,7 @@ public class DepotHeadService {
         return sum;
     }
 
-    public List<DepotHeadVo4List> getDetailByNumber(String number)throws Exception {
+    public List<DepotHeadVo4List> getDetailByNumber(String[] number)throws Exception {
         List<DepotHeadVo4List> resList = new ArrayList<DepotHeadVo4List>();
         try{
             Map<Long,String> personMap = personService.getPersonMap();
@@ -800,7 +800,7 @@ public class DepotHeadService {
                 //通过批量查询去构造map
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<Long,String> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
@@ -836,7 +836,11 @@ public class DepotHeadService {
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()));
+                        MaterialsListVo vo = materialsListMap.get(dh.getId());
+                        dh.setMaterialsList(vo.getMaterialsList());
+                        dh.setCategoryId(vo.getCategoryId());
+                        dh.setMaterialNumber(vo.getMaterialNumber());
+                        dh.setDepotList(vo.getDepotList());
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
                     resList.add(dh);
@@ -910,7 +914,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void addDepotHeadAndDetail(String beanJson, String rows,
+    public void addDepotHeadAndDetail(String beanJson, String rows, String categoryName,
                                       HttpServletRequest request) throws Exception {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
@@ -919,6 +923,11 @@ public class DepotHeadService {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_IN);
             } else if (depotHead.getDefaultNumber().contains("QTCK")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
+                // TODO categoryName
+                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
+                json.put("confirm", categoryName);
+                json.put("memo", depotHead.getRemark());
+                depotHead.setRemark(json.toJSONString());
             }
         }
         String subType = depotHead.getSubType();
@@ -1016,7 +1025,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void updateDepotHeadAndDetail(String beanJson, String rows,HttpServletRequest request)throws Exception {
+    public void updateDepotHeadAndDetail(String beanJson, String rows, String categoryName, HttpServletRequest request)throws Exception {
         /**更新单据主表信息*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         //获取之前的金额数据
@@ -1059,6 +1068,11 @@ public class DepotHeadService {
                             String.format(ExceptionConstants.DEPOT_HEAD_DEPOSIT_OVER_PRE_MSG));
                 }
             }
+        }
+        if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+            JSONObject json = JSONObject.parseObject(depotHead.getRemark());
+            json.put("confirm", categoryName);
+            depotHead.setRemark(json.toJSONString());
         }
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
@@ -1251,7 +1265,7 @@ public class DepotHeadService {
                     idList.add(dh.getId());
                 }
                 //通过批量查询去构造map
-                Map<Long,String> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getChangeAmount() != null) {
                         dh.setChangeAmount(dh.getChangeAmount().abs());
@@ -1293,7 +1307,7 @@ public class DepotHeadService {
                     dh.setDebt(needDebt.subtract(allBillDebt).subtract(finishDebt));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()));
+                        dh.setMaterialsList(materialsListMap.get(dh.getId()).getMaterialsList());
                     }
                     resList.add(dh);
                 }
@@ -1432,7 +1446,8 @@ public class DepotHeadService {
                 }
 
                 String rows = ary.toJSONString();
-                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request);
+                // TODO categoryName
+                addDepotHeadAndDetail(beanJson.toJSONString(), rows, "", request);
             }
 
             Long endTime = System.currentTimeMillis();
@@ -1449,7 +1464,7 @@ public class DepotHeadService {
         return info;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String datetimeStr = "10/10/23 17:10:10";
         String dateStr = "12/4/23";
 

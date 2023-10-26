@@ -1,6 +1,5 @@
 package com.jsh.erp.datasource.vo;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +8,12 @@ public class MaterialsListVo {
     private Long headerId;
 
     private String materialsList;
+
+    private Long categoryId;
+
+    private String materialNumber;
+
+    private String depotList;
 
     public Long getHeaderId() {
         return headerId;
@@ -35,5 +40,29 @@ public class MaterialsListVo {
 
     public void setMaterialsList(String materialsList) {
         this.materialsList = materialsList;
+    }
+
+    public String getDepotList() {
+        return depotList;
+    }
+
+    public void setDepotList(String depotList) {
+        this.depotList = depotList;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getMaterialNumber() {
+        return materialNumber;
+    }
+
+    public void setMaterialNumber(String materialNumber) {
+        this.materialNumber = materialNumber;
     }
 }
