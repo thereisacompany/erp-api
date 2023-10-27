@@ -558,16 +558,18 @@ public class DepotHeadController {
         try {
             List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
 
+            List<File> files = new ArrayList<>();
             for (DepotHeadVo4List depotHeadVo4List : list) {
 
                 File file = ExcelUtils.exportHAConfirm(depotHeadVo4List);
-                ExportExecUtil.showExec(file, file.getName(), response);
                 if(list.size() == 1) {
                     ExportExecUtil.showExec(file, file.getName(), response);
                 } else {
-                    List<File> files = new ArrayList<>();
-                    ExportExecUtil.showExecs(files, response);
+                    files.add(file);
                 }
+            }
+            if(!files.isEmpty()) {
+                ExportExecUtil.showExecs(files, response);
             }
 
         }catch (Exception e) {
