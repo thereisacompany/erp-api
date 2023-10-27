@@ -296,7 +296,10 @@ public class MaterialExtendExample {
             return (Criteria) this;
         }
 
-
+        public  Criteria andNumberEqualto(String value) {
+            addCriterion("number =", value, "number");
+            return (Criteria) this;
+        }
 
         public Criteria andCommodityUnitIsNull() {
             addCriterion("commodity_unit is null");

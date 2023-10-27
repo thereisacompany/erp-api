@@ -398,6 +398,18 @@ public class MaterialExtendService {
         return materialExtend;
     }
 
+    public MaterialExtend getInfoByNumber(String number) {
+        MaterialExtend materialExtend = new MaterialExtend();
+        MaterialExtendExample example = new MaterialExtendExample();
+        example.createCriteria().andNumberEqualto(number)
+                .andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
+        List<MaterialExtend> list = materialExtendMapper.selectByExample(example);
+        if(list!=null && list.size()>0) {
+            materialExtend = list.get(0);
+        }
+        return materialExtend;
+    }
+
     /**
      * 查询某个商品里面被清除的条码信息
      * @param barCodeList
