@@ -1,5 +1,6 @@
 package com.jsh.erp.controller;
 
+import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.sequence.SequenceService;
 import com.jsh.erp.utils.BaseResponseInfo;
@@ -39,7 +40,7 @@ public class SequenceController {
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<String, Object>();
         try {
-            String number = sequenceService.buildOnlyNumber();
+            String number = sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
             map.put("defaultNumber", number);
             res.code = 200;
             res.data = map;

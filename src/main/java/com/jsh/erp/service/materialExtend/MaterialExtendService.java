@@ -90,9 +90,10 @@ public class MaterialExtendService {
         } else {
             meArr = new JSONArray();
             if("insert".equals(type)) {
-                JSONObject barCodeJson = new JSONObject();
-                barCodeJson.put("barCode", getMaxBarCode());
-                meArr.add(barCodeJson);
+                JSONObject json = new JSONObject();
+                json.put("barCode", getMaxBarCode());
+                json.put("number",);
+                meArr.add(json);
             }
         }
         JSONArray insertedJson = new JSONArray();
@@ -436,4 +437,6 @@ public class MaterialExtendService {
             return "1000";
         }
     }
+
+
 }

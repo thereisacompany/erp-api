@@ -76,12 +76,12 @@ public class SequenceService {
      * 创建一个唯一的序列号
      * */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public String buildOnlyNumber()throws Exception{
+    public String buildOnlyNumber(String seqName)throws Exception{
         Long buildOnlyNumber=null;
         synchronized (this){
             try{
-                sequenceMapperEx.updateBuildOnlyNumber(); //编号+1
-                buildOnlyNumber= sequenceMapperEx.getBuildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
+                sequenceMapperEx.updateBuildOnlyNumber(seqName); //编号+1
+                buildOnlyNumber= sequenceMapperEx.getBuildOnlyNumber(seqName);
             }catch(Exception e){
                 JshException.writeFail(logger, e);
             }

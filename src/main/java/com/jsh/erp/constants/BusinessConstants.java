@@ -111,6 +111,8 @@ public class BusinessConstants {
     public static final String SEQ_TO_STRING_LESS_INSERT = "0";
     //单据编号
     public static final String DEPOT_NUMBER_SEQ = "depot_number_seq";
+    //商品品號
+    public static final String MATERIAL_NUMBER_SEQ = "material_number_seq";
     /**
      * 商品类别根目录id
      * */
