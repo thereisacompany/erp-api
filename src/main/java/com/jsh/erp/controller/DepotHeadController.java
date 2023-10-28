@@ -418,8 +418,7 @@ public class DepotHeadController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        String categoryName = body.getCategoryName();
-        depotHeadService.addDepotHeadAndDetail(beanJson, rows, categoryName, request);
+        depotHeadService.addDepotHeadAndDetail(beanJson, rows, request);
         return result;
     }
 
@@ -436,8 +435,7 @@ public class DepotHeadController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        String categoryName = body.getCategoryName();
-        depotHeadService.updateDepotHeadAndDetail(beanJson,rows, categoryName, request);
+        depotHeadService.updateDepotHeadAndDetail(beanJson,rows, request);
         return result;
     }
 

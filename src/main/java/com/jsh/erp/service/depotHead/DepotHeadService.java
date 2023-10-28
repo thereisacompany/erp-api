@@ -922,8 +922,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void addDepotHeadAndDetail(String beanJson, String rows, String categoryName,
-                                      HttpServletRequest request) throws Exception {
+    public void addDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request) throws Exception {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
@@ -953,9 +952,12 @@ public class DepotHeadService {
                 checkDebtByParam(beanJson, depotHead);
             }
         }
+
         // TODO categoryName
+        JSONArray rowArr = JSONArray.parseArray(rows);
+        JSONObject firstObj = rowArr.getJSONObject(0);
         JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
-        json.put("confirm", categoryName);
+        json.put("confirm", firstObj.getString("categoryName"));
         json.put("memo", depotHead.getRemark());
         depotHead.setRemark(json.toJSONString());
 
@@ -1034,7 +1036,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void updateDepotHeadAndDetail(String beanJson, String rows, String categoryName, HttpServletRequest request)throws Exception {
+    public void updateDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request)throws Exception {
         /**更新单据主表信息*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         //获取之前的金额数据
@@ -1080,7 +1082,9 @@ public class DepotHeadService {
         }
         if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
             JSONObject json = JSONObject.parseObject(depotHead.getRemark());
-            json.put("confirm", categoryName);
+            JSONArray rowArr = JSONArray.parseArray(rows);
+            JSONObject firstObj = rowArr.getJSONObject(0);
+            json.put("confirm", firstObj.getString("categoryName"));
             depotHead.setRemark(json.toJSONString());
         }
         try{
