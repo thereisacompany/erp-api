@@ -1441,7 +1441,8 @@ public class DepotHeadService {
                 json.put("memo", memo);
                 String remark = json.toJSONString(); // 備註
 
-                String number = sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
+                // QTRK00000001425
+                String number = String.format("QTRK%011d", sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ));
                 beanJson.put("number", number);
                 beanJson.put("defaultNumber", number);
                 beanJson.put("operTime", operTime);
