@@ -16,6 +16,7 @@ import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.log.LogService;
 import com.jsh.erp.service.redis.RedisService;
+import com.jsh.erp.service.sequence.SequenceService;
 import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.utils.StringUtil;
 import org.slf4j.Logger;
@@ -48,6 +49,8 @@ public class MaterialExtendService {
     private UserService userService;
     @Resource
     private RedisService redisService;
+    @Resource
+    private SequenceService sequenceService;
     
     public MaterialExtend getMaterialExtend(long id)throws Exception {
         MaterialExtend result=null;
@@ -92,7 +95,6 @@ public class MaterialExtendService {
             if("insert".equals(type)) {
                 JSONObject json = new JSONObject();
                 json.put("barCode", getMaxBarCode());
-                json.put("number",);
                 meArr.add(json);
             }
         }
@@ -151,6 +153,9 @@ public class MaterialExtendService {
                 }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("number"))) {
                     materialExtend.setNumber(tempInsertedJson.getString("number"));
+                } else {
+                    String num = String.format("%07d", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
+                    materialExtend.setNumber(num);
                 }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempInsertedJson.getString("commodityUnit"));
@@ -190,9 +195,9 @@ public class MaterialExtendService {
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("barcode"))) {
                     materialExtend.setBarcode(tempUpdatedJson.getString("barcode"));
                 }
-                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("number"))) {
-                    materialExtend.setNumber(tempUpdatedJson.getString("number"));
-                }
+//                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("number"))) {
+//                    materialExtend.setNumber(tempUpdatedJson.getString("number"));
+//                }
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempUpdatedJson.getString("commodityUnit"));
                 }
@@ -437,6 +442,5 @@ public class MaterialExtendService {
             return "1000";
         }
     }
-
 
 }
