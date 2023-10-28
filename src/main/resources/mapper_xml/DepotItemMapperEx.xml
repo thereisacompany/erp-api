@@ -39,6 +39,7 @@
     <resultMap extends="com.jsh.erp.datasource.mappers.DepotItemMapper.BaseResultMap" id="ResultByMaterial" type="com.jsh.erp.datasource.entities.DepotItemVo4WithInfoEx">
         <result column="MId" jdbcType="VARCHAR" property="MId" />
         <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+        <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="MName" jdbcType="VARCHAR" property="MName" />
         <result column="MMfrs" jdbcType="VARCHAR" property="MMfrs" />
         <result column="MModel" jdbcType="VARCHAR" property="MModel" />
@@ -249,7 +250,7 @@
     </select>
 
     <select id="findByAll" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
-        select m.id MId, me.bar_code, m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
+        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber, m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
         concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, m.unit_id, u.name unit_name, ifnull(me.purchase_decimal,0) purchase_decimal
         from jsh_material m
@@ -292,7 +293,7 @@
     </select>
 
     <select id="getListWithBugOrSale" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
-        select m.id MId, me.bar_code, m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
+        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber, m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
         concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, u.name unit_name
         from jsh_material m

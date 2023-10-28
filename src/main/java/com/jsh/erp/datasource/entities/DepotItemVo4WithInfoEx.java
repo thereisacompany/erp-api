@@ -8,6 +8,7 @@ public class DepotItemVo4WithInfoEx extends DepotItem{
 
     private String MName;
 
+    private String MNumber;
     private String MModel;
 
     private String MaterialUnit;
@@ -64,6 +65,14 @@ public class DepotItemVo4WithInfoEx extends DepotItem{
 
     public void setMName(String MName) {
         this.MName = MName;
+    }
+
+    public String getMNumber() {
+        return MNumber;
+    }
+
+    public void setMNumber(String MNumber) {
+        this.MNumber = MNumber;
     }
 
     public String getMModel() {

@@ -327,6 +327,7 @@ public class DepotItemController {
                     JSONObject item = new JSONObject();
                     Long mId = diEx.getMId();
                     item.put("barCode", diEx.getBarCode());
+                    item.put("materialNumber", diEx.getMNumber());
                     item.put("materialName", diEx.getMName());
                     item.put("materialModel", diEx.getMModel());
                     item.put("materialStandard", diEx.getMStandard());
@@ -335,7 +336,7 @@ public class DepotItemController {
                     item.put("materialOther", materialOther);
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
-                    item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多单位]" : diEx.getMaterialUnit());
+                    item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
                     BigDecimal prevSum = depotItemService.getStockByParamWithDepotList(depotList,mId,null,timeA);
                     Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList,mId,timeA,timeB);
                     BigDecimal inSum = intervalMap.get("inSum");
