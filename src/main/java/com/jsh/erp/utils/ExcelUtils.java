@@ -1,6 +1,12 @@
 package com.jsh.erp.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
 import jxl.*;
 import jxl.format.Alignment;
@@ -9,14 +15,15 @@ import jxl.format.BorderLineStyle;
 import jxl.format.VerticalAlignment;
 import jxl.format.*;
 import jxl.write.*;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,9 +32,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.lang.Boolean;
 
+import static org.apache.poi.ss.usermodel.Workbook.PICTURE_TYPE_PNG;
+
 public class ExcelUtils {
 
 	public static WritableFont arial14font = null;
+
+	public static final int EMU_PER_PIXEL = 9525;
+	public static final int EMU_PER_POINT = 12700;
 
 	/**
 	 * @param item
@@ -47,6 +59,7 @@ public class ExcelUtils {
 				filePath = "./excelFile/2023冷氣-安裝確認書.xlsx";
 				outputName = "%s冷氣-安裝確認書.xlsx";
 			}
+
 			FileInputStream templateFile = new FileInputStream(filePath);
 			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
 			XSSFSheet sheet = workbook.getSheetAt(0);
@@ -95,7 +108,34 @@ public class ExcelUtils {
 				row4.getCell(6).setCellValue("\u2610 是 \u2611 否");	// 舊機回收
 			}
 
-			row4.getCell(7).setCellValue("QRCode");	// QRCode
+			// TODO QRCode
+			String FILE_MIME_TYPE = "PNG";
+			int QRCODE_IMAGE_WIDTH = 70;
+			int QRCODE_IMAGE_HEIGHT = 70;
+			byte[] qrcode = generateQRCodeImage(QRCODE_IMAGE_WIDTH, QRCODE_IMAGE_HEIGHT, FILE_MIME_TYPE, item.getNumber());
+			// Set the asset no in the second cell and brand in the third cell
+
+			XSSFDrawing drawing = sheet.createDrawingPatriarch();
+
+			// Create an anchor to position the image in the first cell
+			ClientAnchor qrCodeAnchor = workbook.getCreationHelper().createClientAnchor();
+//                    ClientAnchor qrCodeAnchor = drawing.createAnchor(1000, 1000, 0, 0, 0 ,index ,1 ,index);
+//                    qrCodeAnchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
+			qrCodeAnchor.setCol1(7);
+//                    qrCodeAnchor.setCol2(1);
+			qrCodeAnchor.setRow1(4);
+//                    qrCodeAnchor.setRow2(index);
+			qrCodeAnchor.setDx1(75);
+//                    qrCodeAnchor.setDx2(500);
+			qrCodeAnchor.setDy1(60);
+//                    qrCodeAnchor.setDy2(500);
+
+			// Insert the QR Code image into the first cell
+			Picture qrCodePicture = drawing.createPicture(qrCodeAnchor,
+					workbook.addPicture(qrcode, PICTURE_TYPE_PNG));
+			qrCodePicture.resize();
+
+//			row4.getCell(7).setCellValue("QRCode");	// QRCode
 
 			Row row7 = sheet.getRow(7);
 			row7.getCell(1).setCellValue(json.getString("memo"));	// 配送備註
@@ -344,6 +384,24 @@ public class ExcelUtils {
 	public static File getTempFile(String fileName) {
 		String dir = System.getProperty("java.io.tmpdir"); // 获取系统临时目录
 		return new File(dir + File.separator + fileName);
+	}
+
+	public static byte[] generateQRCodeImage(int width, int height, String type, String contents) throws WriterException, IOException {
+
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();
+		Map<EncodeHintType, Object> hints = new HashMap<>();
+		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+		BitMatrix bitMatrix = qrCodeWriter.encode(contents, BarcodeFormat.QR_CODE, width, height, hints);
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		MatrixToImageWriter.writeToStream(bitMatrix, type, outputStream);
+
+		byte[] qrcode = outputStream.toByteArray();
+		outputStream.close();
+
+		return qrcode;
+//        qrcode = Base64.getEncoder().encodeToString(imageBytes);
+//        return Base64.getEncoder().encodeToString(imageBytes);
 	}
 
 	public static void main(String[] args) throws Exception {
