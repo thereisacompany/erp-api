@@ -280,7 +280,7 @@ public class ExceptionConstants {
     public static final String MATERIAL_SERIAL_NUMBERE_EMPTY_MSG = "抱歉，商品条码:%s的序列号不能为空";
     //商品库存不足
     public static final int MATERIAL_STOCK_NOT_ENOUGH_CODE = 8000004;
-    public static final String MATERIAL_STOCK_NOT_ENOUGH_MSG = "商品:%s库存不足";
+    public static final String MATERIAL_STOCK_NOT_ENOUGH_MSG = "商品:%s庫存不足";
     //商品条码重复
     public static final int MATERIAL_BARCODE_EXISTS_CODE = 8000005;
     public static final String MATERIAL_BARCODE_EXISTS_MSG = "商品条码:%s重复";
@@ -351,7 +351,7 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_DEPOT_FAILED_MSG = "仓库不能为空";
     //单据录入-调入仓库不能为空
     public static final int DEPOT_HEAD_ANOTHER_DEPOT_FAILED_CODE = 8500005;
-    public static final String DEPOT_HEAD_ANOTHER_DEPOT_FAILED_MSG = "调入仓库不能为空";
+    public static final String DEPOT_HEAD_ANOTHER_DEPOT_FAILED_MSG = "移入倉庫不能為空";
     //单据录入-明细不能为空
     public static final int DEPOT_HEAD_ROW_FAILED_CODE = 8500006;
     public static final String DEPOT_HEAD_ROW_FAILED_MSG = "单据明细不能为空";
@@ -366,7 +366,7 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_BACK_BILL_DEBT_FAILED_MSG = "抱歉，关联单据为空时不能欠款";
     //单据录入-调入仓库与原仓库不能重复
     public static final int DEPOT_HEAD_ANOTHER_DEPOT_EQUAL_FAILED_CODE = 8500010;
-    public static final String DEPOT_HEAD_ANOTHER_DEPOT_EQUAL_FAILED_MSG = "调入仓库与原仓库不能重复";
+    public static final String DEPOT_HEAD_ANOTHER_DEPOT_EQUAL_FAILED_MSG = "移入倉庫與原倉庫不能重覆";
     //单据删除-只有未审核的单据才能删除
     public static final int DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_CODE = 8500011;
     public static final String DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_MSG = "抱歉，只有未审核的单据才能删除";
@@ -394,6 +394,8 @@ public class ExceptionConstants {
     //单据录入-本次欠款金额不能大于关联单据实际的欠款
     public static final int DEPOT_HEAD_BACK_BILL_DEBT_OVER_CODE = 8500019;
     public static final String DEPOT_HEAD_BACK_BILL_DEBT_OVER_MSG = "抱歉，本次欠款金额不能大于关联单据实际的欠款";
+    public static final int DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE = 8500020;
+    public static final String DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG = "抱歉，只有移倉中的單據可以移倉完成";
     /**
      *  单据明细信息
      * type = 90

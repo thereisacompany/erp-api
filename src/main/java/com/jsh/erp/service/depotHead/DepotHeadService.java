@@ -570,7 +570,15 @@ public class DepotHeadService {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_MSG));
                 }
+            } else if("5".equals(status)) {
+                if("4".equals(depotHead.getSubType())) {
+                    dhIds.add(id);
+                } else {
+                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
+                            String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
+                }
             }
+            updateTransferDepotHeadStock(id);
         }
         if(dhIds.size()>0) {
             DepotHead depotHead = new DepotHead();
@@ -923,11 +931,6 @@ public class DepotHeadService {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_IN);
             } else if (depotHead.getDefaultNumber().contains("QTCK")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
-                // TODO categoryName
-                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
-                json.put("confirm", categoryName);
-                json.put("memo", depotHead.getRemark());
-                depotHead.setRemark(json.toJSONString());
             }
         }
         String subType = depotHead.getSubType();
@@ -950,6 +953,12 @@ public class DepotHeadService {
                 checkDebtByParam(beanJson, depotHead);
             }
         }
+        // TODO categoryName
+        JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
+        json.put("confirm", categoryName);
+        json.put("memo", depotHead.getRemark());
+        depotHead.setRemark(json.toJSONString());
+
         //判断用户是否已经登录过，登录过不再处理
         User userInfo=userService.getCurrentUser();
         depotHead.setCreator(userInfo==null?null:userInfo.getId());
@@ -1316,6 +1325,93 @@ public class DepotHeadService {
             JshException.readFail(logger, e);
         }
         return resList;
+    }
+
+    /**
+     * 新增移倉單
+     * @param beanJson
+     * @param rows
+     * @param request
+     * @throws Exception
+     */
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void addTransferDepotHead(String beanJson, String rows, HttpServletRequest request) throws Exception {
+        DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+        if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
+            if(depotHead.getDefaultNumber().contains("QTCK")) {
+                depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
+            }
+        }
+        String subType = depotHead.getSubType();
+        if(subType == null||subType.isEmpty()) {
+            if(depotHead.getDefaultNumber().contains("QTCK")) {
+                depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
+            }
+        }
+
+        //判断用户是否已经登录过，登录过不再处理
+        User userInfo=userService.getCurrentUser();
+        depotHead.setCreator(userInfo==null?null:userInfo.getId());
+        depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if(StringUtil.isEmpty(depotHead.getStatus())) {
+            depotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING);
+        }
+        depotHead.setPurchaseStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
+        depotHead.setPayType(depotHead.getPayType()==null?"現付":depotHead.getPayType());
+        try{
+            depotHeadMapper.insertSelective(depotHead);
+        }catch(Exception e){
+            JshException.writeFail(logger, e);
+        }
+        //根据单据编号查询单据id
+        DepotHeadExample dhExample = new DepotHeadExample();
+        dhExample.createCriteria().andNumberEqualTo(depotHead.getNumber()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
+        List<DepotHead> list = depotHeadMapper.selectByExample(dhExample);
+        if(list!=null) {
+            Long headId = list.get(0).getId();
+            /**入庫和出庫处理单据子表信息*/
+            depotItemService.saveTransferDetails(rows,headId, "add",request);
+        }
+        logService.insertLog("单据",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+    }
+
+    /**
+     * 更新移倉單
+     * @param beanJson
+     * @param rows
+     * @param request
+     * @throws Exception
+     */
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void updateTransferDepotHead(String beanJson, String rows, HttpServletRequest request)throws Exception {
+        /**更新单据主表信息*/
+        DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+        try{
+            depotHeadMapper.updateByPrimaryKeySelective(depotHead);
+        }catch(Exception e){
+            JshException.writeFail(logger, e);
+        }
+        /**入庫和出庫处理单据子表信息*/
+        depotItemService.saveTransferDetails(rows,depotHead.getId(), "update",request);
+        logService.insertLog("单据",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+    }
+
+    /**
+     * 移倉完成後，更新數量
+     * @param id
+     * @throws Exception
+     */
+    public void updateTransferDepotHeadStock(Long id) throws Exception {
+//        List<Long> ids = StringUtil.strToLongList(depotHeadIDs);
+//        for(Long id: ids) {
+            List<DepotItem> list = depotItemService.getListByHeaderId(id);
+            //更新當前庫存
+            depotItemService.updateCurrentStock(list.get(0));
+//        }
     }
 
     public BaseResponseInfo importExcel(MultipartFile file, HttpServletRequest request) {

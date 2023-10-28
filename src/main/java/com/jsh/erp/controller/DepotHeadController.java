@@ -201,13 +201,13 @@ public class DepotHeadController {
     }
 
     /**
-     * 调拨明细统计
+     * 移倉明細統計
      * @param currentPage
      * @param pageSize
      * @param number
      * @param materialParam
-     * @param depotIdF  调出仓库
-     * @param depotId  调入仓库
+     * @param depotIdF  移出倉庫
+     * @param depotId  移入倉庫
      * @param beginTime
      * @param endTime
      * @param subType
@@ -215,7 +215,7 @@ public class DepotHeadController {
      * @return
      */
     @GetMapping(value = "/findAllocationDetail")
-    @ApiOperation(value = "调拨明细统计")
+    @ApiOperation(value = "移倉明細統計")
     public BaseResponseInfo findallocationDetail(@RequestParam("currentPage") Integer currentPage,
                                                  @RequestParam("pageSize") Integer pageSize,
                                                  @RequestParam("number") String number,

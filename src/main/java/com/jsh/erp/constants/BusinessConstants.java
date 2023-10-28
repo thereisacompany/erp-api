@@ -81,6 +81,11 @@ public class BusinessConstants {
     public static final String PURCHASE_STATUS_SKIPED = "2";
     public static final String PURCHASE_STATUS_SKIPING = "3";
     /**
+     * 單據-移倉狀態 purchaseStatus '4'完成移倉、'5'移倉中
+     */
+    public static final String PURCHASE_STATUS_TRANSER_SKIPED = "4";
+    public static final String PURCHASE_STATUS_TRANSFER_SKIPING = "5";
+    /**
      * 出入庫分类
      *采购、采购退货、其它、零售、销售、调拨、盘点复盘等
      * */
@@ -93,7 +98,7 @@ public class BusinessConstants {
     public static final String SUB_TYPE_SALES_ORDER = "销售订单";
     public static final String SUB_TYPE_SALES = "销售";
     public static final String SUB_TYPE_SALES_RETURN = "销售退货";
-    public static final String SUB_TYPE_TRANSFER = "调拨";
+    public static final String SUB_TYPE_TRANSFER = "移倉";
     public static final String SUB_TYPE_CHECK_ENTER = "盘点录入";
     public static final String SUB_TYPE_REPLAY = "盘点复盘";
     public static final String SUB_TYPE_ASSEMBLE = "组装单";
