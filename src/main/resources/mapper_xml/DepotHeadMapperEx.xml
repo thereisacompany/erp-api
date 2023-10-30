@@ -583,7 +583,10 @@
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_Flag,'0') !='1'
         left join jsh_material_extend me on me.id=di.material_extend_id and ifnull(me.delete_Flag,'0') !='1'
         left join (select id,name as dName,delete_Flag from jsh_depot) d on d.id=di.depot_id and ifnull(d.delete_Flag,'0') !='1'
-        where dh.oper_time >=#{beginTime} and dh.oper_time &lt;=#{endTime}
+        where 1=1
+        <if test="beginTime != null and beginType != '' and endTime != null and endTime != ''">
+            dh.oper_time >=#{beginTime} and dh.oper_time &lt;=#{endTime}
+        </if>
         <if test="depotFList.size()>0">
             and di.depot_id in
             <foreach collection="depotFList" item="item" index="index" separator="," open="(" close=")">
@@ -596,7 +599,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test="subType != null">
+        <if test="subType != null and subType != ''">
             and dh.sub_type=#{subType}
         </if>
         <if test="number != null and number !=''">
@@ -619,7 +622,7 @@
             and (dh.remark like #{bindRemark} or di.remark like #{bindRemark})
         </if>
         and ifnull(dh.delete_flag,'0') !='1'
-        ORDER BY oper_time DESC,number desc
+        ORDER BY oper_time DESC, dh.number desc
     </select>
 
     <select id="getStatementAccount" resultType="com.jsh.erp.datasource.vo.DepotHeadVo4StatementAccount">
