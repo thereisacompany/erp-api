@@ -192,7 +192,7 @@ public interface DepotHeadMapperEx {
             @Param("endTime") String endTime);
 
     List<DepotHeadVo4List> getDetailByNumber(
-            @Param("number") String[] numbers);
+            @Param("numbers") String[] numbers);
 
     int batchDeleteDepotHeadByIds(@Param("updateTime") Date updateTime, @Param("updater") Long updater, @Param("ids") String ids[]);
 
