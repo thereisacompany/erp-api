@@ -367,8 +367,10 @@ public class DepotHeadController {
             if(list.size() == 1) {
                 dhl = list.get(0);
                 if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-                    JSONObject json = JSONObject.parseObject(dhl.getRemark());
-                    dhl.setRemark(json.getString("memo"));
+                    if(dhl.getRemark() != null) {
+                        JSONObject json = JSONObject.parseObject(dhl.getRemark());
+                        dhl.setRemark(json.getString("memo"));
+                    }
                 }
             }
             res.code = 200;

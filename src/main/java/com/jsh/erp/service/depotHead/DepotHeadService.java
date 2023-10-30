@@ -1082,11 +1082,14 @@ public class DepotHeadService {
             }
         }
         if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            JSONObject json = JSONObject.parseObject(depotHead.getRemark());
-            JSONArray rowArr = JSONArray.parseArray(rows);
-            JSONObject firstObj = rowArr.getJSONObject(0);
-            json.put("confirm", firstObj.getString("categoryName"));
-            depotHead.setRemark(json.toJSONString());
+            if(depotHead.getRemark() != null) {
+                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
+                JSONArray rowArr = JSONArray.parseArray(rows);
+                JSONObject firstObj = rowArr.getJSONObject(0);
+                json.put("confirm", firstObj.getString("categoryName"));
+                json.put("memo", depotHead.getRemark());
+                depotHead.setRemark(json.toJSONString());
+            }
         }
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
