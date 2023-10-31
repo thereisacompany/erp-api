@@ -41,6 +41,8 @@ public class DepotItem {
 
     private Long anotherDepotId;
 
+    private String anotherCounterName;
+
     private BigDecimal taxRate;
 
     private BigDecimal taxMoney;
@@ -179,6 +181,14 @@ public class DepotItem {
 
     public void setAnotherDepotId(Long anotherDepotId) {
         this.anotherDepotId = anotherDepotId;
+    }
+
+    public String getAnotherCounterName() {
+        return anotherCounterName;
+    }
+
+    public void setAnotherCounterName(String anotherCounterName) {
+        this.anotherCounterName = anotherCounterName;
     }
 
     public BigDecimal getTaxRate() {

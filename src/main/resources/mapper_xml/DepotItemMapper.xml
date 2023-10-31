@@ -19,6 +19,7 @@
     <result column="counter_id" jdbcType="BIGINT" property="counterId" />
     <result column="counter_name" jdbcType="VARCHAR" property="counterName" />
     <result column="another_depot_id" jdbcType="BIGINT" property="anotherDepotId" />
+    <result column="another_counter_name" jdbcType="VARCHAR" property="anotherCounterName" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="tax_money" jdbcType="DECIMAL" property="taxMoney" />
     <result column="tax_last_money" jdbcType="DECIMAL" property="taxLastMoney" />
@@ -139,7 +140,7 @@
       #{operNumber,jdbcType=DECIMAL}, #{basicNumber,jdbcType=DECIMAL}, #{unitPrice,jdbcType=DECIMAL}, 
       #{purchaseUnitPrice,jdbcType=DECIMAL}, #{taxUnitPrice,jdbcType=DECIMAL}, #{allPrice,jdbcType=DECIMAL}, 
       #{remark,jdbcType=VARCHAR}, #{depotId,jdbcType=BIGINT}, #{counterId,jdbcType=BIGINT},
-      #{counterName,jdbcType=BIGINT}, #{anotherDepotId,jdbcType=BIGINT},
+      #{counterName,jdbcType=VARCHAR}, #{anotherDepotId,jdbcType=BIGINT},#{anotherCounterName,jdbcType=VARCHAR},
       #{taxRate,jdbcType=DECIMAL}, #{taxMoney,jdbcType=DECIMAL}, #{taxLastMoney,jdbcType=DECIMAL}, 
       #{materialType,jdbcType=VARCHAR}, #{snList,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, 
       #{expirationDate,jdbcType=TIMESTAMP}, #{linkId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
@@ -198,6 +199,9 @@
       </if>
       <if test="anotherDepotId != null">
         another_depot_id,
+      </if>
+      <if test="anotherCounterName != null">
+        another_counter_name,
       </if>
       <if test="taxRate != null">
         tax_rate,
@@ -281,6 +285,9 @@
       </if>
       <if test="anotherDepotId != null">
         #{anotherDepotId,jdbcType=BIGINT},
+      </if>
+      <if test="anotherCounterName != null">
+        #{anotherCounterName,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
         #{taxRate,jdbcType=DECIMAL},
@@ -374,6 +381,9 @@
       <if test="record.anotherDepotId != null">
         another_depot_id = #{record.anotherDepotId,jdbcType=BIGINT},
       </if>
+      <if test="record.anotherCounterName != null">
+        another_counter_name = #{record.anotherCounterName,jdbcType=VARCHAR},
+      </if>
       <if test="record.taxRate != null">
         tax_rate = #{record.taxRate,jdbcType=DECIMAL},
       </if>
@@ -428,6 +438,7 @@
       counter_id = #{record.counterId,jdbcType=BIGINT},
       counter_name = #{record.counterName,jdbcType=VARCHAR},
       another_depot_id = #{record.anotherDepotId,jdbcType=BIGINT},
+      another_counter_name = #{record.anotherCounterName,jdbcType=VARCHAR},
       tax_rate = #{record.taxRate,jdbcType=DECIMAL},
       tax_money = #{record.taxMoney,jdbcType=DECIMAL},
       tax_last_money = #{record.taxLastMoney,jdbcType=DECIMAL},
@@ -493,6 +504,9 @@
       <if test="anotherDepotId != null">
         another_depot_id = #{anotherDepotId,jdbcType=BIGINT},
       </if>
+      <if test="anotherCounterName != null">
+        another_counter_name = #{anotherCounterName,jdbcType=VARCHAR},
+      </if>
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DECIMAL},
       </if>
@@ -544,6 +558,7 @@
       counter_id = #{counterId,jdbcType=BIGINT},
       counter_name = #{counterName,jdbcType=VARCHAR},
       another_depot_id = #{anotherDepotId,jdbcType=BIGINT},
+      another_counter_name = #{anotherCounterName,jdbcType=VARCHAR},
       tax_rate = #{taxRate,jdbcType=DECIMAL},
       tax_money = #{taxMoney,jdbcType=DECIMAL},
       tax_last_money = #{taxLastMoney,jdbcType=DECIMAL},

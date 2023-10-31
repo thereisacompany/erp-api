@@ -776,6 +776,9 @@ public class DepotItemService {
                         throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ANOTHER_DEPOT_FAILED_CODE,
                                 String.format(ExceptionConstants.DEPOT_HEAD_ANOTHER_DEPOT_FAILED_MSG));
                     }
+                    if(StringUtil.isExist(rowObj.get("anotherCounterName"))) {
+                        depotItem.setAnotherCounterName(rowObj.getString("anotherCounterName"));
+                    }
                 }
                 if (StringUtil.isExist(rowObj.get("taxRate"))) {
                     depotItem.setTaxRate(rowObj.getBigDecimal("taxRate"));
