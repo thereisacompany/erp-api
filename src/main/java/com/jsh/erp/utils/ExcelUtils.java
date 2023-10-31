@@ -86,10 +86,17 @@ public class ExcelUtils {
 
 			Row row4 = sheet.getRow(4);
 			//品號
-			if(!item.getMaterialNumber().isEmpty()) {
-				String[] n = item.getMaterialNumber().split("[|]");
-				String numStr = n[0].concat(n[1]);
-				row4.getCell(0).setCellValue(numStr);
+			if(item.getMaterialNumber() != null) {
+				if (!item.getMaterialNumber().isEmpty()) {
+					String[] n = item.getMaterialNumber().split("[|]");
+					String numStr = "0";
+					if(n.length > 1) {
+						numStr = n[0].concat(n[1]);
+					} else {
+						numStr = n[0];
+					}
+					row4.getCell(0).setCellValue(numStr);
+				}
 			}
 
 			String[] list = item.getMaterialsList().split(",");
