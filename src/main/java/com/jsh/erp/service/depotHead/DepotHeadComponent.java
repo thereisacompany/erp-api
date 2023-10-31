@@ -1,6 +1,7 @@
 package com.jsh.erp.service.depotHead;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.service.ICommonQuery;
 import com.jsh.erp.utils.Constants;
 import com.jsh.erp.utils.QueryUtils;
@@ -33,6 +34,11 @@ public class DepotHeadComponent implements ICommonQuery {
         String search = map.get(Constants.SEARCH);
         String type = StringUtil.getInfo(search, "type");
         String subType = StringUtil.getInfo(search, "subType");
+        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+            if(subType==null || (subType != null && subType.isEmpty())) {
+                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+            }
+        }
         String roleType = StringUtil.getInfo(search, "roleType");
         String hasDebt = StringUtil.getInfo(search, "hasDebt");
         String status = StringUtil.getInfo(search, "status");
