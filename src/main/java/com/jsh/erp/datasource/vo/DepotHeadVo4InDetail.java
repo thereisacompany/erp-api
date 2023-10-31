@@ -6,6 +6,8 @@ import java.util.Date;
 
 public class DepotHeadVo4InDetail {
 
+    private Long headerId;
+
     private String Number;
 
     private String barCode;
@@ -34,7 +36,11 @@ public class DepotHeadVo4InDetail {
 
     private String SName;
 
+    private Long SId;
+
     private String DName;
+
+    private Long DId;
 
     private String OperTime;
 
@@ -43,6 +49,14 @@ public class DepotHeadVo4InDetail {
     private String status;
 
     private Long tenantId;
+
+    public Long getHeaderId() {
+        return headerId;
+    }
+
+    public void setHeaderId(Long headerId) {
+        this.headerId = headerId;
+    }
 
     public String getNumber() {
         return Number;
@@ -156,12 +170,28 @@ public class DepotHeadVo4InDetail {
         this.SName = SName;
     }
 
+    public Long getSId() {
+        return SId;
+    }
+
+    public void setSId(Long SId) {
+        this.SId = SId;
+    }
+
     public String getDName() {
         return DName;
     }
 
     public void setDName(String DName) {
         this.DName = DName;
+    }
+
+    public Long getDId() {
+        return DId;
+    }
+
+    public void setDId(Long DId) {
+        this.DId = DId;
     }
 
     public String getOperTime() {
