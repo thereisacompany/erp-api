@@ -51,13 +51,15 @@ public class ExcelUtils {
 		System.out.println("exportHAConfirm item >>>"+item);
 
 		try {
-			JSONObject json = JSONObject.parseObject(item.getRemark());
+			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
 
 			String filePath = "./excelFile/2023家電-安裝確認書.xlsx";
 			String outputName = "%s家電-安裝確認書.xlsx";
-			if(json.getString("confirm").contains("冷氣")) { // 冷氣
-				filePath = "./excelFile/2023冷氣-安裝確認書.xlsx";
-				outputName = "%s冷氣-安裝確認書.xlsx";
+			if(remarkJson != null) {
+				if(remarkJson.getString("confirm").contains("冷氣")) { // 冷氣
+					filePath = "./excelFile/2023冷氣-安裝確認書.xlsx";
+					outputName = "%s冷氣-安裝確認書.xlsx";
+				}
 			}
 
 			FileInputStream templateFile = new FileInputStream(filePath);
@@ -99,13 +101,15 @@ public class ExcelUtils {
 			}
 
 			// 安裝方式
-			row4.getCell(5).setCellValue(json.getString("install"));
+			if(remarkJson != null) {
+				row4.getCell(5).setCellValue(remarkJson.getString("install"));
 
-			if(json.getString("recycle").equals("是")) {
-				row4.getCell(6).setCellValue("\u2611 是 \u2610 否");	// 舊機回收
+				if(remarkJson.getString("recycle").equals("是")) {
+					row4.getCell(6).setCellValue("\u2611 是 \u2610 否");	// 舊機回收
 //				row4.getCell(7).setCellValue("LG");		// 舊機品牌
-			} else {
-				row4.getCell(6).setCellValue("\u2610 是 \u2611 否");	// 舊機回收
+				} else {
+					row4.getCell(6).setCellValue("\u2610 是 \u2611 否");	// 舊機回收
+				}
 			}
 
 			// TODO QRCode
@@ -138,13 +142,15 @@ public class ExcelUtils {
 //			row4.getCell(7).setCellValue("QRCode");	// QRCode
 
 			Row row7 = sheet.getRow(7);
-			row7.getCell(1).setCellValue(json.getString("memo"));	// 配送備註
+			if(remarkJson != null) {
+				row7.getCell(1).setCellValue(remarkJson.getString("memo"));    // 配送備註
+			}
 
 			FileOutputStream outputStream = new FileOutputStream(outputName);
 			workbook.write(outputStream);
 
 			excelFile = new File(outputName);
-
+			System.out.println("excel file name >>>"+excelFile.getName());
 			outputStream.close();
 
 			templateFile.close();
