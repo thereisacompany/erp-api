@@ -1,6 +1,7 @@
 package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
 import com.jsh.erp.service.depotHead.DepotHeadService;
@@ -77,7 +78,7 @@ public class TransferWarehouseController {
                                  HttpServletRequest request) throws Exception{
         Map<String, Object> objectMap = new HashMap<>();
         String ids = jsonObject.getString("ids");
-        int res = depotHeadService.batchSetStatus("5", ids);
+        int res = depotHeadService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {

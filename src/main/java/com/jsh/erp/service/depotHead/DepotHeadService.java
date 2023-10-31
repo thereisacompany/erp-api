@@ -570,8 +570,8 @@ public class DepotHeadService {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_MSG));
                 }
-            } else if("5".equals(status)) {
-                if("4".equals(depotHead.getSubType())) {
+            } else if("4".equals(status)) {
+                if("5".equals(depotHead.getStatus())) {
                     dhIds.add(id);
                 } else {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
