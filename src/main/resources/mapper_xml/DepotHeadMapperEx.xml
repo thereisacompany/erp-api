@@ -531,7 +531,7 @@
     </select>
 
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
-        select di.id header_id, dh.number,me.bar_code, m.`name` MName,
+        select dh.id header_id, dh.number,me.bar_code, m.`name` MName,
         m.model,m.standard,di.unit_price,di.material_unit as mUnit,
         di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_name SCounter,
         d.dName DName, di.depot_id DId, di.counter_name DCounter,
