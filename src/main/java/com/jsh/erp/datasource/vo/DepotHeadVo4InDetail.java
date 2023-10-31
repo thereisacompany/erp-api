@@ -40,6 +40,8 @@ public class DepotHeadVo4InDetail {
 
     private String NewType;
 
+    private String status;
+
     private Long tenantId;
 
     public String getNumber() {
@@ -176,6 +178,14 @@ public class DepotHeadVo4InDetail {
 
     public void setNewType(String newType) {
         NewType = newType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getTenantId() {

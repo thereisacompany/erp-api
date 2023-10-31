@@ -28,6 +28,7 @@
         <result column="DName" jdbcType="VARCHAR" property="DName" />
         <result column="OperTime" jdbcType="VARCHAR" property="OperTime" />
         <result column="NewType" jdbcType="VARCHAR" property="NewType" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
     </resultMap>
 
     <resultMap id="ResultInOutMaterialCount" type="com.jsh.erp.datasource.vo.DepotHeadVo4InOutMCount">
@@ -526,7 +527,7 @@
 
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
         select dh.number,me.bar_code, m.`name` MName,m.model,m.standard,di.unit_price,di.material_unit as mUnit,di.oper_number,di.all_price,SName, d.dName DName,
-        date_format(dh.oper_time, '%Y-%m-%d') OperTime, concat(dh.sub_type,dh.type) as NewType, concat_ws('  ',dh.remark,di.remark) as newRemark
+        date_format(dh.oper_time, '%Y-%m-%d') OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, concat_ws('  ',dh.remark,di.remark) as newRemark
         from jsh_depot_head dh
         left join jsh_depot_item di on di.header_id=dh.id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_flag,'0') !='1'
