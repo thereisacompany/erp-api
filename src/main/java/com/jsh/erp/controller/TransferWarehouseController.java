@@ -62,7 +62,7 @@ public class TransferWarehouseController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.updateTransferDepotHead(beanJson,rows, request);
+        depotHeadService.updateTransferDepotHead(beanJson, rows, request);
         return result;
     }
 

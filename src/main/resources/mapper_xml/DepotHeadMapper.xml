@@ -638,10 +638,10 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.jsh.erp.datasource.entities.DepotHead">
     update jsh_depot_head
     <set>
-      <if test="type != null">
+      <if test="type != null and !type.isEmpty()">
         type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="subType != null">
+      <if test="subType != null and !subType.isEmpty()">
         sub_type = #{subType,jdbcType=VARCHAR},
       </if>
       <if test="defaultNumber != null">
@@ -656,13 +656,13 @@
       <if test="operTime != null">
         oper_time = #{operTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="organId != null">
+      <if test="organId != null and organId != ''">
         organ_id = #{organId,jdbcType=BIGINT},
       </if>
       <if test="creator != null">
         creator = #{creator,jdbcType=BIGINT},
       </if>
-      <if test="accountId != null">
+      <if test="accountId != null and accountId != ''">
         account_id = #{accountId,jdbcType=BIGINT},
       </if>
       <if test="changeAmount != null">
@@ -716,16 +716,16 @@
       <if test="accountMoneyList != null">
         account_money_list = #{accountMoneyList,jdbcType=VARCHAR},
       </if>
-      <if test="discount != null">
+      <if test="discount != null and discount != ''">
         discount = #{discount,jdbcType=DECIMAL},
       </if>
-      <if test="discountMoney != null">
+      <if test="discountMoney != null and discountMoney != ''">
         discount_money = #{discountMoney,jdbcType=DECIMAL},
       </if>
-      <if test="discountLastMoney != null">
+      <if test="discountLastMoney != null and discountLastMoney != ''">
         discount_last_money = #{discountLastMoney,jdbcType=DECIMAL},
       </if>
-      <if test="otherMoney != null">
+      <if test="otherMoney != null and otherMoney != ''">
         other_money = #{otherMoney,jdbcType=DECIMAL},
       </if>
       <if test="deposit != null">
