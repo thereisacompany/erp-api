@@ -27,8 +27,10 @@
         <result column="tax_last_money" jdbcType="DECIMAL" property="taxLastMoney" />
         <result column="SName" jdbcType="VARCHAR" property="SName" />
         <result column="SId" jdbcType="VARCHAR" property="SId" />
+        <result column="SCounter" jdbcType="VARCHAR" property="SCounter"/>
         <result column="DName" jdbcType="VARCHAR" property="DName" />
         <result column="DId" jdbcType="INTEGER" property="DId"/>
+        <result column="DCounter" jdbcType="VARCHAR" property="DCounter"/>
         <result column="OperTime" jdbcType="VARCHAR" property="OperTime" />
         <result column="NewType" jdbcType="VARCHAR" property="NewType" />
         <result column="status" jdbcType="VARCHAR" property="status" />
@@ -531,7 +533,8 @@
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
         select di.id header_id, dh.number,me.bar_code, m.`name` MName,
         m.model,m.standard,di.unit_price,di.material_unit as mUnit,
-        di.oper_number,di.all_price,SName, di.another_depot_id SId, d.dName DName, di.depot_id DId,
+        di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_name SCounter,
+        d.dName DName, di.depot_id DId, di.counter_name DCounter,
         dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, concat_ws('  ',dh.remark,di.remark) as newRemark
         from jsh_depot_head dh
         left join jsh_depot_item di on di.header_id=dh.id and ifnull(di.delete_flag,'0') !='1'

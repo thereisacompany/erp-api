@@ -38,9 +38,13 @@ public class DepotHeadVo4InDetail {
 
     private Long SId;
 
+    private String SCounter;
+
     private String DName;
 
     private Long DId;
+
+    private String DCounter;
 
     private String OperTime;
 
@@ -178,6 +182,14 @@ public class DepotHeadVo4InDetail {
         this.SId = SId;
     }
 
+    public String getSCounter() {
+        return SCounter;
+    }
+
+    public void setSCounter(String SCounter) {
+        this.SCounter = SCounter;
+    }
+
     public String getDName() {
         return DName;
     }
@@ -192,6 +204,14 @@ public class DepotHeadVo4InDetail {
 
     public void setDId(Long DId) {
         this.DId = DId;
+    }
+
+    public String getDCounter() {
+        return DCounter;
+    }
+
+    public void setDCounter(String DCounter) {
+        this.DCounter = DCounter;
     }
 
     public String getOperTime() {
