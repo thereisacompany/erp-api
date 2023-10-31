@@ -269,7 +269,7 @@
       <if test="deposit != null">
         deposit,
       </if>
-      <if test="mainArrival != null">
+      <if test="mainArrival != null and !mainArrival.isEmpty()">
         main_arrival,
       </if>
       <if test="extrasArrival != null">
@@ -397,7 +397,7 @@
       <if test="deposit != null">
         #{deposit,jdbcType=DECIMAL},
       </if>
-      <if test="mainArrival != null">
+      <if test="mainArrival != null and !mainArrival.isEmpty()">
         #{mainArrival,jdbcType=TIMESTAMP},
       </if>
       <if test="extrasArrival != null">
@@ -535,7 +535,14 @@
         deposit = #{record.deposit,jdbcType=DECIMAL},
       </if>
       <if test="record.mainArrival != null">
-        main_arrival = #{record.mainArrival,jdbcType=DATE},
+        <choose>
+          <when test="record.mainArrival.isEmpty()">
+            main_arrival = null,
+          </when>
+          <otherwise>
+            main_arrival = #{record.mainArrival,jdbcType=DATE},
+          </otherwise>
+        </choose>
       </if>
       <if test="record.extrasArrival != null">
         extras_arrival = #{record.extrasArrival,jdbcType=DATE},
@@ -724,16 +731,16 @@
       <if test="deposit != null">
         deposit = #{deposit,jdbcType=DECIMAL},
       </if>
-      <if test="mainArrival != null">
+      <if test="mainArrival != null and !mainArrival.isEmpty()">
         main_arrival = #{mainArrival,jdbcType=DATE},
       </if>
       <if test="extrasArrival != null">
         extras_arrival = #{extrasArrival,jdbcType=DATE},
       </if>
-      <if test="agreedDelivery != null">
+      <if test="agreedDelivery != null and !agreedDelivery.isEmpty()">
         agreed_delivery = #{agreedDelivery,jdbcType=DATE},
       </if>
-      <if test="delivered != null">
+      <if test="delivered != null and !delivered.isEmpty()">
         delivered = #{delivered,jdbcType=DATE},
       </if>
       <if test="status != null">
