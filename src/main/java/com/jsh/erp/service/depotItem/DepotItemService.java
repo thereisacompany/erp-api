@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DepotItemService {
@@ -389,7 +390,7 @@ public class DepotItemService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void saveDetails(String rows, Long headerId, String actionType, HttpServletRequest request) throws Exception{
+    public void saveDetails(String rows, Long headerId, String actionType, HttpServletRequest request, User userInfo) throws Exception{
         //查询单据主表信息
         DepotHead depotHead =depotHeadMapper.selectByPrimaryKey(headerId);
         //删除序列号和回收序列号
@@ -627,7 +628,7 @@ public class DepotItemService {
                 //更新当前库存
                 updateCurrentStock(depotItem);
                 //更新商品的价格
-                updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj);
+                updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj, userInfo);
             }
             //如果关联单据号非空则更新订单的状态,单据类型：采购入庫单或销售出庫单或盘点复盘单
 //            if(BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType())
@@ -975,7 +976,7 @@ public class DepotItemService {
      * @param rowObj
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void updateMaterialExtendPrice(Long meId, String subType, JSONObject rowObj) throws Exception {
+    public void updateMaterialExtendPrice(Long meId, String subType, JSONObject rowObj, User userInfo) throws Exception {
         if (StringUtil.isExist(rowObj.get("unitPrice"))) {
             BigDecimal unitPrice = rowObj.getBigDecimal("unitPrice");
             MaterialExtend materialExtend = new MaterialExtend();
@@ -989,7 +990,7 @@ public class DepotItemService {
             if(BusinessConstants.SUB_TYPE_RETAIL.equals(subType)) {
                 materialExtend.setCommodityDecimal(unitPrice);
             }
-            materialExtendService.updateMaterialExtend(materialExtend);
+            materialExtendService.updateMaterialExtend(materialExtend, userInfo);
         }
     }
 

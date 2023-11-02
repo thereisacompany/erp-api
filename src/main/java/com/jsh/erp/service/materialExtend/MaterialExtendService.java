@@ -216,7 +216,7 @@ public class MaterialExtendService {
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("lowDecimal"))) {
                     materialExtend.setLowDecimal(tempUpdatedJson.getBigDecimal("lowDecimal"));
                 }
-                this.updateMaterialExtend(materialExtend);
+                this.updateMaterialExtend(materialExtend, null);
             }
         }
         //处理条码的排序，基本单位排第一个
@@ -231,7 +231,7 @@ public class MaterialExtendService {
                 if(StringUtil.isExist(tempSortJson.get("defaultFlag"))) {
                     materialExtend.setDefaultFlag(tempSortJson.getString("defaultFlag"));
                 }
-                this.updateMaterialExtend(materialExtend);
+                this.updateMaterialExtend(materialExtend, null);
             }
         } else {
             //新增的时候将第一条记录设置为默认基本单位
@@ -253,7 +253,7 @@ public class MaterialExtendService {
                     } else {
                         materialExtend.setDefaultFlag("0"); //非默认
                     }
-                    this.updateMaterialExtend(materialExtend);
+                    this.updateMaterialExtend(materialExtend, null);
                 }
             }
         }
@@ -278,10 +278,14 @@ public class MaterialExtendService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public int updateMaterialExtend(MaterialExtend MaterialExtend) throws Exception{
-        User user = userService.getCurrentUser();
+    public int updateMaterialExtend(MaterialExtend MaterialExtend, User user) throws Exception{
+        if(user == null) {
+            user = userService.getCurrentUser();
+        }
         MaterialExtend.setUpdateTime(System.currentTimeMillis());
-        MaterialExtend.setUpdateSerial(user.getLoginName());
+        if(user != null) {
+            MaterialExtend.setUpdateSerial(user.getLoginName());
+        }
         int res =0;
         try{
             res= materialExtendMapper.updateByPrimaryKeySelective(MaterialExtend);

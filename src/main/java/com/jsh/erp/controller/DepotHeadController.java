@@ -420,7 +420,7 @@ public class DepotHeadController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.addDepotHeadAndDetail(beanJson, rows, request);
+        depotHeadService.addDepotHeadAndDetail(beanJson, rows, request, null);
         return result;
     }
 

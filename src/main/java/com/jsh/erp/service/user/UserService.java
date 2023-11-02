@@ -357,7 +357,11 @@ public class UserService {
      */
     public User getCurrentUser()throws Exception{
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"userId").toString());
+        Object obj = redisService.getObjectFromSessionByKey(request,"userId");
+        if(obj == null) {
+            return null;
+        }
+        Long userId = Long.parseLong(obj.toString());
         return getUser(userId);
     }
 

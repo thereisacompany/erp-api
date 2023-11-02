@@ -50,6 +50,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
 import static com.jsh.erp.utils.Tools.getNow3;
@@ -922,7 +923,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void addDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request) throws Exception {
+    public void addDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request, User userInfo) throws Exception {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
@@ -963,7 +964,9 @@ public class DepotHeadService {
         }
 
         //判断用户是否已经登录过，登录过不再处理
-        User userInfo=userService.getCurrentUser();
+        if(userInfo == null) {
+            userInfo = userService.getCurrentUser();
+        }
         depotHead.setCreator(userInfo==null?null:userInfo.getId());
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if(StringUtil.isEmpty(depotHead.getStatus())) {
@@ -1022,7 +1025,7 @@ public class DepotHeadService {
         if(list!=null) {
             Long headId = list.get(0).getId();
             /**入庫和出庫处理单据子表信息*/
-            depotItemService.saveDetails(rows,headId, "add",request);
+            depotItemService.saveDetails(rows,headId, "add", request, userInfo);
         }
         logService.insertLog("单据",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
@@ -1109,7 +1112,7 @@ public class DepotHeadService {
             }
         }
         /**入庫和出庫处理单据子表信息*/
-        depotItemService.saveDetails(rows,depotHead.getId(), "update",request);
+        depotItemService.saveDetails(rows,depotHead.getId(), "update", request, null);
         logService.insertLog("单据",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
@@ -1422,8 +1425,10 @@ public class DepotHeadService {
 //        }
     }
 
-    public BaseResponseInfo importExcel(MultipartFile file, HttpServletRequest request) {
+    public BaseResponseInfo importExcel(MultipartFile file, HttpServletRequest request) throws Exception {
         BaseResponseInfo info = new BaseResponseInfo();
+
+        User userInfo = userService.getCurrentUser();
 
         try {
             Long beginTime = System.currentTimeMillis();
@@ -1455,46 +1460,70 @@ public class DepotHeadService {
                 // 客單編號
                 String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
 
-                if(confirm.isEmpty() && excelCustomNum.isEmpty()) {
+                if(confirm == null && excelCustomNum == null) {
                     blockTimes++;
                     if(blockTimes >= 2) {
                         break;
                     }
                     continue;
                 }
+                if(confirm == null) {
+                    confirm = getJsonValue(saveJson, "confirm");
+                }
 
                 // 收貨人
                 String receiveName = ExcelUtils.getContent(mainData, i, 2);
-                if(receiveName.isEmpty()) {
+                if(receiveName == null || (receiveName != null && receiveName.isEmpty())) {
                     receiveName = getJsonValue(saveJson, "receiveName");
                 }
                 // 電話
                 String cellphone = ExcelUtils.getContent(mainData, i, 3);
-                if(cellphone.isEmpty()) {
+                if(cellphone ==  null || (cellphone != null && cellphone.isEmpty())) {
                     cellphone = getJsonValue(saveJson, "cellphone");
                 }
                 // 發單日
                 String issueDate = ExcelUtils.getContent(mainData, i, 4);
+                if(issueDate == null || (issueDate != null && issueDate.isEmpty())) {
+                    issueDate = getJsonValue(saveJson, "issueDate");
+                }
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 5);
-                if(address.isEmpty()) {
+                if(address == null || (address != null && address.isEmpty())) {
                     address = getJsonValue(saveJson, "address");
                 }
                 // 出貨倉別
                 String depotName = ExcelUtils.getContent(mainData, i, 6);
+                if(depotName == null || (depotName != null && depotName.isEmpty())) {
+                    depotName = getJsonValue(saveJson, "depotName");
+                }
                 // 品號
                 String mNumber = ExcelUtils.getContent(mainData, i, 7);
                 // 商品型號
                 String materialName = ExcelUtils.getContent(mainData, i, 8);
                 // 數量
                 String amount = ExcelUtils.getContent(mainData, i, 9);
+                if(amount == null || (amount != null && amount.isEmpty())) {
+                    amount = getJsonValue(saveJson, "amount");
+                }
+                beanJson.put("amount", amount);
                 // 安裝方式
                 String install = ExcelUtils.getContent(mainData, i, 10);
+                if(install == null || (install != null && install.isEmpty())) {
+                    install = getJsonValue(saveJson, "install");
+                }
+                beanJson.put("install", install);
                 // 舊機回收
                 String recycle = ExcelUtils.getContent(mainData, i, 11);
+                if(recycle == null || (recycle != null && recycle.isEmpty())) {
+                    recycle = getJsonValue(saveJson, "recycle");
+                }
+                beanJson.put("recycle", recycle);
                 // 配道備註
                 String memo = ExcelUtils.getContent(mainData, i, 12);
-
+                if(memo == null || (memo != null && memo.isEmpty())) {
+                    memo = getJsonValue(saveJson, "memo");
+                }
+                beanJson.put("memo", memo);
 
 //                String excelNum = ExcelUtils.getContent(mainData, i, 0); //excel單號
 //                String custom = ExcelUtils.getContent(mainData, i, 1); // 客戶
@@ -1511,7 +1540,7 @@ public class DepotHeadService {
 //                    continue;
 //                }
 
-                LocalDate date = LocalDate.parse(issueDate, formatter);
+                LocalDate date = LocalDate.parse(issueDate, formatterDate);
                 String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
                 String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
@@ -1546,11 +1575,13 @@ public class DepotHeadService {
                 String remark = json.toJSONString(); // 備註
 
                 // QTRK00000001425
-                String number = String.format("QTRK%011d", sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ));
+                String number = String.format("QTCK%011d", Long.valueOf(sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ)));
                 beanJson.put("number", number);
                 beanJson.put("defaultNumber", number);
                 beanJson.put("operTime", operTime);
                 beanJson.put("organId", organId);
+                beanJson.put("changeAmount", 0);
+                beanJson.put("totalPrice", 0);
 //                beanJson.put("notiNumber", );
 //                beanJson.put("taxid", taxId);
 //                beanJson.put("buyerName", buyerName);
@@ -1566,6 +1597,7 @@ public class DepotHeadService {
 //                beanJson.put("delivered", delivered);
 //                beanJson.put("tenantId", 63);
 
+                beanJson.put("depotName", depotName);
                 if(excelCustomNum.split("-").length==1) {
                     saveJson = beanJson;
                 }
@@ -1577,9 +1609,14 @@ public class DepotHeadService {
                     Long materialId = materialExtend.getMaterialId();
                     obj.put("materialId", materialId);
                     obj.put("barCode", materialExtend.getBarCode());
-                    obj.put("unit", materialExtend.getCommodityUnit());
+                    if(materialExtend.getCommodityUnit() == null) {
+                        obj.put("unit", "null");
+                    } else {
+                        obj.put("unit", materialExtend.getCommodityUnit());
+                    }
                 }
-                Optional<Depot> depot = depotList.stream().filter(d->d.getName().contains(depotName)).findFirst();
+                String finalDepotName = depotName;
+                Optional<Depot> depot = depotList.stream().filter(d->d.getName().contains(finalDepotName)).findFirst();
                 if(depot.isPresent()) {
                     obj.put("depotId", depot.get().getId());
                 }
@@ -1587,6 +1624,9 @@ public class DepotHeadService {
                 obj.put("operNumber", amount);
                 obj.put("unitPrice", 0);
                 obj.put("allPrice", 0);
+                obj.put("taxRate", 0);
+                obj.put("taxMoney", 0);
+                obj.put("taxLastMoney", 0);
                 ary.add(obj);
 
 //                for(int j = 1; j < materialData.getRows();j++) {
@@ -1633,7 +1673,7 @@ public class DepotHeadService {
 //                }
 
                 String rows = ary.toJSONString();
-                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request);
+                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
             }
 
             Long endTime = System.currentTimeMillis();
@@ -1661,13 +1701,16 @@ public class DepotHeadService {
 //        String datetimeStr = "10/10/23 17:10:10";
 //        String dateStr = "12/4/23";
 
-        String issueDate = "2023/10/25";
+//        String issueDate = "12/4/23";
+//
+//        LocalDate date = LocalDate.parse(issueDate, formatterDate);
+//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//
+//        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+//        System.out.println("operTime>>"+operTime);
 
-        LocalDate date = LocalDate.parse(issueDate, formatter);
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-        System.out.println("operTime>>"+operTime);
+        String number = String.format("QTRK%011d", Long.valueOf("1234"));
+        System.out.println(">>>"+number);
 
 //        System.out.println(">>>"+LocalDateTime.parse(datetimeStr, formatter).format(formatterChange));
 //        System.out.println(LocalDate.parse(dateStr));
