@@ -489,6 +489,7 @@ public class DepotItemService {
                         depotItem.setBasicNumber(oNumber); //其他情况
                     }
                 }
+
                 //如果数量+已完成数量>原订单数量，给出预警(判断前提是存在关联订单)
                 if (StringUtil.isNotEmpty(depotHead.getLinkNumber())
                         && StringUtil.isExist(rowObj.get("preNumber")) && StringUtil.isExist(rowObj.get("finishNumber"))) {
@@ -516,6 +517,7 @@ public class DepotItemService {
                         }
                     }
                 }
+
                 if (StringUtil.isExist(rowObj.get("unitPrice"))) {
                     BigDecimal unitPrice = rowObj.getBigDecimal("unitPrice");
                     depotItem.setUnitPrice(unitPrice);
@@ -591,7 +593,7 @@ public class DepotItemService {
                 }
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
+                    BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null);
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
                         //对于sku商品要换个方式计算库存
                         stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -612,14 +614,14 @@ public class DepotItemService {
 //                    }
                 }
                 // 移倉時，判斷庫存是否充足
-                if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
-                    BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
-                    if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber) < 0){
-                        throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
-                                String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
-                    }
-                }
+//                if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
+//                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
+//                    BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
+//                    if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber) < 0){
+//                        throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
+//                                String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
+//                    }
+//                }
 
                 this.insertDepotItemWithObj(depotItem);
                 //更新当前库存

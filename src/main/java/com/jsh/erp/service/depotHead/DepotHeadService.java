@@ -953,7 +953,7 @@ public class DepotHeadService {
             }
         }
 
-        if(depotHead.getImportFlag().equals("0")) {
+        if(depotHead.getImportFlag() == null || (depotHead.getImportFlag() != null && depotHead.getImportFlag().equals("0"))) {
             JSONArray rowArr = JSONArray.parseArray(rows);
             JSONObject firstObj = rowArr.getJSONObject(0);
             JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
