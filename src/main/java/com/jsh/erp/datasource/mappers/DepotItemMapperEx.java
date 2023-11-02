@@ -118,7 +118,8 @@ public interface DepotItemMapperEx {
             @Param("depotList") List<Long> depotList,
             @Param("mId") Long mId,
             @Param("beginTime") String beginTime,
-            @Param("endTime") String endTime);
+            @Param("endTime") String endTime,
+            @Param("organId") Long organId);
 
     /**
      * 通过单据主表id查询所有单据子表数据
