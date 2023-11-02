@@ -122,6 +122,7 @@ public class DepotItemController {
     public BaseResponseInfo findStockByDepotAndBarCode(
             @RequestParam(value = "depotId",required = false) Long depotId,
             @RequestParam("barCode") String barCode,
+            @RequestParam(value = "organId", required = false) Long organId,
             HttpServletRequest request) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -133,7 +134,7 @@ public class DepotItemController {
                 if(StringUtil.isNotEmpty(materialVo4Unit.getSku())){
                     stock = depotItemService.getSkuStockByParam(depotId,materialVo4Unit.getMeId(),null,null);
                 } else {
-                    stock = depotItemService.getStockByParam(depotId,materialVo4Unit.getId(),null,null);
+                    stock = depotItemService.getStockByParam(depotId, materialVo4Unit.getId(),null,null, organId);
                     if(materialVo4Unit.getUnitId()!=null) {
                         Unit unit = unitService.getUnit(materialVo4Unit.getUnitId());
                         String commodityUnit = materialVo4Unit.getCommodityUnit();
@@ -200,7 +201,13 @@ public class DepotItemController {
                     if(StringUtil.isNotEmpty(diEx.getSku())){
                         stock = depotItemService.getSkuStockByParam(diEx.getDepotId(),diEx.getMaterialExtendId(),null,null);
                     } else {
-                        stock = depotItemService.getStockByParam(diEx.getDepotId(),diEx.getMaterialId(),null,null);
+                        Long organId = null;
+                        DepotHead depotHead = depotHeadService.getDepotHead(diEx.getDepotId());
+                        if(depotHead != null) {
+                            organId = depotHead.getOrganId();
+                        }
+
+                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
                         if (StringUtil.isNotEmpty(unitInfo.getName())) {
                             stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
                         }

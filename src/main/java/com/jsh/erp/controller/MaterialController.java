@@ -2,9 +2,11 @@ package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.MaterialVo4Unit;
 import com.jsh.erp.datasource.entities.Unit;
 import com.jsh.erp.service.depot.DepotService;
+import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.depotItem.DepotItemService;
 import com.jsh.erp.service.material.MaterialService;
 import com.jsh.erp.service.redis.RedisService;
@@ -49,6 +51,9 @@ public class MaterialController {
 
     @Resource
     private DepotService depotService;
+
+    @Resource
+    private DepotHeadService depotHeadService;
 
     @Resource
     private RedisService redisService;
@@ -176,6 +181,7 @@ public class MaterialController {
                                   @RequestParam(value = "q", required = false) String q,
                                   @RequestParam("mpList") String mpList,
                                   @RequestParam(value = "depotId", required = false) Long depotId,
+                                  @RequestParam(value = "organId", required = false) Long organId,
                                   @RequestParam(value = "enableSerialNumber", required = false) String enableSerialNumber,
                                   @RequestParam(value = "enableBatchNumber", required = false) String enableBatchNumber,
                                   @RequestParam("page") Integer currentPage,
@@ -230,7 +236,7 @@ public class MaterialController {
                     if(StringUtil.isNotEmpty(material.getSku())){
                         stock = depotItemService.getSkuStockByParam(depotId,material.getMeId(),null,null);
                     } else {
-                        stock = depotItemService.getStockByParam(depotId,material.getId(),null,null);
+                        stock = depotItemService.getStockByParam(depotId,material.getId(),null,null, organId);
                         if (material.getUnitId()!=null){
                             String commodityUnit = material.getCommodityUnit();
                             stock = unitService.parseStockByUnit(stock, unit, commodityUnit);
@@ -538,7 +544,12 @@ public class MaterialController {
         if (StringUtil.isNotEmpty(mvo.getSku())) {
             stock = depotItemService.getSkuStockByParam(mvo.getDepotId(), mvo.getMeId(), null, null);
         } else {
-            stock = depotItemService.getStockByParam(mvo.getDepotId(), mvo.getId(), null, null);
+            Long organId = null;
+            DepotHead depotHead = depotHeadService.getDepotHead(mvo.getDepotId());
+            if(depotHead != null) {
+                organId = depotHead.getOrganId();
+            }
+            stock = depotItemService.getStockByParam(mvo.getDepotId(), mvo.getId(), null, null, organId);
             if (mvo.getUnitId() != null) {
                 Unit unit = unitService.getUnit(mvo.getUnitId());
                 String commodityUnit = mvo.getCommodityUnit();

@@ -593,7 +593,7 @@ public class DepotItemService {
                 }
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null);
+                    BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null, depotHead.getOrganId());
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
                         //对于sku商品要换个方式计算库存
                         stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -799,7 +799,7 @@ public class DepotItemService {
                 }
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
+                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null, depotHead.getOrganId());
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
                         //对于sku商品要换个方式计算库存
                         stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -811,14 +811,14 @@ public class DepotItemService {
                     }
                 }
                 // 移倉時，判斷庫存是否充足
-                if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
-                    BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
-                    if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber) < 0){
-                        throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
-                                String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
-                    }
-                }
+//                if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
+//                    BigDecimal stock = getStockByParam(depotItem.getDepotId(),depotItem.getMaterialId(),null,null);
+//                    BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
+//                    if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber) < 0){
+//                        throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
+//                                String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
+//                    }
+//                }
 
                 this.insertDepotItemWithObj(depotItem);
                 //更新当前库存
@@ -1048,12 +1048,12 @@ public class DepotItemService {
      * @param endTime
      * @return
      */
-    public BigDecimal getStockByParam(Long depotId, Long mId, String beginTime, String endTime){
+    public BigDecimal getStockByParam(Long depotId, Long mId, String beginTime, String endTime, Long organId){
         List<Long> depotList = new ArrayList<>();
         if(depotId != null) {
             depotList.add(depotId);
         }
-        return getStockByParamWithDepotList(depotList, mId, beginTime, endTime, null);
+        return getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId);
     }
 
     /**
@@ -1150,7 +1150,16 @@ public class DepotItemService {
             MaterialCurrentStock materialCurrentStock = new MaterialCurrentStock();
             materialCurrentStock.setMaterialId(mId);
             materialCurrentStock.setDepotId(dId);
-            materialCurrentStock.setCurrentNumber(getStockByParam(dId,mId,null,null));
+            Long organId = null;
+            try {
+                DepotHead depotHead = depotHeadService.getDepotHead(dId);
+                if(depotHead != null) {
+                    organId = depotHead.getOrganId();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId));
             if(list!=null && list.size()>0) {
                 Long mcsId = list.get(0).getId();
                 materialCurrentStock.setId(mcsId);
