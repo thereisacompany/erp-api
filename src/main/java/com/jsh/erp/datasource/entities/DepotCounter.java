@@ -1,13 +1,13 @@
 package com.jsh.erp.datasource.entities;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-@Api(value = "儲位")
+@ApiModel(description = "儲位")
 public class DepotCounter {
 
     private Long id;
@@ -35,4 +35,6 @@ public class DepotCounter {
 
     @ApiModelProperty("是否預設")
     private Boolean isDefault;
+
+    private Long tenantId;
 }

@@ -10,7 +10,7 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="principal" jdbcType="BIGINT" property="principal" />
     <result column="enabled" jdbcType="BIT" property="enabled" />
-<!--    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />-->
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
 <!--    <result column="delete_Flag" jdbcType="VARCHAR" property="deleteFlag" />-->
     <result column="is_default" jdbcType="BIT" property="isDefault" />
   </resultMap>
@@ -19,18 +19,26 @@
     id, depot_id, name, space, sort, remark, principal, enabled, is_default
 <!--    tenant_id, delete_Flag, -->
   </sql>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectByConditionDepot" resultMap="BaseResultMap">
     select
-    <if test="distinct">
-      distinct
-    </if>
     <include refid="Base_Column_List" />
     from jsh_counter
     where 1=1
+    <if test="name != null">
+      <bind name="bindName" value="'%'+name+'%'"/>
+      and name like #{bindName}
+    </if>
     <if test="depotId != null">
       and depot_id = ${depotId}
     </if>
+    <if test="remark != null">
+      <bind name="bindRemark" value="'%'+remark+'%'"/>
+      and remark like #{remark}
+    </if>
     order by id ASC
+    <if test="offset != null and rows != null">
+      limit #{offset},#{rows}
+    </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -82,9 +90,9 @@
       <if test="enabled != null">
         enabled,
       </if>
-<!--      <if test="tenantId != null">-->
-<!--        tenant_id,-->
-<!--      </if>-->
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
 <!--      <if test="deleteFlag != null">-->
 <!--        delete_Flag,-->
 <!--      </if>-->
@@ -117,9 +125,9 @@
       <if test="enabled != null">
         #{enabled,jdbcType=BIT},
       </if>
-<!--      <if test="tenantId != null">-->
-<!--        #{tenantId,jdbcType=BIGINT},-->
-<!--      </if>-->
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
 <!--      <if test="deleteFlag != null">-->
 <!--        #{deleteFlag,jdbcType=VARCHAR},-->
 <!--      </if>-->
@@ -128,6 +136,21 @@
       </if>
     </trim>
   </insert>
+  <select id="countsByCounter" resultType="java.lang.Long">
+    select count(*) from jsh_counter
+    where 1=1
+    <if test="name != null">
+      <bind name="bindName" value="'%'+name+'%'"/>
+      and name like #{bindName}
+    </if>
+    <if test="depotId != null">
+      and depot_id = ${depotId}
+    </if>
+    <if test="remark != null">
+      <bind name="bindRemark" value="'%'+remark+'%'"/>
+      and remark like #{remark}
+    </if>
+  </select>
 <!--  <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.DepotExample" resultType="java.lang.Long">-->
 <!--    select count(*) from jsh_counter-->
 <!--    <if test="_parameter != null">-->
@@ -143,26 +166,8 @@
 <!--      <if test="record.name != null">-->
 <!--        name = #{record.name,jdbcType=VARCHAR},-->
 <!--      </if>-->
-<!--      <if test="record.address != null">-->
-<!--        address = #{record.address,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="record.warehousing != null">-->
-<!--        warehousing = #{record.warehousing,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="record.truckage != null">-->
-<!--        truckage = #{record.truckage,jdbcType=DECIMAL},-->
-<!--      </if>-->
 <!--      <if test="record.space != null">-->
 <!--        space = #{record.space,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="record.type != null">-->
-<!--        type = #{record.type,jdbcType=INTEGER},-->
-<!--      </if>-->
-<!--      <if test="record.telephone != null">-->
-<!--        telephone = #{record.telephone,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="record.fax != null">-->
-<!--        fax = #{record.fax,jdbcType=VARCHAR},-->
 <!--      </if>-->
 <!--      <if test="record.sort != null">-->
 <!--        sort = #{record.sort,jdbcType=VARCHAR},-->
@@ -194,13 +199,7 @@
 <!--    update jsh_counter-->
 <!--    set id = #{record.id,jdbcType=BIGINT},-->
 <!--      name = #{record.name,jdbcType=VARCHAR},-->
-<!--      address = #{record.address,jdbcType=VARCHAR},-->
-<!--      warehousing = #{record.warehousing,jdbcType=DECIMAL},-->
-<!--      truckage = #{record.truckage,jdbcType=DECIMAL},-->
 <!--      space = #{record.space,jdbcType=DECIMAL},-->
-<!--      type = #{record.type,jdbcType=INTEGER},-->
-<!--      telephone = #{record.telephone,jdbcType=VARCHAR},-->
-<!--      fax = #{record.fax,jdbcType=VARCHAR},-->
 <!--      sort = #{record.sort,jdbcType=VARCHAR},-->
 <!--      remark = #{record.remark,jdbcType=VARCHAR},-->
 <!--      principal = #{record.principal,jdbcType=BIGINT},-->
@@ -216,7 +215,7 @@
     update jsh_counter
     <set>
       <if test="depotId != null">
-        depot_id = #{depotId,jdbcType=BIGINT}
+        depot_id = #{depotId,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -236,9 +235,9 @@
       <if test="enabled != null">
         enabled = #{enabled,jdbcType=BIT},
       </if>
-<!--      <if test="tenantId != null">-->
-<!--        tenant_id = #{tenantId,jdbcType=BIGINT},-->
-<!--      </if>-->
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
 <!--      <if test="deleteFlag != null">-->
 <!--        delete_Flag = #{deleteFlag,jdbcType=VARCHAR},-->
 <!--      </if>-->
@@ -248,16 +247,10 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-<!--  <update id="updateByPrimaryKey" parameterType="com.jsh.erp.datasource.entities.Depot">-->
+<!--  <update id="updateByPrimaryKey" parameterType="com.jsh.erp.datasource.entities.DepotCounter">-->
 <!--    update jsh_counter-->
 <!--    set name = #{name,jdbcType=VARCHAR},-->
-<!--      address = #{address,jdbcType=VARCHAR},-->
-<!--      warehousing = #{warehousing,jdbcType=DECIMAL},-->
-<!--      truckage = #{truckage,jdbcType=DECIMAL},-->
 <!--      space = #{space,jdbcType=DECIMAL},-->
-<!--      type = #{type,jdbcType=INTEGER},-->
-<!--      telephone = #{telephone,jdbcType=VARCHAR},-->
-<!--      fax = #{fax,jdbcType=VARCHAR},-->
 <!--      sort = #{sort,jdbcType=VARCHAR},-->
 <!--      remark = #{remark,jdbcType=VARCHAR},-->
 <!--      principal = #{principal,jdbcType=BIGINT},-->

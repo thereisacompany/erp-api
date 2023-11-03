@@ -2,6 +2,7 @@ package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.datasource.entities.Depot;
 import com.jsh.erp.datasource.entities.DepotCounter;
 import com.jsh.erp.datasource.entities.DepotEx;
@@ -10,8 +11,7 @@ import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotCounter.DepotCounterService;
 import com.jsh.erp.service.material.MaterialService;
 import com.jsh.erp.service.userBusiness.UserBusinessService;
-import com.jsh.erp.utils.BaseResponseInfo;
-import com.jsh.erp.utils.ErpInfo;
+import com.jsh.erp.utils.*;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,25 +48,37 @@ public class DepotController {
     @GetMapping(value = "/counter/getAllList")
     @ApiOperation(value = "儲位列表")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = DepotCounter.class, responseContainer="List")})
-    public BaseResponseInfo getCounterAllList(@RequestParam(value = "depotId", required = false) Long depotId,
-                                              HttpServletRequest request) {
-        BaseResponseInfo res = new BaseResponseInfo();
-        try {
-            List<DepotCounter> counterList = depotCounterService.getAllList(depotId);
-            res.code = 200;
-            res.data = counterList;
-        } catch(Exception e){
-            e.printStackTrace();
-            res.code = 500;
-            res.data = "獲取數據失敗";
+    public String getCounterAllList(@RequestParam(value = Constants.PAGE_SIZE, required = false) Integer pageSize,
+                                              @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
+                                              @RequestParam(value = Constants.SEARCH, required = false) String search,
+                                              HttpServletRequest request) throws Exception {
+        Map<String, String> parameterMap = ParamUtils.requestToMap(request);
+        parameterMap.put(Constants.SEARCH, search);
+        Map<String, Object> objectMap = new HashMap<>();
+        if (pageSize != null && pageSize <= 0) {
+            pageSize = 10;
         }
-        return res;
+        String offset = ParamUtils.getPageOffset(currentPage, pageSize);
+        if (StringUtil.isNotEmpty(offset)) {
+            parameterMap.put(Constants.OFFSET, offset);
+        }
+
+        List<DepotCounter> list = depotCounterService.getAllList(parameterMap);
+        if (list != null) {
+            objectMap.put("total", depotCounterService.counts(parameterMap));
+            objectMap.put("rows", list);
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else {
+            objectMap.put("total", BusinessConstants.DEFAULT_LIST_NULL_NUMBER);
+            objectMap.put("rows", new ArrayList<Object>());
+            return returnJson(objectMap, "查找不到數據", ErpInfo.OK.code);
+        }
     }
 
     @GetMapping(value = "/counter/{id}")
     @ApiOperation(value = "取得指定儲位")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = DepotCounter.class)})
-    public String getCounter(@PathVariable("id") Long id, HttpServletRequest request) {
+    public String getCounter(@ApiParam(value = "儲位id") @PathVariable("id") Long id, HttpServletRequest request) {
         Object obj = depotCounterService.getCounter(id);
         Map<String, Object> objectMap = new HashMap<>();
         if(obj != null) {

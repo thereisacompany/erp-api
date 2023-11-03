@@ -7,7 +7,17 @@ import java.util.List;
 
 public interface DepotCounterMapper {
 
-    List<DepotCounter> selectAll(@Param("depotId") Long depotId);
+    List<DepotCounter> selectByConditionDepot(
+            @Param("name") String name,
+            @Param("depotId") Long depotId,
+            @Param("remark") String remark,
+            @Param("offset") Integer offset,
+            @Param("rows") Integer rows);
+
+    Long countsByCounter(
+            @Param("name") String name,
+            @Param("depotId") Long depotId,
+            @Param("remark") String remark);
 
     DepotCounter selectByPrimaryKey(Long id);
 
