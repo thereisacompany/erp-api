@@ -128,7 +128,7 @@ public class DepotService {
             depot.setIsDefault(false);
             depot.setEnabled(true);
             result=depotMapper.insertSelective(depot);
-            //新增仓库时给当前用户自动授权
+            //新增倉庫时给当前用户自动授权
             Long userId = userService.getUserId(request);
             Long depotId = getIdByName(depot.getName());
             String ubKey = "[" + depotId + "]";
@@ -148,7 +148,7 @@ public class DepotService {
                 ubObj.put("value", ubInfo.getValue() + ubKey);
                 userBusinessService.updateUserBusiness(ubObj, request);
             }
-            logService.insertLog("仓库",
+            logService.insertLog("倉庫",
                     new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depot.getName()).toString(), request);
         }catch(Exception e){
             JshException.writeFail(logger, e);
@@ -162,7 +162,7 @@ public class DepotService {
         int result=0;
         try{
             result= depotMapper.updateByPrimaryKeySelective(depot);
-            logService.insertLog("仓库",
+            logService.insertLog("倉庫",
                     new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depot.getName()).toString(), request);
         }catch(Exception e){
             JshException.writeFail(logger, e);
@@ -204,7 +204,7 @@ public class DepotService {
         for(Depot depot: list){
             sb.append("[").append(depot.getName()).append("]");
         }
-        logService.insertLog("仓库", sb.toString(),
+        logService.insertLog("倉庫", sb.toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         User userInfo=userService.getCurrentUser();
         //校验通过执行删除操作
@@ -252,13 +252,13 @@ public class DepotService {
             DepotExample allExample = new DepotExample();
             allExample.createCriteria();
             depotMapper.updateByExampleSelective(allDepot, allExample);
-            //给指定仓库设为默认
+            //给指定倉庫设为默认
             Depot depot = new Depot();
             depot.setIsDefault(true);
             DepotExample example = new DepotExample();
             example.createCriteria().andIdEqualTo(depotId);
             depotMapper.updateByExampleSelective(depot, example);
-            logService.insertLog("仓库",BusinessConstants.LOG_OPERATION_TYPE_EDIT+depotId,
+            logService.insertLog("倉庫",BusinessConstants.LOG_OPERATION_TYPE_EDIT+depotId,
                     ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             result = 1;
         }catch(Exception e){
@@ -324,7 +324,7 @@ public class DepotService {
     }
 
     /**
-     * 当前用户有权限使用的仓库列表的id，用逗号隔开
+     * 当前用户有权限使用的倉庫列表的id，用逗号隔开
      * @return
      * @throws Exception
      */
@@ -344,7 +344,7 @@ public class DepotService {
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int batchSetStatus(Boolean status, String ids)throws Exception {
-        logService.insertLog("仓库",
+        logService.insertLog("倉庫",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ENABLED).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         List<Long> depotIds = StringUtil.strToLongList(ids);
