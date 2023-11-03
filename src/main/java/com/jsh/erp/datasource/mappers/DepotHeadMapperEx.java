@@ -32,6 +32,7 @@ public interface DepotHeadMapperEx {
             @Param("organArray") String[] organArray,
             @Param("creator") Long creator,
             @Param("depotId") Long depotId,
+            @Param("counterId") Long counterId,
             @Param("depotArray") String[] depotArray,
             @Param("accountId") Long accountId,
             @Param("remark") String remark,
