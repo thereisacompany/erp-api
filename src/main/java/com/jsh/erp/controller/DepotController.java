@@ -2,14 +2,17 @@ package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jsh.erp.datasource.entities.*;
+import com.jsh.erp.datasource.entities.Depot;
+import com.jsh.erp.datasource.entities.DepotCounter;
+import com.jsh.erp.datasource.entities.DepotEx;
+import com.jsh.erp.datasource.entities.MaterialInitialStock;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotCounter.DepotCounterService;
 import com.jsh.erp.service.material.MaterialService;
 import com.jsh.erp.service.userBusiness.UserBusinessService;
-import com.jsh.erp.utils.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.jsh.erp.utils.BaseResponseInfo;
+import com.jsh.erp.utils.ErpInfo;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
@@ -41,6 +47,7 @@ public class DepotController {
 
     @GetMapping(value = "/counter/getAllList")
     @ApiOperation(value = "儲位列表")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = DepotCounter.class, responseContainer="List")})
     public BaseResponseInfo getCounterAllList(@RequestParam(value = "depotId", required = false) Long depotId,
                                               HttpServletRequest request) {
         BaseResponseInfo res = new BaseResponseInfo();
@@ -58,12 +65,41 @@ public class DepotController {
 
     @GetMapping(value = "/counter/{id}")
     @ApiOperation(value = "取得指定儲位")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = DepotCounter.class)})
     public String getCounter(@PathVariable("id") Long id, HttpServletRequest request) {
         Object obj = depotCounterService.getCounter(id);
         Map<String, Object> objectMap = new HashMap<>();
         if(obj != null) {
             objectMap.put("info", obj);
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else {
+            return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
+        }
+    }
+
+    @PostMapping(value = "/counter/add", produces = {"application/javascript", "application/json"})
+    @ApiOperation(value = "新增儲位")
+    public String addCounter(@RequestBody DepotCounter counter, HttpServletRequest request)throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        int insert = depotCounterService.insertCounter(counter, request);
+        if(insert > 0) {
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else if(insert == -1) {
+            return returnJson(objectMap, ErpInfo.TEST_USER.name, ErpInfo.TEST_USER.code);
+        } else {
+            return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
+        }
+    }
+
+    @PutMapping(value = "/counter/update", produces = {"application/javascript", "application/json"})
+    @ApiOperation(value = "修改儲位")
+    public String updateCounter(@RequestBody DepotCounter counter, HttpServletRequest request)throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        int update = depotCounterService.updateCounter(counter, request);
+        if(update > 0) {
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else if(update == -1) {
+            return returnJson(objectMap, ErpInfo.TEST_USER.name, ErpInfo.TEST_USER.code);
         } else {
             return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
         }

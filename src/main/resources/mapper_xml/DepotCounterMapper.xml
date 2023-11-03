@@ -55,109 +55,79 @@
 <!--      #{enabled,jdbcType=BIT}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}, -->
 <!--      #{isDefault,jdbcType=BIT})-->
 <!--  </insert>-->
-<!--  <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Depot">-->
-<!--    insert into jsh_counter-->
-<!--    <trim prefix="(" suffix=")" suffixOverrides=",">-->
-<!--      <if test="id != null">-->
-<!--        id,-->
-<!--      </if>-->
-<!--      <if test="name != null">-->
-<!--        name,-->
-<!--      </if>-->
-<!--      <if test="address != null">-->
-<!--        address,-->
-<!--      </if>-->
-<!--      <if test="warehousing != null">-->
-<!--        warehousing,-->
-<!--      </if>-->
-<!--      <if test="truckage != null">-->
-<!--        truckage,-->
-<!--      </if>-->
-<!--      <if test="space != null">-->
-<!--        space,-->
-<!--      </if>-->
-<!--      <if test="type != null">-->
-<!--        type,-->
-<!--      </if>-->
-<!--      <if test="telephone != null">-->
-<!--        telephone,-->
-<!--      </if>-->
-<!--      <if test="fax != null">-->
-<!--        fax,-->
-<!--      </if>-->
-<!--      <if test="sort != null">-->
-<!--        sort,-->
-<!--      </if>-->
-<!--      <if test="remark != null">-->
-<!--        remark,-->
-<!--      </if>-->
-<!--      <if test="principal != null">-->
-<!--        principal,-->
-<!--      </if>-->
-<!--      <if test="enabled != null">-->
-<!--        enabled,-->
-<!--      </if>-->
+  <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.DepotCounter">
+    insert into jsh_counter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="depotId != null">
+        depot_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="space != null">
+        space,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="principal != null">
+        principal,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
 <!--      <if test="tenantId != null">-->
 <!--        tenant_id,-->
 <!--      </if>-->
 <!--      <if test="deleteFlag != null">-->
 <!--        delete_Flag,-->
 <!--      </if>-->
-<!--      <if test="isDefault != null">-->
-<!--        is_default,-->
-<!--      </if>-->
-<!--    </trim>-->
-<!--    <trim prefix="values (" suffix=")" suffixOverrides=",">-->
-<!--      <if test="id != null">-->
-<!--        #{id,jdbcType=BIGINT},-->
-<!--      </if>-->
-<!--      <if test="name != null">-->
-<!--        #{name,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="address != null">-->
-<!--        #{address,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="warehousing != null">-->
-<!--        #{warehousing,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="truckage != null">-->
-<!--        #{truckage,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="space != null">-->
-<!--        #{space,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="type != null">-->
-<!--        #{type,jdbcType=INTEGER},-->
-<!--      </if>-->
-<!--      <if test="telephone != null">-->
-<!--        #{telephone,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="fax != null">-->
-<!--        #{fax,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="sort != null">-->
-<!--        #{sort,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="remark != null">-->
-<!--        #{remark,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="principal != null">-->
-<!--        #{principal,jdbcType=BIGINT},-->
-<!--      </if>-->
-<!--      <if test="enabled != null">-->
-<!--        #{enabled,jdbcType=BIT},-->
-<!--      </if>-->
+      <if test="isDefault != null">
+        is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="depotId != null">
+        #{depotId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="space != null">
+        #{space,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="principal != null">
+        #{principal,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
 <!--      <if test="tenantId != null">-->
 <!--        #{tenantId,jdbcType=BIGINT},-->
 <!--      </if>-->
 <!--      <if test="deleteFlag != null">-->
 <!--        #{deleteFlag,jdbcType=VARCHAR},-->
 <!--      </if>-->
-<!--      <if test="isDefault != null">-->
-<!--        #{isDefault,jdbcType=BIT},-->
-<!--      </if>-->
-<!--    </trim>-->
-<!--  </insert>-->
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
 <!--  <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.DepotExample" resultType="java.lang.Long">-->
 <!--    select count(*) from jsh_counter-->
 <!--    <if test="_parameter != null">-->
@@ -242,57 +212,42 @@
 <!--      <include refid="Update_By_Example_Where_Clause" />-->
 <!--    </if>-->
 <!--  </update>-->
-<!--  <update id="updateByPrimaryKeySelective" parameterType="com.jsh.erp.datasource.entities.Depot">-->
-<!--    update jsh_counter-->
-<!--    <set>-->
-<!--      <if test="name != null">-->
-<!--        name = #{name,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="address != null">-->
-<!--        address = #{address,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="warehousing != null">-->
-<!--        warehousing = #{warehousing,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="truckage != null">-->
-<!--        truckage = #{truckage,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="space != null">-->
-<!--        space = #{space,jdbcType=DECIMAL},-->
-<!--      </if>-->
-<!--      <if test="type != null">-->
-<!--        type = #{type,jdbcType=INTEGER},-->
-<!--      </if>-->
-<!--      <if test="telephone != null">-->
-<!--        telephone = #{telephone,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="fax != null">-->
-<!--        fax = #{fax,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="sort != null">-->
-<!--        sort = #{sort,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="remark != null">-->
-<!--        remark = #{remark,jdbcType=VARCHAR},-->
-<!--      </if>-->
-<!--      <if test="principal != null">-->
-<!--        principal = #{principal,jdbcType=BIGINT},-->
-<!--      </if>-->
-<!--      <if test="enabled != null">-->
-<!--        enabled = #{enabled,jdbcType=BIT},-->
-<!--      </if>-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.jsh.erp.datasource.entities.DepotCounter">
+    update jsh_counter
+    <set>
+      <if test="depotId != null">
+        depot_id = #{depotId,jdbcType=BIGINT}
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="space != null">
+        space = #{space,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="principal != null">
+        principal = #{principal,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=BIT},
+      </if>
 <!--      <if test="tenantId != null">-->
 <!--        tenant_id = #{tenantId,jdbcType=BIGINT},-->
 <!--      </if>-->
 <!--      <if test="deleteFlag != null">-->
 <!--        delete_Flag = #{deleteFlag,jdbcType=VARCHAR},-->
 <!--      </if>-->
-<!--      <if test="isDefault != null">-->
-<!--        is_default = #{isDefault,jdbcType=BIT},-->
-<!--      </if>-->
-<!--    </set>-->
-<!--    where id = #{id,jdbcType=BIGINT}-->
-<!--  </update>-->
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 <!--  <update id="updateByPrimaryKey" parameterType="com.jsh.erp.datasource.entities.Depot">-->
 <!--    update jsh_counter-->
 <!--    set name = #{name,jdbcType=VARCHAR},-->
