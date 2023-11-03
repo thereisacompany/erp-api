@@ -59,7 +59,7 @@
     </resultMap>
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
-        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName
+        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName, CONCAT(dh.organ_id, '-', me.`number`) MNumber
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
@@ -145,6 +145,9 @@
                 #{creator}
             </foreach>
             )
+        </if>
+        <if test="counterId != null">
+            and di.counter_id=#{counterId}
         </if>
         <if test="accountId != null">
             <bind name="bindAccountId" value="'%'+accountId+'%'"/>
@@ -535,7 +538,8 @@
         m.model,m.standard,di.unit_price,di.material_unit as mUnit,
         di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_name SCounter,
         d.dName DName, di.depot_id DId, di.counter_name DCounter,
-        dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, concat_ws('  ',dh.remark,di.remark) as newRemark
+        dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, concat_ws('  ',dh.remark,di.remark) as newRemark,
+        CONCAT(dh.organ_id,'-',me.`number`) MNumber
         from jsh_depot_head dh
         left join jsh_depot_item di on di.header_id=dh.id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_flag,'0') !='1'

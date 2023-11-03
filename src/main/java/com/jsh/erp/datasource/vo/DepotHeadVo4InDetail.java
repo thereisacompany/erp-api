@@ -14,6 +14,8 @@ public class DepotHeadVo4InDetail {
 
     private String MName;
 
+    private String MNumber;
+
     private String Model;
 
     private String standard;
@@ -84,6 +86,14 @@ public class DepotHeadVo4InDetail {
 
     public void setMName(String MName) {
         this.MName = MName;
+    }
+
+    public String getMNumber() {
+        return MNumber;
+    }
+
+    public void setMNumber(String MNumber) {
+        this.MNumber = MNumber;
     }
 
     public String getModel() {

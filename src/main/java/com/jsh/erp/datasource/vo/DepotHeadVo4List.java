@@ -15,6 +15,8 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String accountName;
 
+    private String MNumber;
+
     private String allocationProjectName;
 
     private String materialsList;
@@ -93,6 +95,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
+    }
+
+    public String getMNumber() {
+        return MNumber;
+    }
+
+    public void setMNumber(String MNumber) {
+        this.MNumber = MNumber;
     }
 
     public String getAllocationProjectName() {
