@@ -25,12 +25,14 @@
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
         <result column="tax_money" jdbcType="DECIMAL" property="taxMoney" />
         <result column="tax_last_money" jdbcType="DECIMAL" property="taxLastMoney" />
+        <result column="organ_id" jdbcType="BIGINT" property="organId" />
         <result column="SName" jdbcType="VARCHAR" property="SName" />
         <result column="SId" jdbcType="VARCHAR" property="SId" />
         <result column="SCounter" jdbcType="VARCHAR" property="SCounter"/>
         <result column="DName" jdbcType="VARCHAR" property="DName" />
         <result column="DId" jdbcType="INTEGER" property="DId"/>
         <result column="DCounter" jdbcType="VARCHAR" property="DCounter"/>
+        <result column="categoryName" jdbcType="VARCHAR" property="categoryName"/>
         <result column="OperTime" jdbcType="VARCHAR" property="OperTime" />
         <result column="NewType" jdbcType="VARCHAR" property="NewType" />
         <result column="status" jdbcType="VARCHAR" property="status" />
@@ -535,15 +537,16 @@
 
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
         select dh.id header_id, dh.number,me.bar_code, m.`name` MName,
-        m.model,m.standard,di.unit_price,di.material_unit as mUnit,
-        di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_name SCounter,
-        d.dName DName, di.depot_id DId, di.counter_name DCounter,
+        m.model,m.standard,di.unit_price,di.material_unit as mUnit, dh.organ_id,
+        di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_id SCounterId, di.another_counter_name SCounter,
+        d.dName DName, di.depot_id DId, di.counter_id DCounterId, di.counter_name DCounter, jmc.name categoryName,
         dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, concat_ws('  ',dh.remark,di.remark) as newRemark,
         CONCAT(dh.organ_id,'-',me.`number`) MNumber
         from jsh_depot_head dh
         left join jsh_depot_item di on di.header_id=dh.id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_extend me on me.id=di.material_extend_id and ifnull(me.delete_Flag,'0') !='1'
+        left join erp.jsh_material_category jmc on jmc.id = m.category_id and ifnull(jmc.delete_Flag,'0') !='1'
         left join (select id,name as dName,delete_Flag from jsh_depot ) d on d.id=di.depot_id and ifnull(d.delete_Flag,'0') !='1'
         <!-- 调出仓库名查询 -->
         left join (select id as aid,name as SName,delete_Flag as adelete_Flag from jsh_depot ) ddd on ddd.aid=di.another_depot_id and ifnull(ddd.adelete_Flag,'0') !='1'

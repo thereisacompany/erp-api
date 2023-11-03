@@ -957,12 +957,14 @@ public class DepotHeadService {
         }
 
         if(depotHead.getImportFlag() == null || (depotHead.getImportFlag() != null && depotHead.getImportFlag().equals("0"))) {
-            JSONArray rowArr = JSONArray.parseArray(rows);
-            JSONObject firstObj = rowArr.getJSONObject(0);
-            JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
-            json.put("confirm", firstObj.getString("categoryName"));
-            json.put("memo", depotHead.getRemark());
-            depotHead.setRemark(json.toJSONString());
+            if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+                JSONArray rowArr = JSONArray.parseArray(rows);
+                JSONObject firstObj = rowArr.getJSONObject(0);
+                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
+                json.put("confirm", firstObj.getString("categoryName"));
+                json.put("memo", depotHead.getRemark());
+                depotHead.setRemark(json.toJSONString());
+            }
         }
 
         //判断用户是否已经登录过，登录过不再处理

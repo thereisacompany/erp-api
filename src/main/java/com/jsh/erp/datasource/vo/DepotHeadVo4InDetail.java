@@ -36,9 +36,13 @@ public class DepotHeadVo4InDetail {
 
     private BigDecimal taxLastMoney;
 
+    private Long organId;
+
     private String SName;
 
     private Long SId;
+
+    private Long SCounterId;
 
     private String SCounter;
 
@@ -46,7 +50,11 @@ public class DepotHeadVo4InDetail {
 
     private Long DId;
 
+    private Long DCounterId;
+
     private String DCounter;
+
+    private String categoryName;
 
     private String OperTime;
 
@@ -176,6 +184,14 @@ public class DepotHeadVo4InDetail {
         this.taxLastMoney = taxLastMoney;
     }
 
+    public Long getOrganId() {
+        return organId;
+    }
+
+    public void setOrganId(Long organId) {
+        this.organId = organId;
+    }
+
     public String getSName() {
         return SName;
     }
@@ -190,6 +206,14 @@ public class DepotHeadVo4InDetail {
 
     public void setSId(Long SId) {
         this.SId = SId;
+    }
+
+    public Long getSCounterId() {
+        return SCounterId;
+    }
+
+    public void setSCounterId(Long SCounterId) {
+        this.SCounterId = SCounterId;
     }
 
     public String getSCounter() {
@@ -216,12 +240,28 @@ public class DepotHeadVo4InDetail {
         this.DId = DId;
     }
 
+    public Long getDCounterId() {
+        return DCounterId;
+    }
+
+    public void setDCounterId(Long DCounterId) {
+        this.DCounterId = DCounterId;
+    }
+
     public String getDCounter() {
         return DCounter;
     }
 
     public void setDCounter(String DCounter) {
         this.DCounter = DCounter;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getOperTime() {
