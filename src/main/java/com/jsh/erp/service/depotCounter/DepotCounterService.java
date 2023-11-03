@@ -18,13 +18,17 @@ public class DepotCounterService {
     @Resource
     private DepotCounterMapper depotCounterMapper;
 
-    public List<DepotCounter> getDepotCounter() throws Exception{
+    public List<DepotCounter> getAllList(Long depotId) throws Exception{
         List<DepotCounter> list = null;
         try {
-            list = depotCounterMapper.selectAll();
+            list = depotCounterMapper.selectAll(null);
         } catch (Exception e) {
             JshException.readFail(logger, e);
         }
         return list;
+    }
+
+    public DepotCounter getCounter(Long id) {
+        return depotCounterMapper.selectByPrimaryKey(id);
     }
 }

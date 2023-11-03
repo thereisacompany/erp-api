@@ -26,6 +26,10 @@
     </if>
     <include refid="Base_Column_List" />
     from jsh_counter
+    where 1=1
+    <if test="depotId != null">
+      and depot_id = ${depotId}
+    </if>
     order by id ASC
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
