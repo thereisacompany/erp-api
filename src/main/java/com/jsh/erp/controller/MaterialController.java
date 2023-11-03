@@ -182,6 +182,7 @@ public class MaterialController {
                                   @RequestParam("mpList") String mpList,
                                   @RequestParam(value = "depotId", required = false) Long depotId,
                                   @RequestParam(value = "organId", required = false) Long organId,
+                                  @RequestParam(value = "counterId", required = false) Long counterId,
                                   @RequestParam(value = "enableSerialNumber", required = false) String enableSerialNumber,
                                   @RequestParam(value = "enableBatchNumber", required = false) String enableBatchNumber,
                                   @RequestParam("page") Integer currentPage,
@@ -236,7 +237,7 @@ public class MaterialController {
                     if(StringUtil.isNotEmpty(material.getSku())){
                         stock = depotItemService.getSkuStockByParam(depotId,material.getMeId(),null,null);
                     } else {
-                        stock = depotItemService.getStockByParam(depotId,material.getId(),null,null, organId);
+                        stock = depotItemService.getStockByParam(depotId,material.getId(),null,null, organId, counterId);
                         if (material.getUnitId()!=null){
                             String commodityUnit = material.getCommodityUnit();
                             stock = unitService.parseStockByUnit(stock, unit, commodityUnit);
@@ -549,7 +550,7 @@ public class MaterialController {
             if(depotHead != null) {
                 organId = depotHead.getOrganId();
             }
-            stock = depotItemService.getStockByParam(mvo.getDepotId(), mvo.getId(), null, null, organId);
+            stock = depotItemService.getStockByParam(mvo.getDepotId(), mvo.getId(), null, null, organId, null);
             if (mvo.getUnitId() != null) {
                 Unit unit = unitService.getUnit(mvo.getUnitId());
                 String commodityUnit = mvo.getCommodityUnit();

@@ -521,6 +521,9 @@
         <if test="organId != null">
             and dh.organ_id = ${organId}
         </if>
+        <if test="countId != null">
+            and di.counter_id = ${counterId}
+        </if>
     </select>
 
     <select id="findDepotItemListBydepotheadId"  resultType="com.jsh.erp.datasource.entities.DepotItem">

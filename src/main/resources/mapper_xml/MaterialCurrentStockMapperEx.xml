@@ -3,10 +3,11 @@
 <mapper namespace="com.jsh.erp.datasource.mappers.MaterialCurrentStockMapperEx">
 
     <insert id="batchInsert" parameterType="java.util.List">
-        insert into jsh_material_current_stock (material_id, depot_id, current_number)
+        insert into jsh_material_current_stock (material_id, organ_id, depot_id, counter_id, current_number)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.materialId,jdbcType=BIGINT}, #{item.depotId,jdbcType=BIGINT},#{item.currentNumber,jdbcType=DECIMAL})
+            (#{item.materialId,jdbcType=BIGINT}, #{item.organId,jdbcType=BIGINT}, #{item.depotId,jdbcType=BIGINT},
+            #{item.counterId,jdbcType=BIGINT},#{item.currentNumber,jdbcType=DECIMAL})
         </foreach >
     </insert>
 

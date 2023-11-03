@@ -7,7 +7,11 @@ public class MaterialCurrentStock {
 
     private Long materialId;
 
+    private Long organId;
+
     private Long depotId;
+
+    private Long counterId;
 
     private BigDecimal currentNumber;
 
@@ -31,12 +35,28 @@ public class MaterialCurrentStock {
         this.materialId = materialId;
     }
 
+    public Long getOrganId() {
+        return organId;
+    }
+
+    public void setOrganId(Long organId) {
+        this.organId = organId;
+    }
+
     public Long getDepotId() {
         return depotId;
     }
 
     public void setDepotId(Long depotId) {
         this.depotId = depotId;
+    }
+
+    public Long getCounterId() {
+        return counterId;
+    }
+
+    public void setCounterId(Long counterId) {
+        this.counterId = counterId;
     }
 
     public BigDecimal getCurrentNumber() {

@@ -4,7 +4,9 @@
   <resultMap id="BaseResultMap" type="com.jsh.erp.datasource.entities.MaterialCurrentStock">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="material_id" jdbcType="BIGINT" property="materialId" />
+    <result column="organ_id" jdbcType="BIGINT" property="organId" />
     <result column="depot_id" jdbcType="BIGINT" property="depotId" />
+    <result column="counter_id" jdbcType="BIGINT" property="counterId" />
     <result column="current_number" jdbcType="DECIMAL" property="currentNumber" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
@@ -68,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, material_id, depot_id, current_number, tenant_id, delete_flag
+    id, material_id, organ_id, depot_id, counter_id, current_number, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.MaterialCurrentStockExample" resultMap="BaseResultMap">
     select
@@ -101,11 +103,11 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.jsh.erp.datasource.entities.MaterialCurrentStock">
-    insert into jsh_material_current_stock (id, material_id, depot_id, 
+    insert into jsh_material_current_stock (id, material_id, organ_id, depot_id, counter_id,
       current_number, tenant_id, delete_flag
       )
-    values (#{id,jdbcType=BIGINT}, #{materialId,jdbcType=BIGINT}, #{depotId,jdbcType=BIGINT}, 
-      #{currentNumber,jdbcType=DECIMAL}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{materialId,jdbcType=BIGINT}, #{organId,jdbcType=BIGINT}, #{depotId,jdbcType=BIGINT},
+      #{counterId,jdbcType=BIGINT},#{currentNumber,jdbcType=DECIMAL}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.MaterialCurrentStock">
@@ -117,8 +119,14 @@
       <if test="materialId != null">
         material_id,
       </if>
+      <if test="organId != null">
+        organ_id,
+      </if>
       <if test="depotId != null">
         depot_id,
+      </if>
+      <if test="counterId != null">
+        counter_id,
       </if>
       <if test="currentNumber != null">
         current_number,
@@ -137,8 +145,14 @@
       <if test="materialId != null">
         #{materialId,jdbcType=BIGINT},
       </if>
+      <if test="organId != null">
+        #{organId,jdbcType=BIGINT},
+      </if>
       <if test="depotId != null">
         #{depotId,jdbcType=BIGINT},
+      </if>
+      <if test="counterId != null">
+        #{counterId,jdbcType=BIGINT},
       </if>
       <if test="currentNumber != null">
         #{currentNumber,jdbcType=DECIMAL},
@@ -166,8 +180,14 @@
       <if test="record.materialId != null">
         material_id = #{record.materialId,jdbcType=BIGINT},
       </if>
+      <if test="record.organId != null">
+        organ_id = #{record.organId,jdbcType=BIGINT},
+      </if>
       <if test="record.depotId != null">
         depot_id = #{record.depotId,jdbcType=BIGINT},
+      </if>
+      <if test="record.counterId != null">
+        counter_id = #{record.counterId,jdbcType=BIGINT},
       </if>
       <if test="record.currentNumber != null">
         current_number = #{record.currentNumber,jdbcType=DECIMAL},
@@ -187,7 +207,9 @@
     update jsh_material_current_stock
     set id = #{record.id,jdbcType=BIGINT},
       material_id = #{record.materialId,jdbcType=BIGINT},
+      organ_id = #{record.organId,jdbcType=BIGINT},
       depot_id = #{record.depotId,jdbcType=BIGINT},
+      counter_id = #{record.counterId,jdbcType=BIGINT},
       current_number = #{record.currentNumber,jdbcType=DECIMAL},
       tenant_id = #{record.tenantId,jdbcType=BIGINT},
       delete_flag = #{record.deleteFlag,jdbcType=VARCHAR}
@@ -201,8 +223,14 @@
       <if test="materialId != null">
         material_id = #{materialId,jdbcType=BIGINT},
       </if>
+      <if test="organId != null">
+        organ_id = #{organId,jdbcType=BIGINT},
+      </if>
       <if test="depotId != null">
         depot_id = #{depotId,jdbcType=BIGINT},
+      </if>
+      <if test="counterId != null">
+        counter_id = #{counterId,jdbcType=BIGINT},
       </if>
       <if test="currentNumber != null">
         current_number = #{currentNumber,jdbcType=DECIMAL},
@@ -219,7 +247,9 @@
   <update id="updateByPrimaryKey" parameterType="com.jsh.erp.datasource.entities.MaterialCurrentStock">
     update jsh_material_current_stock
     set material_id = #{materialId,jdbcType=BIGINT},
+      organ_id = #{organId,jdbcType=BIGINT},
       depot_id = #{depotId,jdbcType=BIGINT},
+      counter_id = #{counterId,jdbcType=BIGINT},
       current_number = #{currentNumber,jdbcType=DECIMAL},
       tenant_id = #{tenantId,jdbcType=BIGINT},
       delete_flag = #{deleteFlag,jdbcType=VARCHAR}

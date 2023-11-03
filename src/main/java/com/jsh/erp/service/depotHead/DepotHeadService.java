@@ -1381,7 +1381,7 @@ public class DepotHeadService {
         if(list!=null) {
             Long headId = list.get(0).getId();
             /**入庫和出庫处理单据子表信息*/
-            depotItemService.saveTransferDetails(rows,headId, "add",request);
+            depotItemService.saveTransferDetails(rows, headId, "add", request);
         }
         logService.insertLog("单据",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
@@ -1405,7 +1405,7 @@ public class DepotHeadService {
             JshException.writeFail(logger, e);
         }
         /**入庫和出庫处理单据子表信息*/
-        depotItemService.saveTransferDetails(rows,depotHead.getId(), "update",request);
+        depotItemService.saveTransferDetails(rows, depotHead.getId(), "update", request);
         logService.insertLog("单据",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());

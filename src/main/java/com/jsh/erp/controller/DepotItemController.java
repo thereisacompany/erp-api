@@ -123,6 +123,7 @@ public class DepotItemController {
             @RequestParam(value = "depotId",required = false) Long depotId,
             @RequestParam("barCode") String barCode,
             @RequestParam(value = "organId", required = false) Long organId,
+            @RequestParam(value = "counterId", required = false) Long counterId,
             HttpServletRequest request) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -134,7 +135,7 @@ public class DepotItemController {
                 if(StringUtil.isNotEmpty(materialVo4Unit.getSku())){
                     stock = depotItemService.getSkuStockByParam(depotId,materialVo4Unit.getMeId(),null,null);
                 } else {
-                    stock = depotItemService.getStockByParam(depotId, materialVo4Unit.getId(),null,null, organId);
+                    stock = depotItemService.getStockByParam(depotId, materialVo4Unit.getId(),null,null, organId, counterId);
                     if(materialVo4Unit.getUnitId()!=null) {
                         Unit unit = unitService.getUnit(materialVo4Unit.getUnitId());
                         String commodityUnit = materialVo4Unit.getCommodityUnit();
@@ -207,7 +208,7 @@ public class DepotItemController {
                             organId = depotHead.getOrganId();
                         }
 
-                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
+                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId, diEx.getCounterId());
                         if (StringUtil.isNotEmpty(unitInfo.getName())) {
                             stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
                         }
@@ -345,8 +346,8 @@ public class DepotItemController {
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
-                    BigDecimal prevSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, timeA, organId);
-                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, mId, timeA, timeB, organId);
+                    BigDecimal prevSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, timeA, organId, diEx.getCounterId());
+                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, mId, timeA, timeB, organId, diEx.getCounterId());
                     BigDecimal inSum = intervalMap.get("inSum");
                     BigDecimal outSum = intervalMap.get("outSum");
                     BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);
@@ -400,7 +401,7 @@ public class DepotItemController {
             if (null != dataList) {
                 for (DepotItemVo4WithInfoEx diEx : dataList) {
                     Long mId = diEx.getMId();
-                    BigDecimal thisSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, endTime, null);
+                    BigDecimal thisSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, endTime, null, null);
                     BigDecimal unitPrice = diEx.getPurchaseDecimal();
                     if(unitPrice == null) {
                         unitPrice = BigDecimal.ZERO;
