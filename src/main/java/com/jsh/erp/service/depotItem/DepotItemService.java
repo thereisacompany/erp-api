@@ -1164,7 +1164,6 @@ public class DepotItemService {
                 if(depotHead != null) {
                     organId = depotHead.getOrganId();
                 }
-                DepotItem depotItem = depotItemMapper.selectByPrimaryKey(depotHead.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

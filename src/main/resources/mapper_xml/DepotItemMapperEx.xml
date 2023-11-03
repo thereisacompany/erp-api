@@ -521,7 +521,7 @@
         <if test="organId != null">
             and dh.organ_id = ${organId}
         </if>
-        <if test="countId != null">
+        <if test="counterId != null">
             and di.counter_id = ${counterId}
         </if>
     </select>
