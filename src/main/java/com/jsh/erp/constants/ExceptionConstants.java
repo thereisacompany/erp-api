@@ -378,7 +378,7 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_AUDIT_TO_UN_AUDIT_FAILED_MSG = "抱歉，只有已审核的单据才能反审核";
     //单据录入-商品条码XXX的数量需要修改下
     public static final int DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE = 85000014;
-    public static final String DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG = "商品条码%s的数量需要修改下";
+    public static final String DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG = "商品品號:%s的數量不足";
     //单据录入-商品的批号不能为空
     public static final int DEPOT_HEAD_BATCH_NUMBERE_EMPTY_CODE = 8000015;
     public static final String DEPOT_HEAD_BATCH_NUMBERE_EMPTY_MSG = "抱歉，商品条码:%s的批号不能为空";

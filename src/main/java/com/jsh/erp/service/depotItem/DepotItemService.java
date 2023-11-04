@@ -500,7 +500,7 @@ public class DepotItemService {
                         BigDecimal finishNumber = rowObj.getBigDecimal("finishNumber");
                         if(depotItem.getOperNumber().add(finishNumber).compareTo(preNumber)>0) {
                             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE,
-                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, barCode));
+                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, depotHead.getOrganId()+"-"+materialExtend.getNumber()));
                         }
                     } else if("update".equals(actionType)) {
                         //当前单据的类型
@@ -514,7 +514,7 @@ public class DepotItemService {
                         BigDecimal realFinishNumber = getRealFinishNumber(currentSubType, depotItem.getMaterialExtendId(), depotItem.getLinkId(), preHeaderId, headerId, unitInfo, unit);
                         if(depotItem.getOperNumber().add(realFinishNumber).compareTo(preNumber)>0) {
                             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE,
-                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, barCode));
+                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, depotHead.getOrganId()+"-"+materialExtend.getNumber()));
                         }
                     }
                 }
@@ -724,7 +724,7 @@ public class DepotItemService {
                         BigDecimal finishNumber = rowObj.getBigDecimal("finishNumber");
                         if(depotItem.getOperNumber().add(finishNumber).compareTo(preNumber)>0) {
                             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE,
-                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, barCode));
+                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, depotHead+"-"+materialExtend.getNumber()));
                         }
                     } else if("update".equals(actionType)) {
                         //当前单据的类型
@@ -738,7 +738,7 @@ public class DepotItemService {
                         BigDecimal realFinishNumber = getRealFinishNumber(currentSubType, depotItem.getMaterialExtendId(), depotItem.getLinkId(), preHeaderId, headerId, unitInfo, unit);
                         if(depotItem.getOperNumber().add(realFinishNumber).compareTo(preNumber)>0) {
                             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_CODE,
-                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, barCode));
+                                    String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_EDIT_FAILED_MSG, depotHead+"-"+materialExtend.getNumber()));
                         }
                     }
                 }

@@ -1438,9 +1438,9 @@ public class DepotHeadService {
             Long beginTime = System.currentTimeMillis();
             //文件副檔名只能為 xls
             String fileName = file.getOriginalFilename();
-            if(StringUtil.isNotEmpty(fileName)) {
-                String fileExt = fileName.substring(fileName.indexOf(".")+1);
-                if(!"xls".equals(fileExt)) {
+            if (StringUtil.isNotEmpty(fileName)) {
+                String fileExt = fileName.substring(fileName.indexOf(".") + 1);
+                if (!"xls".equals(fileExt)) {
                     throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXTENSION_ERROR_CODE,
                             ExceptionConstants.MATERIAL_EXTENSION_ERROR_MSG);
                 }
@@ -1464,40 +1464,40 @@ public class DepotHeadService {
                 // 客單編號
                 String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
 
-                if(confirm == null && excelCustomNum == null) {
+                if (confirm == null && excelCustomNum == null) {
                     blockTimes++;
-                    if(blockTimes >= 2) {
+                    if (blockTimes >= 2) {
                         break;
                     }
                     continue;
                 }
-                if(confirm == null) {
+                if (confirm == null) {
                     confirm = getJsonValue(saveJson, "confirm");
                 }
 
                 // 收貨人
                 String receiveName = ExcelUtils.getContent(mainData, i, 2);
-                if(receiveName == null || (receiveName != null && receiveName.isEmpty())) {
+                if (receiveName == null || (receiveName != null && receiveName.isEmpty())) {
                     receiveName = getJsonValue(saveJson, "receiveName");
                 }
                 // 電話
                 String cellphone = ExcelUtils.getContent(mainData, i, 3);
-                if(cellphone ==  null || (cellphone != null && cellphone.isEmpty())) {
+                if (cellphone == null || (cellphone != null && cellphone.isEmpty())) {
                     cellphone = getJsonValue(saveJson, "cellphone");
                 }
                 // 發單日
                 String issueDate = ExcelUtils.getContent(mainData, i, 4);
-                if(issueDate == null || (issueDate != null && issueDate.isEmpty())) {
+                if (issueDate == null || (issueDate != null && issueDate.isEmpty())) {
                     issueDate = getJsonValue(saveJson, "issueDate");
                 }
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 5);
-                if(address == null || (address != null && address.isEmpty())) {
+                if (address == null || (address != null && address.isEmpty())) {
                     address = getJsonValue(saveJson, "address");
                 }
                 // 出貨倉別
                 String depotName = ExcelUtils.getContent(mainData, i, 6);
-                if(depotName == null || (depotName != null && depotName.isEmpty())) {
+                if (depotName == null || (depotName != null && depotName.isEmpty())) {
                     depotName = getJsonValue(saveJson, "depotName");
                 }
                 // 品號
@@ -1506,25 +1506,25 @@ public class DepotHeadService {
                 String materialName = ExcelUtils.getContent(mainData, i, 8);
                 // 數量
                 String amount = ExcelUtils.getContent(mainData, i, 9);
-                if(amount == null || (amount != null && amount.isEmpty())) {
+                if (amount == null || (amount != null && amount.isEmpty())) {
                     amount = getJsonValue(saveJson, "amount");
                 }
                 beanJson.put("amount", amount);
                 // 安裝方式
                 String install = ExcelUtils.getContent(mainData, i, 10);
-                if(install == null || (install != null && install.isEmpty())) {
+                if (install == null || (install != null && install.isEmpty())) {
                     install = getJsonValue(saveJson, "install");
                 }
                 beanJson.put("install", install);
                 // 舊機回收
                 String recycle = ExcelUtils.getContent(mainData, i, 11);
-                if(recycle == null || (recycle != null && recycle.isEmpty())) {
+                if (recycle == null || (recycle != null && recycle.isEmpty())) {
                     recycle = getJsonValue(saveJson, "recycle");
                 }
                 beanJson.put("recycle", recycle);
                 // 配道備註
                 String memo = ExcelUtils.getContent(mainData, i, 12);
-                if(memo == null || (memo != null && memo.isEmpty())) {
+                if (memo == null || (memo != null && memo.isEmpty())) {
                     memo = getJsonValue(saveJson, "memo");
                 }
                 beanJson.put("memo", memo);
@@ -1602,26 +1602,26 @@ public class DepotHeadService {
 //                beanJson.put("tenantId", 63);
 
                 beanJson.put("depotName", depotName);
-                if(excelCustomNum.split("-").length==1) {
+                if (excelCustomNum.split("-").length == 1) {
                     saveJson = beanJson;
                 }
 
                 JSONArray ary = new JSONArray();
                 JSONObject obj = new JSONObject();
                 MaterialExtend materialExtend = materialExtendService.getInfoByNumber(organAndNumber[1]);
-                if(materialExtend != null) {
+                if (materialExtend != null) {
                     Long materialId = materialExtend.getMaterialId();
                     obj.put("materialId", materialId);
                     obj.put("barCode", materialExtend.getBarCode());
-                    if(materialExtend.getCommodityUnit() == null) {
+                    if (materialExtend.getCommodityUnit() == null) {
                         obj.put("unit", "null");
                     } else {
                         obj.put("unit", materialExtend.getCommodityUnit());
                     }
                 }
                 String finalDepotName = depotName;
-                Optional<Depot> depot = depotList.stream().filter(d->d.getName().contains(finalDepotName)).findFirst();
-                if(depot.isPresent()) {
+                Optional<Depot> depot = depotList.stream().filter(d -> d.getName().contains(finalDepotName)).findFirst();
+                if (depot.isPresent()) {
                     obj.put("depotId", depot.get().getId());
                 }
 //                obj.put("counterName", counterName);
@@ -1681,10 +1681,12 @@ public class DepotHeadService {
             }
 
             Long endTime = System.currentTimeMillis();
-            logger.info("匯入秏時：{}", endTime-beginTime);
+            logger.info("匯入秏時：{}", endTime - beginTime);
             info.code = 200;
             info.data = "匯入成功";
-
+        } catch (BusinessRunTimeException brte) {
+            info.code = brte.getCode();
+            info.data = brte.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             info.code = 500;
