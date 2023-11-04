@@ -225,6 +225,7 @@ public class MaterialController {
                     }
                     item.put("mBarCode", material.getmBarCode());
                     item.put("name", material.getName());
+                    item.put("number", material.getNumber());
                     item.put("categoryName", material.getCategoryName());
                     item.put("standard", material.getStandard());
                     item.put("model", material.getModel());
