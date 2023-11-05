@@ -21,6 +21,7 @@
     <resultMap extends="com.jsh.erp.datasource.mappers.DepotItemMapper.BaseResultMap" id="ResultWithInfoExMap" type="com.jsh.erp.datasource.entities.DepotItemVo4WithInfoEx">
         <result column="MName" jdbcType="VARCHAR" property="MName" />
         <result column="MModel" jdbcType="VARCHAR" property="MModel" />
+        <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="MaterialUnit" jdbcType="VARCHAR" property="MaterialUnit" />
         <result column="MColor" jdbcType="VARCHAR" property="MColor" />
         <result column="MStandard" jdbcType="VARCHAR" property="MStandard" />
@@ -235,10 +236,11 @@
     </select>
 
     <select id="getDetailList" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
-        select di.*,m.name MName,m.model MModel,m.unit MaterialUnit,m.color MColor,m.standard MStandard,m.mfrs MMfrs,
+        select di.*,m.name MName,m.model MModel, CONCAT(dh.organ_id, '-', me.`number`) MNumber,m.unit MaterialUnit,m.color MColor,m.standard MStandard,m.mfrs MMfrs,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,m.enable_serial_number, m.enable_batch_number,
         jmc.name categoryName, dp1.name DepotName,dp2.name AnotherDepotName, me.bar_code barCode, me.purchase_decimal
         from jsh_depot_item di
+        left join erp.jsh_depot_head dh on dh.id = di.header_id and ifnull(dh.delete_flag,'0') !='1'
         left join jsh_material m on di.material_id=m.id  and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_category jmc on m.category_id =jmc.id
         left join jsh_material_extend me on me.id=di.material_extend_id  and ifnull(me.delete_Flag,'0') !='1'
