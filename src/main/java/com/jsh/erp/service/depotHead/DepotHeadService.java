@@ -1042,9 +1042,11 @@ public class DepotHeadService {
             /**入庫和出庫处理单据子表信息*/
             depotItemService.saveDetails(rows,headId, "add", request, userInfo);
         }
-        logService.insertLog("单据",
-                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        if(depotHead.getImportFlag().equals("0")) {
+            logService.insertLog("单据",
+                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        }
     }
 
     /**
@@ -1470,6 +1472,7 @@ public class DepotHeadService {
 
             JSONObject saveJson = null;
             int blockTimes = 0;
+            int importCount = 0;
             for (int i = 1; i < mainData.getRows(); i++) {
                 JSONObject beanJson = new JSONObject();
 
@@ -1550,51 +1553,16 @@ public class DepotHeadService {
                 }
                 beanJson.put("memo", memo);
 
-//                String excelNum = ExcelUtils.getContent(mainData, i, 0); //excel單號
-//                String custom = ExcelUtils.getContent(mainData, i, 1); // 客戶
-
                 String[] organAndNumber = mNumber.split("-");
                 Long organId = 0l;
                 if(organAndNumber.length > 0) {
                     organId = Long.valueOf(organAndNumber[0]);
                 }
-//                Optional<Supplier> supplier = supplierList.stream().filter(s->s.getSupplier().equals(custom)).findFirst();
-//                if(supplier.isPresent()) {
-//                    organId = supplier.get().getId();
-//                }
-//                String date = ExcelUtils.getContent(mainData, i, 2);
-//                String time = ExcelUtils.getContent(mainData, i, 3);
-//                if(custom.isEmpty() && date.isEmpty() && time.isEmpty()) {
-//                    continue;
-//                }
 
                 LocalDate date = LocalDate.parse(issueDate, formatterDate);
                 String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
                 String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-//                String mainArrival = ExcelUtils.getContent(mainData, i, 4); // 主商品到貨日
-//                if(!mainArrival.isEmpty()) {
-//                    mainArrival = LocalDate.parse(mainArrival, formatterDate).format(formatterChangeDate);
-//                }
-//                String extrasArrival = ExcelUtils.getContent(mainData, i, 5); // 贈品到貨日
-//                if(!extrasArrival.isEmpty()) {
-//                    extrasArrival = LocalDate.parse(extrasArrival, formatterDate).format(formatterChangeDate);
-//                }
-//                String agreedDelivery = ExcelUtils.getContent(mainData, i, 6); // 約配日
-//                if(!agreedDelivery.isEmpty()) {
-//                    agreedDelivery = LocalDate.parse(agreedDelivery, formatterDate).format(formatterChangeDate);
-//                }
-//                String delivered = ExcelUtils.getContent(mainData, i, 7); // 配達日
-//                if(!delivered.isEmpty()) {
-//                    delivered = LocalDate.parse(delivered, formatterDate).format(formatterChangeDate);
-//                }
-//                String notiNumber = ExcelUtils.getContent(mainData, i, 8); // 通知單號
-//                String taxId = ExcelUtils.getContent(mainData, i, 9); // 買家統編
-//                String buyerName = ExcelUtils.getContent(mainData, i, 10); // 買家名稱
-//                String receiveName = ExcelUtils.getContent(mainData, i, 11); // 收件人名稱
-//                String telephone = ExcelUtils.getContent(mainData, i, 12); // 電話
-//                String cellphone = ExcelUtils.getContent(mainData, i, 13); // 手機
-//                String address = ExcelUtils.getContent(mainData, i, 14); // 地址
                 JSONObject json = new JSONObject();
                 json.put("confirm", confirm);
                 json.put("install", install);
@@ -1664,60 +1632,22 @@ public class DepotHeadService {
                 obj.put("taxLastMoney", 0);
                 ary.add(obj);
 
-//                for(int j = 1; j < materialData.getRows();j++) {
-//                    String excelMaterialNum = ExcelUtils.getContent(materialData, j, 0); //excel單號
-//                    if (excelNum.equals(excelMaterialNum)) {
-//                        JSONObject obj = new JSONObject();
-//                        String depotName = ExcelUtils.getContent(materialData, j, 1); // 倉庫
-//                        String counterName = ExcelUtils.getContent(materialData, j, 2); // 儲位
-//                        String materialName = ExcelUtils.getContent(materialData, j, 3); // 商品
-//                        String amount = ExcelUtils.getContent(materialData, j, 4); // 數量
-//                        String price = ExcelUtils.getContent(materialData, j, 5); // 單價
-//                        String gold = ExcelUtils.getContent(materialData, j, 6); // 金額
-//                        String remark2 = ExcelUtils.getContent(materialData, j, 7); // 備註
-//
-//                        if(materialName.isEmpty()) {
-//                            continue;
-//                        }
-//                        Optional<Material> material = materialList.stream().filter(m->m.getName().equals(materialName)).findFirst();
-//                        if(material.isPresent()) {
-//                            Long materialId = material.get().getId();
-//                            obj.put("materialId", materialId);
-//
-//                            List<MaterialExtendVo4List> me = materialExtendService.getDetailList(materialId);
-//                            if(me.size() > 0) {
-//                                MaterialExtendVo4List materialExtendVo4List = me.get(0);
-//                                obj.put("barCode", materialExtendVo4List.getBarCode());
-//                                obj.put("unit", materialExtendVo4List.getUnit());
-//                            }
-//                        }
-//                        Optional<Depot> depot = depotList.stream().filter(d->d.getName().equals(depotName)).findFirst();
-//                        if(depot.isPresent()) {
-//                            obj.put("depotId", depot.get().getId());
-//                        }
-//
-////                        obj.put("counterId", 0);
-//                        obj.put("counterName", counterName);
-//                        obj.put("operNumber", amount);
-//                        obj.put("unitPrice", price);
-//                        obj.put("allPrice", gold);
-//                        obj.put("remark", remark2);
-//
-//                        ary.add(obj);
-//                    }
-//                }
-
                 String rows = ary.toJSONString();
                 addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
+
+                importCount++;
             }
 
+            logService.insertLog("匯入配送單",
+                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             Long endTime = System.currentTimeMillis();
             logger.info("匯入秏時：{}", endTime - beginTime);
             info.code = 200;
             info.data = "匯入成功";
         } catch (BusinessRunTimeException brte) {
             info.code = brte.getCode();
-            info.data = brte.getMessage();
+            info.data = brte.getData().get("message");
         } catch (Exception e) {
 //            e.printStackTrace();
             logger.error(e.toString());
