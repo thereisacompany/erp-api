@@ -1445,6 +1445,8 @@ public class DepotHeadService {
 
         User userInfo = userService.getCurrentUser();
 
+        String customNumber = "";
+
         try {
             Long beginTime = System.currentTimeMillis();
             //文件副檔名只能為 xls
@@ -1475,15 +1477,17 @@ public class DepotHeadService {
                 String confirm = ExcelUtils.getContent(mainData, i, 0);
                 // 客單編號
                 String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
+                customNumber = excelCustomNum;
 
-                if (confirm == null && excelCustomNum == null) {
+                if (confirm == null || (confirm != null && confirm.isEmpty())
+                        && excelCustomNum == null || (excelCustomNum != null && excelCustomNum.isEmpty())) {
                     blockTimes++;
                     if (blockTimes >= 2) {
                         break;
                     }
                     continue;
                 }
-                if (confirm == null) {
+                if (confirm == null || (confirm != null && confirm.isEmpty())) {
                     confirm = getJsonValue(saveJson, "confirm");
                 }
 
@@ -1550,7 +1554,10 @@ public class DepotHeadService {
 //                String custom = ExcelUtils.getContent(mainData, i, 1); // 客戶
 
                 String[] organAndNumber = mNumber.split("-");
-                Long organId = Long.valueOf(organAndNumber[0]);
+                Long organId = 0l;
+                if(organAndNumber.length > 0) {
+                    organId = Long.valueOf(organAndNumber[0]);
+                }
 //                Optional<Supplier> supplier = supplierList.stream().filter(s->s.getSupplier().equals(custom)).findFirst();
 //                if(supplier.isPresent()) {
 //                    organId = supplier.get().getId();
@@ -1712,9 +1719,10 @@ public class DepotHeadService {
             info.code = brte.getCode();
             info.data = brte.getMessage();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error(e.toString());
             info.code = 500;
-            info.data = "匯入失敗";
+            info.data = "匯入失敗,["+customNumber+"]";
         }
 
         return info;

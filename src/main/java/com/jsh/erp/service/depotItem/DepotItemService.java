@@ -1167,6 +1167,8 @@ public class DepotItemService {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            materialCurrentStock.setOrganId(organId);
+            materialCurrentStock.setCounterId(counterId);
             materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId, counterId));
             if(list!=null && list.size()>0) {
                 Long mcsId = list.get(0).getId();
