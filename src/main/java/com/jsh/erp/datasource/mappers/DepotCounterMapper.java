@@ -21,6 +21,8 @@ public interface DepotCounterMapper {
 
     DepotCounter selectByPrimaryKey(Long id);
 
+    List<DepotCounter> selectByAll();
+
     int insertSelective(DepotCounter record);
 
     int updateByPrimaryKeySelective(DepotCounter record);

@@ -46,6 +46,16 @@ public class DepotCounterService {
         return list;
     }
 
+    public List<DepotCounter> getAllList() {
+        List<DepotCounter> list = null;
+        try {
+            list = depotCounterMapper.selectByAll();
+        } catch (Exception e) {
+            JshException.readFail(logger, e);
+        }
+        return list;
+    }
+
     public Long counts(Map<String, String> map) {
         String search = map.get(Constants.SEARCH);
         String name = StringUtil.getInfo(search, "name");

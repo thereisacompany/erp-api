@@ -46,6 +46,11 @@
     from jsh_counter
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from jsh_counter
+  </select>
 <!--  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">-->
 <!--    delete from jsh_counter-->
 <!--    where id = #{id,jdbcType=BIGINT}-->

@@ -15,6 +15,7 @@ import com.jsh.erp.service.account.AccountService;
 import com.jsh.erp.service.accountHead.AccountHeadService;
 import com.jsh.erp.service.accountItem.AccountItemService;
 import com.jsh.erp.service.depot.DepotService;
+import com.jsh.erp.service.depotCounter.DepotCounterService;
 import com.jsh.erp.service.depotItem.DepotItemService;
 import com.jsh.erp.service.log.LogService;
 import com.jsh.erp.service.material.MaterialService;
@@ -75,6 +76,8 @@ public class DepotHeadService {
     private RoleService roleService;
     @Resource
     private DepotService depotService;
+    @Resource
+    private DepotCounterService depotCounterService;
     @Resource
     DepotItemService depotItemService;
     @Resource
@@ -1452,7 +1455,8 @@ public class DepotHeadService {
 
 //            List<Supplier> supplierList = supplierService.findBySelectSup();
             List<Depot> depotList = depotService.getAllList();
-//            List<Material> materialList = materialService.getMaterial();
+            List<DepotCounter> depotCountList = depotCounterService.getAllList();
+            //            List<Material> materialList = materialService.getMaterial();
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
@@ -1504,30 +1508,35 @@ public class DepotHeadService {
                 if (depotName == null || (depotName != null && depotName.isEmpty())) {
                     depotName = getJsonValue(saveJson, "depotName");
                 }
+                // 儲位
+                String counter = ExcelUtils.getContent(mainData, i, 7);
+                if(counter == null || (counter != null && counter.isEmpty())) {
+                    counter = getJsonValue(saveJson, "counter");
+                }
                 // 品號
-                String mNumber = ExcelUtils.getContent(mainData, i, 7);
+                String mNumber = ExcelUtils.getContent(mainData, i, 8);
                 // 商品型號
-                String materialName = ExcelUtils.getContent(mainData, i, 8);
+                String materialName = ExcelUtils.getContent(mainData, i, 9);
                 // 數量
-                String amount = ExcelUtils.getContent(mainData, i, 9);
+                String amount = ExcelUtils.getContent(mainData, i, 10);
                 if (amount == null || (amount != null && amount.isEmpty())) {
                     amount = getJsonValue(saveJson, "amount");
                 }
                 beanJson.put("amount", amount);
                 // 安裝方式
-                String install = ExcelUtils.getContent(mainData, i, 10);
+                String install = ExcelUtils.getContent(mainData, i, 11);
                 if (install == null || (install != null && install.isEmpty())) {
                     install = getJsonValue(saveJson, "install");
                 }
                 beanJson.put("install", install);
                 // 舊機回收
-                String recycle = ExcelUtils.getContent(mainData, i, 11);
+                String recycle = ExcelUtils.getContent(mainData, i, 12);
                 if (recycle == null || (recycle != null && recycle.isEmpty())) {
                     recycle = getJsonValue(saveJson, "recycle");
                 }
                 beanJson.put("recycle", recycle);
                 // 配道備註
-                String memo = ExcelUtils.getContent(mainData, i, 12);
+                String memo = ExcelUtils.getContent(mainData, i, 13);
                 if (memo == null || (memo != null && memo.isEmpty())) {
                     memo = getJsonValue(saveJson, "memo");
                 }
@@ -1606,6 +1615,7 @@ public class DepotHeadService {
 //                beanJson.put("tenantId", 63);
 
                 beanJson.put("depotName", depotName);
+                beanJson.put("counter", counter);
                 if (excelCustomNum.split("-").length == 1) {
                     saveJson = beanJson;
                 }
@@ -1627,6 +1637,12 @@ public class DepotHeadService {
                 Optional<Depot> depot = depotList.stream().filter(d -> d.getName().contains(finalDepotName)).findFirst();
                 if (depot.isPresent()) {
                     obj.put("depotId", depot.get().getId());
+                }
+                String finalCounter = counter;
+                Optional<DepotCounter> depotCounter = depotCountList.stream().filter(dc -> dc.getName().contains(finalCounter)).findFirst();
+                if(depotCounter.isPresent()) {
+                    obj.put("counterId", depotCounter.get().getId());
+                    obj.put("counterName", depotCounter.get().getName());
                 }
 //                obj.put("counterName", counterName);
                 obj.put("operNumber", amount);
