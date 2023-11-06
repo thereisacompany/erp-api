@@ -1,5 +1,6 @@
 package com.jsh.erp.datasource.vo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ public class MaterialsListVo {
     private String materialsList;
 
     private Long categoryId;
+
+    private BigDecimal materialCount;
 
     private String materialNumber;
 
@@ -32,7 +35,8 @@ public class MaterialsListVo {
             if(data.length > 1) {
                 number = Double.parseDouble(data[1]);
             }
-            retList.add(data[0] + "     *" + (int)number);
+//            retList.add(data[0] + "     *" + (int)number);
+            retList.add(data[0]);
         }
 
         return String.join(",", retList);
@@ -56,6 +60,14 @@ public class MaterialsListVo {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public BigDecimal getMaterialCount() {
+        return materialCount;
+    }
+
+    public void setMaterialCount(BigDecimal materialCount) {
+        this.materialCount = materialCount;
     }
 
     public String getMaterialNumber() {

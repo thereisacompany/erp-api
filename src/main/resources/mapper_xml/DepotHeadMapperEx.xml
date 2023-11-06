@@ -7,6 +7,7 @@
         <result column="OrganName" jdbcType="VARCHAR" property="organName" />
         <result column="userName" jdbcType="VARCHAR" property="userName" />
         <result column="AccountName" jdbcType="VARCHAR" property="accountName" />
+        <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="contacts" jdbcType="VARCHAR" property="contacts" />
         <result column="telephone" jdbcType="VARCHAR" property="telephone" />
         <result column="address" jdbcType="VARCHAR" property="address" />
@@ -61,7 +62,8 @@
     </resultMap>
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
-        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName, CONCAT(dh.organ_id, '-', me.`number`) MNumber
+        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
+        CONCAT(dh.organ_id, '-', me.`number`) MNumber
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
@@ -277,12 +279,13 @@
 
     <select id="findMaterialsListMapByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialsListVo">
         select jsh_depot_item.header_id,
-            group_concat(jsh_material.name,'|', jsh_depot_item.oper_number) as materialsList,
+            jsh_material.name materialsList,
+            jsh_depot_item.oper_number materialCount,
+            jsh_material_extend.number materialNumber,
             jsh_material.category_id,
-            group_concat(jsh_depot_head.organ_id,'|', jsh_material_extend.number) as materialNumber,
             jsh_depot.name as depotList
         from erp.jsh_depot_item
-        left join erp.jsh_depot on jsh_depot.id = jsh_depot_item.depot_id
+        left join jsh_depot on jsh_depot.id = jsh_depot_item.depot_id
         left join jsh_depot_head on jsh_depot_head.id = jsh_depot_item.header_id
         left join jsh_material on jsh_depot_item.material_id = jsh_material.Id and ifnull(jsh_material.delete_Flag,'0') !='1'
         left join jsh_material_extend on jsh_depot_item.material_extend_id = jsh_material_extend.Id and ifnull(jsh_material_extend.delete_Flag,'0') !='1'
@@ -294,7 +297,6 @@
             </foreach>
         </if>
         and ifnull(jsh_depot_item.delete_flag,'0') !='1'
-        group by jsh_depot_item.header_id
     </select>
 
     <select id="getMaterialCountListByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialCountVo">

@@ -156,9 +156,11 @@ public class DepotHeadService {
                 Map<String,BigDecimal> finishDepositMap = getFinishDepositMapByNumberList(numberList);
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
-                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+//                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
+                    String mKey = dh.getId()+""+dh.getMNumber().split("-")[1];
+
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
                         dh.setAccountName(accountStr);
@@ -207,12 +209,14 @@ public class DepotHeadService {
                     }
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()).getMaterialsList());
+                        MaterialsListVo vo = materialsListMap.get(mKey);
+                        dh.setMaterialsList(vo.getMaterialsList());
+                        dh.setMaterialCount(vo.getMaterialCount());
                     }
                     //商品总数量
-                    if(materialCountListMap!=null) {
-                        dh.setMaterialCount(materialCountListMap.get(dh.getId()));
-                    }
+//                    if(materialCountListMap!=null) {
+//                        dh.setMaterialCount(materialCountListMap.get(dh.getId()));
+//                    }
                     //以销定购的情况（不能显示销售单据的金额和客户名称）
                     if(StringUtil.isNotEmpty(purchaseStatus)) {
                         dh.setOrganName("****");
@@ -593,11 +597,11 @@ public class DepotHeadService {
         return result;
     }
 
-    public Map<Long, MaterialsListVo> findMaterialsListMapByHeaderIdList(List<Long> idList)throws Exception {
+    public Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList(List<Long> idList)throws Exception {
         List<MaterialsListVo> list = depotHeadMapperEx.findMaterialsListMapByHeaderIdList(idList);
-        Map<Long, MaterialsListVo> materialsListMap = new HashMap<>();
+        Map<String, MaterialsListVo> materialsListMap = new HashMap<>();
         for(MaterialsListVo materialsListVo : list){
-            materialsListMap.put(materialsListVo.getHeaderId(), materialsListVo);
+            materialsListMap.put(materialsListVo.getHeaderId()+""+materialsListVo.getMaterialNumber(), materialsListVo);
         }
         return materialsListMap;
     }
@@ -811,7 +815,7 @@ public class DepotHeadService {
                 //通过批量查询去构造map
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
@@ -847,7 +851,7 @@ public class DepotHeadService {
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        MaterialsListVo vo = materialsListMap.get(dh.getId());
+                        MaterialsListVo vo = materialsListMap.get(dh.getId()+dh.getMaterialNumber());
                         dh.setMaterialsList(vo.getMaterialsList());
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
@@ -1289,7 +1293,7 @@ public class DepotHeadService {
                     idList.add(dh.getId());
                 }
                 //通过批量查询去构造map
-                Map<Long, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getChangeAmount() != null) {
                         dh.setChangeAmount(dh.getChangeAmount().abs());
@@ -1331,7 +1335,7 @@ public class DepotHeadService {
                     dh.setDebt(needDebt.subtract(allBillDebt).subtract(finishDebt));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()).getMaterialsList());
+                        dh.setMaterialsList(materialsListMap.get(dh.getId()+""+dh.getMaterialNumber()).getMaterialsList());
                     }
                     resList.add(dh);
                 }
