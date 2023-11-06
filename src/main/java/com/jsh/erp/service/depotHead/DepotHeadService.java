@@ -159,7 +159,7 @@ public class DepotHeadService {
                 Map<String,BigDecimal> finishDepositMap = getFinishDepositMapByNumberList(numberList);
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
 //                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId()+""+dh.getMNumber().split("-")[1];
@@ -600,11 +600,15 @@ public class DepotHeadService {
         return result;
     }
 
-    public Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList(List<Long> idList)throws Exception {
+    public Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList(List<Long> idList, boolean isMNumber)throws Exception {
         List<MaterialsListVo> list = depotHeadMapperEx.findMaterialsListMapByHeaderIdList(idList);
         Map<String, MaterialsListVo> materialsListMap = new HashMap<>();
         for(MaterialsListVo materialsListVo : list){
-            materialsListMap.put(materialsListVo.getHeaderId()+""+materialsListVo.getMaterialNumber(), materialsListVo);
+            String key = String.valueOf(materialsListVo.getHeaderId());
+            if(isMNumber) {
+                key = materialsListVo.getHeaderId()+""+materialsListVo.getMaterialNumber();
+            }
+            materialsListMap.put(key, materialsListVo);
         }
         return materialsListMap;
     }
@@ -818,7 +822,7 @@ public class DepotHeadService {
                 //通过批量查询去构造map
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
-                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
                 for (DepotHeadVo4List dh : list) {
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
@@ -854,7 +858,7 @@ public class DepotHeadService {
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        MaterialsListVo vo = materialsListMap.get(dh.getId()+dh.getMaterialNumber());
+                        MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
                         dh.setMaterialsList(vo.getMaterialsList());
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
@@ -1296,7 +1300,7 @@ public class DepotHeadService {
                     idList.add(dh.getId());
                 }
                 //通过批量查询去构造map
-                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getChangeAmount() != null) {
                         dh.setChangeAmount(dh.getChangeAmount().abs());
@@ -1338,7 +1342,7 @@ public class DepotHeadService {
                     dh.setDebt(needDebt.subtract(allBillDebt).subtract(finishDebt));
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        dh.setMaterialsList(materialsListMap.get(dh.getId()+""+dh.getMaterialNumber()).getMaterialsList());
+                        dh.setMaterialsList(materialsListMap.get(String.valueOf(dh.getId())).getMaterialsList());
                     }
                     resList.add(dh);
                 }
