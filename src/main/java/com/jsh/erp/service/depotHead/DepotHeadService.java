@@ -1042,7 +1042,8 @@ public class DepotHeadService {
             /**入庫和出庫处理单据子表信息*/
             depotItemService.saveDetails(rows,headId, "add", request, userInfo);
         }
-        if(depotHead.getImportFlag().equals("0")) {
+        if(depotHead.getImportFlag() == null  ||
+                (depotHead.getImportFlag() != null && depotHead.getImportFlag().equals("0"))) {
             logService.insertLog("单据",
                     new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
                     ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
