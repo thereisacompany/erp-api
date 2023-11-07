@@ -285,6 +285,16 @@ public class MaterialCurrentStockExample {
             return (Criteria) this;
         }
 
+        public Criteria andOrganIdEqualTo(Long value) {
+            addCriterion("organ_id =", value, "organId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCounterIdEqualTo(Long value) {
+            addCriterion("counter_id =", value, "counterId");
+            return (Criteria) this;
+        }
+
         public Criteria andCurrentNumberIsNull() {
             addCriterion("current_number is null");
             return (Criteria) this;
