@@ -17,6 +17,10 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String MNumber;
 
+    private String depotName;
+
+    private String counterName;
+
     private String allocationProjectName;
 
     private String materialsList;
@@ -103,6 +107,22 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setMNumber(String MNumber) {
         this.MNumber = MNumber;
+    }
+
+    public String getDepotName() {
+        return depotName;
+    }
+
+    public void setDepotName(String depotName) {
+        this.depotName = depotName;
+    }
+
+    public String getCounterName() {
+        return counterName;
+    }
+
+    public void setCounterName(String counterName) {
+        this.counterName = counterName;
     }
 
     public String getAllocationProjectName() {
