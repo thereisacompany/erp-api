@@ -99,12 +99,20 @@ public class ExcelUtils {
 				}
 			}
 
+			System.out.println("item.getMaterialsList() >>>" + item.getMaterialsList());
 			String[] list = item.getMaterialsList().split(",");
 			if(list.length >= 1) {
 				String[] detail = list[0].split("[*]");
 
 				row4.getCell(1).setCellValue(detail[0]);		// 商品型號
-				row4.getCell(4).setCellValue(detail[1]);		// 數量
+				if(detail.length > 1) {
+					row4.getCell(4).setCellValue(detail[1]);        // 數量
+				}
+			}
+			if(item.getMaterialCount() != null) {
+				row4.getCell(4).setCellValue(String.valueOf(item.getMaterialCount()));
+			} else {
+				row4.getCell(4).setCellValue(0);
 			}
 
 			// 安裝方式
@@ -162,8 +170,8 @@ public class ExcelUtils {
 
 			templateFile.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-//			throw new RuntimeException(e);
+//			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return excelFile;
 	}

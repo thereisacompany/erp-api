@@ -284,7 +284,7 @@
             jsh_material_extend.number materialNumber,
             jsh_material.category_id,
             jsh_depot.name as depotList
-        from erp.jsh_depot_item
+        from jsh_depot_item
         left join jsh_depot on jsh_depot.id = jsh_depot_item.depot_id
         left join jsh_depot_head on jsh_depot_head.id = jsh_depot_item.header_id
         left join jsh_material on jsh_depot_item.material_id = jsh_material.Id and ifnull(jsh_material.delete_Flag,'0') !='1'

@@ -562,11 +562,11 @@ public class DepotHeadController {
             for (DepotHeadVo4List depotHeadVo4List : list) {
 
                 File file = ExcelUtils.exportHAConfirm(depotHeadVo4List);
-                if(list.size() == 1) {
-                    ExportExecUtil.showExec(file, file.getName(), response);
-                } else {
+//                if(list.size() == 1) {
+//                    ExportExecUtil.showExec(file, file.getName(), response);
+//                } else {
                     files.add(file);
-                }
+//                }
             }
             if(!files.isEmpty()) {
                 ExportExecUtil.showExecs(files, response);

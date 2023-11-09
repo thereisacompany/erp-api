@@ -862,6 +862,7 @@ public class DepotHeadService {
                         dh.setMaterialsList(vo.getMaterialsList());
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
+                        dh.setMaterialCount(vo.getMaterialCount());
                         dh.setDepotList(vo.getDepotList());
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
