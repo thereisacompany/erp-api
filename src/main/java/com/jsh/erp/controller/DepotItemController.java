@@ -333,11 +333,18 @@ public class DepotItemController {
             JSONArray dataArray = new JSONArray();
             if (null != dataList) {
                 for (DepotItemVo4WithInfoEx diEx : dataList) {
+                    if(depotList.size()==1) {
+                        if(diEx.getDepotId() != depotList.get(0)) {
+                            continue;
+                        }
+                    }
                     JSONObject item = new JSONObject();
                     Long mId = diEx.getMId();
                     item.put("barCode", diEx.getBarCode());
                     Long organId = Long.valueOf(diEx.getMNumber().split("-")[0]);
                     item.put("materialNumber", diEx.getMNumber());
+                    item.put("depotName", diEx.getDepotName());
+                    item.put("counterName", diEx.getCounterName());
                     item.put("materialName", diEx.getMName());
                     item.put("materialModel", diEx.getMModel());
                     item.put("materialStandard", diEx.getMStandard());
@@ -347,8 +354,8 @@ public class DepotItemController {
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
-                    BigDecimal prevSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, timeA, organId, diEx.getCounterId());
-                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, mId, timeA, timeB, organId, diEx.getCounterId());
+                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(diEx.getDepotId(), mId,null, timeA, organId, diEx.getCounterId());
+                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(diEx.getDepotId(), mId, timeA, timeB, organId, diEx.getCounterId());
                     BigDecimal inSum = intervalMap.get("inSum");
                     BigDecimal outSum = intervalMap.get("outSum");
                     BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);

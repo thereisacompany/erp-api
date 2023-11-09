@@ -252,7 +252,9 @@
     </select>
 
     <select id="findByAll" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
-        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber, m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
+        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber,
+        jd.name DepotName, jc.name counterName,
+        m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
         concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, m.unit_id, u.name unit_name, ifnull(me.purchase_decimal,0) purchase_decimal
         from jsh_material m
@@ -260,6 +262,8 @@
         left join jsh_depot_item di on di.material_id=m.id and ifnull(di.delete_Flag,'0') !='1'
         left join jsh_depot_head dh on di.header_id=dh.id and ifnull(dh.delete_flag,'0') !='1'
         left join jsh_unit u on m.unit_id=u.id and ifnull(u.delete_Flag,'0') !='1'
+        left join erp.jsh_depot jd on di.depot_id = jd.id
+        left join erp.jsh_counter jc on di.counter_id = jc.id
         where 1=1 and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
@@ -522,6 +526,39 @@
         </if>
         <if test="organId != null">
             and dh.organ_id = ${organId}
+        </if>
+        <if test="counterId != null">
+            and di.counter_id = ${counterId}
+        </if>
+    </select>
+
+    <select id="getStockByParamWithDepot" resultMap="stockMap">
+        select
+        sum(case when dh.type='入庫' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='配送單' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.sub_type='配送單' <include refid="anotherDepotParam" /> then di.basic_number else 0 end) as transfInTotal,
+        sum(case when dh.sub_type='配送單' <include refid="depotParam" /> then di.basic_number else 0 end) as transfOutTotal,
+        sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
+        sum(case when dh.sub_type='组装单' and di.material_type='普通子件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemOutTotal,
+        sum(case when dh.sub_type='拆卸单' and di.material_type='普通子件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemInTotal,
+        sum(case when dh.sub_type='拆卸单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemOutTotal
+        from
+        jsh_depot_head dh
+        left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'
+        where 1=1
+        and ifnull(dh.delete_flag,'0') !='1'
+        and di.material_id=#{mId}
+        <if test="beginTime != null">
+            and dh.oper_time &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            and dh.oper_time &lt;= #{endTime}
+        </if>
+        <if test="organId != null">
+            and dh.organ_id = ${organId}
+        </if>
+        <if test="depotId != null">
+            and di.depot_id = ${depotId}
         </if>
         <if test="counterId != null">
             and di.counter_id = ${counterId}

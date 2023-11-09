@@ -122,6 +122,14 @@ public interface DepotItemMapperEx {
             @Param("organId") Long organId,
             @Param("counterId") Long counterId);
 
+    DepotItemVo4Stock getStockByParamWithDepot(
+            @Param("depotId") Long depotList,
+            @Param("mId") Long mId,
+            @Param("beginTime") String beginTime,
+            @Param("endTime") String endTime,
+            @Param("organId") Long organId,
+            @Param("counterId") Long counterId);
+
     /**
      * 通过单据主表id查询所有单据子表数据
      * @param depotheadId

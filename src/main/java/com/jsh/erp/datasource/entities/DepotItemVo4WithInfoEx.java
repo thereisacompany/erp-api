@@ -9,6 +9,7 @@ public class DepotItemVo4WithInfoEx extends DepotItem{
     private String MName;
 
     private String MNumber;
+
     private String MModel;
 
     private String MaterialUnit;

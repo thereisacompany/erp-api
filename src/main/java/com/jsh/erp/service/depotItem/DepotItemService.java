@@ -1093,22 +1093,43 @@ public class DepotItemService {
         return initStock.add(stockCheckSum).add(stockSum);
     }
 
+    public BigDecimal getStockByParamWithDepot(Long depotId, Long mId, String beginTime, String endTime, Long organId, Long counterId) {
+        List<Long> depotList =new ArrayList<>();
+        depotList.add(depotId);
+        //初始库存
+        BigDecimal initStock = materialService.getInitStockByMidAndDepotList(depotList, mId);
+        DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotId, mId, beginTime, endTime, organId, counterId);
+        BigDecimal stockSum = BigDecimal.ZERO;
+        if(stockObj!=null) {
+            BigDecimal inTotal = stockObj.getInTotal();
+            BigDecimal transfInTotal = stockObj.getTransfInTotal();
+            BigDecimal assemInTotal = stockObj.getAssemInTotal();
+            BigDecimal disAssemInTotal = stockObj.getDisAssemInTotal();
+            BigDecimal outTotal = stockObj.getOutTotal();
+            BigDecimal transfOutTotal = stockObj.getTransfOutTotal();
+            BigDecimal assemOutTotal = stockObj.getAssemOutTotal();
+            BigDecimal disAssemOutTotal = stockObj.getDisAssemOutTotal();
+            stockSum = inTotal.add(transfInTotal).add(assemInTotal).add(disAssemInTotal)
+                    .subtract(outTotal).subtract(transfOutTotal).subtract(assemOutTotal).subtract(disAssemOutTotal);
+        }
+        return initStock.add(stockSum);
+    }
+
     /**
-     * 统计时间段内的入庫和出庫数量-多仓库
-     * @param depotList
+     * 统计时间段内的入庫和出庫数量
      * @param mId
      * @param beginTime
      * @param endTime
      * @return
      */
-    public Map<String, BigDecimal> getIntervalMapByParamWithDepotList(List<Long> depotList, Long mId, String beginTime, String endTime,
+    public Map<String, BigDecimal> getIntervalMapByParamWithDepotList(Long depotId, Long mId, String beginTime, String endTime,
                                                                       Long organId, Long counterId){
         Map<String,BigDecimal> intervalMap = new HashMap<>();
         BigDecimal inSum = BigDecimal.ZERO;
         BigDecimal outSum = BigDecimal.ZERO;
         //盘点复盘后数量的变动
-        BigDecimal stockCheckSum = depotItemMapperEx.getStockCheckSumByDepotList(depotList, mId, beginTime, endTime);
-        DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId, counterId);
+//        BigDecimal stockCheckSum = depotItemMapperEx.getStockCheckSumByDepotList(depotList, mId, beginTime, endTime);
+        DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotId, mId, beginTime, endTime, organId, counterId);
         if(stockObj!=null) {
             BigDecimal inTotal = stockObj.getInTotal();
             BigDecimal transfInTotal = stockObj.getTransfInTotal();
@@ -1121,12 +1142,12 @@ public class DepotItemService {
             BigDecimal disAssemOutTotal = stockObj.getDisAssemOutTotal();
             outSum = outTotal.add(transfOutTotal).add(assemOutTotal).add(disAssemOutTotal);
         }
-        if(stockCheckSum.compareTo(BigDecimal.ZERO)>0) {
-            inSum = inSum.add(stockCheckSum);
-        } else {
-            //盘点复盘数量为负数代表出庫
-            outSum = outSum.subtract(stockCheckSum);
-        }
+//        if(stockCheckSum.compareTo(BigDecimal.ZERO)>0) {
+//            inSum = inSum.add(stockCheckSum);
+//        } else {
+//            //盘点复盘数量为负数代表出庫
+//            outSum = outSum.subtract(stockCheckSum);
+//        }
         intervalMap.put("inSum", inSum);
         intervalMap.put("outSum", outSum);
         return intervalMap;
