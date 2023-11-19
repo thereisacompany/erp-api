@@ -157,6 +157,9 @@ public class MaterialExtendService {
                     String num = String.format("%07d", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
                     materialExtend.setNumber(num);
                 }
+                if (StringUtils.isNotEmpty(tempInsertedJson.getString("counter"))) {
+                    materialExtend.setCounter(tempInsertedJson.getString("counter"));
+                }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempInsertedJson.getString("commodityUnit"));
                 }
@@ -195,9 +198,9 @@ public class MaterialExtendService {
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("barcode"))) {
                     materialExtend.setBarcode(tempUpdatedJson.getString("barcode"));
                 }
-//                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("number"))) {
-//                    materialExtend.setNumber(tempUpdatedJson.getString("number"));
-//                }
+                if (StringUtils.isNotEmpty(tempUpdatedJson.getString("counter"))) {
+                    materialExtend.setCounter(tempUpdatedJson.getString("counter"));
+                }
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("commodityUnit"))) {
                     materialExtend.setCommodityUnit(tempUpdatedJson.getString("commodityUnit"));
                 }

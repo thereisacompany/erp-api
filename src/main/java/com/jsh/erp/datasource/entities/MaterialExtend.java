@@ -14,6 +14,8 @@ public class MaterialExtend {
 
     private String number;
 
+    private String counter;
+
     private String commodityUnit;
 
     private String sku;
@@ -78,6 +80,14 @@ public class MaterialExtend {
 
     public void setNumber(String number) {
         this.number = number == null ? null : number.trim();
+    }
+
+    public String getCounter() {
+        return counter;
+    }
+
+    public void setCounter(String counter) {
+        this.counter = counter;
     }
 
     public String getCommodityUnit() {
