@@ -226,6 +226,8 @@ public class DepotHeadService {
                         dh.setTotalPrice(null);
                         dh.setDiscountLastMoney(null);
                     }
+                    String showId = String.format("%03d", dh.getOrganId());
+                    dh.setOrganName(showId + " " + dh.getOrganName());
                     resList.add(dh);
                 }
             }
