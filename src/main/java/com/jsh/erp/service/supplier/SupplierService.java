@@ -100,7 +100,7 @@ public class SupplierService {
     }
 
     public List<Supplier> select(String supplier, String type, String phonenum, String telephone, int offset, int rows) throws Exception{
-        List<Supplier> resList = new ArrayList<Supplier>();
+        List<Supplier> resList = new ArrayList<>();
         try{
             List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, offset, rows);
             for(Supplier s : list) {
@@ -119,6 +119,9 @@ public class SupplierService {
                 sum = sum.add(depotHeadService.findTotalPay(supplierId, endTime, supType))
                         .subtract(accountHeadService.findTotalPay(supplierId, endTime, supType));
                 if(("客户").equals(s.getType())) {
+                    String showId = String.format("%03d", s.getId());
+                    s.setSupplier(showId + " " + s.getSupplier());
+
                     sum = sum.add(beginNeedGet);
                     s.setAllNeedGet(sum);
                 } else if(("供应商").equals(s.getType())) {
