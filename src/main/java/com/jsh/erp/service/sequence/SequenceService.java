@@ -19,6 +19,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +75,7 @@ public class SequenceService {
     }
 
     /**
-     * 创建一个唯一的序列号
+     * 創建一個唯一的序列號
      * */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public String buildOnlyNumber(String seqName)throws Exception{
@@ -96,5 +98,14 @@ public class SequenceService {
         }else{
             return buildOnlyNumber.toString();
         }
+    }
+
+    public String buildNumber(Boolean isDO){
+        if(isDO != null) {
+            if(isDO) {
+                return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+            }
+        }
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
 }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -30,17 +31,18 @@ public class SequenceController {
     private SequenceService sequenceService;
 
     /**
-     * 单据编号生成接口
+     * 單據編號生成接口
      * @param request
      * @return
      */
     @GetMapping(value = "/buildNumber")
-    @ApiOperation(value = "单据编号生成接口")
-    public BaseResponseInfo buildNumber(HttpServletRequest request)throws Exception {
+    @ApiOperation(value = "單據編號生成接口")
+    public BaseResponseInfo buildNumber(HttpServletRequest request, @RequestParam(value = "是否產生配送單", required = false) boolean isDO)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         try {
-            String number = sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
+//            String number = sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
+            String number = sequenceService.buildNumber(isDO);
             map.put("defaultNumber", number);
             res.code = 200;
             res.data = map;
