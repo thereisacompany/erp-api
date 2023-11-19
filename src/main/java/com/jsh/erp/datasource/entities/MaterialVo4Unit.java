@@ -28,6 +28,8 @@ public class MaterialVo4Unit extends Material{
 
     private String number;
 
+    private String counter;
+
     private String commodityUnit;
 
     private Long meId;
@@ -141,6 +143,14 @@ public class MaterialVo4Unit extends Material{
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getCounter() {
+        return counter;
+    }
+
+    public void setCounter(String counter) {
+        this.counter = counter;
     }
 
     public String getCommodityUnit() {
