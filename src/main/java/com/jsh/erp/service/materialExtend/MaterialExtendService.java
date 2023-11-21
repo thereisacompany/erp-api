@@ -95,6 +95,9 @@ public class MaterialExtendService {
             if("insert".equals(type)) {
                 JSONObject json = new JSONObject();
                 json.put("barCode", getMaxBarCode());
+                if(obj.containsKey("counter")) {
+                    json.put("counter", obj.getString("counter"));
+                }
                 meArr.add(json);
             }
         }
@@ -119,6 +122,9 @@ public class MaterialExtendService {
                     if(tempId.length()>19){
                         insertedJson.add(tempJson);
                     } else {
+                        if(obj.containsKey("counter")) {
+                            tempJson.put("counter", obj.getString("counter"));
+                        }
                         updatedJson.add(tempJson);
                     }
                 }
@@ -154,8 +160,8 @@ public class MaterialExtendService {
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("number"))) {
                     materialExtend.setNumber(tempInsertedJson.getString("number"));
                 } else {
-                    String num = String.format("%07d", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
-                    materialExtend.setNumber(num);
+//                    String num = String.format("%07d", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
+                    materialExtend.setNumber(sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
                 }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("counter"))) {
                     materialExtend.setCounter(tempInsertedJson.getString("counter"));
