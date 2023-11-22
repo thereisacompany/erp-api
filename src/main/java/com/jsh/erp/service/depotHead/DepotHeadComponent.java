@@ -52,11 +52,12 @@ public class DepotHeadComponent implements ICommonQuery {
         Long organId = StringUtil.parseStrLong(StringUtil.getInfo(search, "organId"));
         Long creator = StringUtil.parseStrLong(StringUtil.getInfo(search, "creator"));
         Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
+        String MNumber = StringUtil.getInfo(search, "MNumber");
         Long counterId = StringUtil.parseStrLong(StringUtil.getInfo(search, "counterId"));
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
         return depotHeadService.select(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
-                beginTime, endTime, materialParam, keyword, organId, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
+                beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
     @Override

@@ -133,7 +133,7 @@ public class DepotHeadService {
 
     public List<DepotHeadVo4List> select(String type, String subType, String roleType, String hasDebt, String status,
                                          String purchaseStatus, String number, String linkNumber, String beginTime,
-                                         String endTime, String materialParam, String keyword, Long organId, Long creator,
+                                         String endTime, String materialParam, String keyword, Long organId, String MNumber, Long creator,
                                          Long depotId, Long counterId, Long accountId, String remark, int offset, int rows) throws Exception {
         List<DepotHeadVo4List> resList = new ArrayList<>();
         try{
@@ -147,7 +147,7 @@ public class DepotHeadService {
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
             List<DepotHeadVo4List> list = depotHeadMapperEx.selectByConditionDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
-                 materialParam, keyword, organId, organArray, creator, depotId, counterId, depotArray, accountId, remark, offset, rows);
+                 materialParam, keyword, organId, organArray, MNumber, creator, depotId, counterId, depotArray, accountId, remark, offset, rows);
             if (null != list) {
                 List<Long> idList = new ArrayList<>();
                 List<String> numberList = new ArrayList<>();
@@ -162,7 +162,7 @@ public class DepotHeadService {
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
 //                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
-                    String mKey = dh.getId()+""+dh.getMNumber().split("-")[1];
+                    String mKey = dh.getId()+""+dh.getMNumber();
 
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
