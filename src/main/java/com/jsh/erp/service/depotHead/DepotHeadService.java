@@ -228,6 +228,11 @@ public class DepotHeadService {
                     }
                     String showId = String.format("%03d", dh.getOrganId());
                     dh.setOrganName(showId + " " + dh.getOrganName());
+
+                    if(dh.getCounterName() == null) {
+                        dh.setCounterName("");
+                    }
+
                     resList.add(dh);
                 }
             }
