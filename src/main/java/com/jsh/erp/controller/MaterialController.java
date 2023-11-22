@@ -223,6 +223,7 @@ public class MaterialController {
                             ratioStr = "[" + unit.getRatioThree() + unit.getBasicUnit() + "]";
                         }
                     }
+                    item.put("organId", material.getOrganId());
                     item.put("mBarCode", material.getmBarCode());
                     item.put("name", material.getName());
                     item.put("number", material.getNumber());
@@ -232,6 +233,7 @@ public class MaterialController {
                     item.put("color", material.getColor());
                     item.put("unit", material.getCommodityUnit() + ratioStr);
                     item.put("sku", material.getSku());
+                    item.put("counter", material.getCounter());
                     item.put("enableSerialNumber", material.getEnableSerialNumber());
                     item.put("enableBatchNumber", material.getEnableBatchNumber());
                     BigDecimal stock;

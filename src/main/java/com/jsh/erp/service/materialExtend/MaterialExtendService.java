@@ -95,6 +95,9 @@ public class MaterialExtendService {
             if("insert".equals(type)) {
                 JSONObject json = new JSONObject();
                 json.put("barCode", getMaxBarCode());
+                if(obj.containsKey("organId")) {
+                    json.put("organId", obj.getLong("organId"));
+                }
                 if(obj.containsKey("counter")) {
                     json.put("counter", obj.getString("counter"));
                 }
@@ -122,6 +125,9 @@ public class MaterialExtendService {
                     if(tempId.length()>19){
                         insertedJson.add(tempJson);
                     } else {
+                        if(obj.containsKey("organId")) {
+                            tempJson.put("organId", obj.getLong("organId"));
+                        }
                         if(obj.containsKey("counter")) {
                             tempJson.put("counter", obj.getString("counter"));
                         }
@@ -163,6 +169,9 @@ public class MaterialExtendService {
 //                    String num = String.format("%07d", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
                     materialExtend.setNumber(sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
                 }
+                if(tempInsertedJson.getLong("organId") != null) {
+                    materialExtend.setOrganId(tempInsertedJson.getLong("organId"));
+                }
                 if (StringUtils.isNotEmpty(tempInsertedJson.getString("counter"))) {
                     materialExtend.setCounter(tempInsertedJson.getString("counter"));
                 }
@@ -203,6 +212,9 @@ public class MaterialExtendService {
                 }
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("barcode"))) {
                     materialExtend.setBarcode(tempUpdatedJson.getString("barcode"));
+                }
+                if(tempUpdatedJson.getLong("organId") != null) {
+                    materialExtend.setOrganId(tempUpdatedJson.getLong("organId"));
                 }
                 if (StringUtils.isNotEmpty(tempUpdatedJson.getString("counter"))) {
                     materialExtend.setCounter(tempUpdatedJson.getString("counter"));

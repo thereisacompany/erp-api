@@ -14,6 +14,8 @@ public class MaterialExtend {
 
     private String number;
 
+    private Long organId;
+
     private String counter;
 
     private String commodityUnit;
@@ -80,6 +82,14 @@ public class MaterialExtend {
 
     public void setNumber(String number) {
         this.number = number == null ? null : number.trim();
+    }
+
+    public Long getOrganId() {
+        return organId;
+    }
+
+    public void setOrganId(Long organId) {
+        this.organId = organId;
     }
 
     public String getCounter() {

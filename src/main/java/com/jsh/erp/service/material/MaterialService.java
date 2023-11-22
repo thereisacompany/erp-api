@@ -134,6 +134,12 @@ public class MaterialService {
                     m.setMaterialOther(getMaterialOtherByParam(mpArr, m));
                     m.setStock(currentStockMap.get(m.getId())!=null? currentStockMap.get(m.getId()): BigDecimal.ZERO);
                     m.setBigUnitStock(getBigUnitStock(m.getStock(), m.getUnitId()));
+                    if(m.getCounter()==null) {
+                        m.setCounter("");
+                    }
+                    if(m.getOrganId()==null) {
+                        m.setOrganId(0L);
+                    }
                     resList.add(m);
                 }
             }
