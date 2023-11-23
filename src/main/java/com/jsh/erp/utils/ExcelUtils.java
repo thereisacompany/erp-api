@@ -437,7 +437,7 @@ public class ExcelUtils {
 				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 		LocalDate localDate = dateTime.toLocalDate();
 		item.setCreateTime(java.sql.Date.valueOf(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
-		item.setNumber("QTCK00000001387");
+		item.setNumber("S20231123160600");
 		item.setAddress("");
 		LocalDateTime aDateTime = LocalDateTime.parse("2023-08-24 00:00:00",
 				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

@@ -6,6 +6,7 @@ import com.jsh.erp.service.sequence.SequenceService;
 import com.jsh.erp.utils.BaseResponseInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,8 @@ public class SequenceController {
      */
     @GetMapping(value = "/buildNumber")
     @ApiOperation(value = "單據編號生成接口")
-    public BaseResponseInfo buildNumber(HttpServletRequest request, @RequestParam(value = "是否產生配送單", required = false) boolean isDO)throws Exception {
+    public BaseResponseInfo buildNumber(HttpServletRequest request,
+                                        @ApiParam(value = "是否產生配送單") @RequestParam(required = false) boolean isDO)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<>();
         try {

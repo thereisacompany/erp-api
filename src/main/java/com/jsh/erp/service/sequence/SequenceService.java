@@ -100,6 +100,10 @@ public class SequenceService {
         }
     }
 
+    /**
+     * @param isDO 是否為配送單
+     * @return
+     */
     public String buildNumber(Boolean isDO){
         if(isDO != null) {
             if(isDO) {

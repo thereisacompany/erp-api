@@ -948,17 +948,17 @@ public class DepotHeadService {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("QTRK")) {
+            if(depotHead.getDefaultNumber().contains("G")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_IN);
-            } else if (depotHead.getDefaultNumber().contains("QTCK")) {
+            } else if (depotHead.getDefaultNumber().contains("S")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
             }
         }
         String subType = depotHead.getSubType();
         if(subType == null||subType.isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("QTRK")) {
+            if(depotHead.getDefaultNumber().contains("G")) {
                 depotHead.setSubType(BusinessConstants.DEPOTHEAD_SUBTYPE_IN);
-            } else if (depotHead.getDefaultNumber().contains("QTCK")) {
+            } else if (depotHead.getDefaultNumber().contains("S")) {
                 depotHead.setSubType(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT);
             }
         } else {
@@ -1375,13 +1375,13 @@ public class DepotHeadService {
     public void addTransferDepotHead(String beanJson, String rows, HttpServletRequest request) throws Exception {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("QTCK")) {
+            if(depotHead.getDefaultNumber().contains("S")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
             }
         }
         String subType = depotHead.getSubType();
         if(subType == null||subType.isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("QTCK")) {
+            if(depotHead.getDefaultNumber().contains("G")) {
                 depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
             }
         }
@@ -1579,8 +1579,8 @@ public class DepotHeadService {
                 json.put("memo", memo);
                 String remark = json.toJSONString(); // 備註
 
-                // QTRK00000001425
-                String number = String.format("QTCK%011d", Long.valueOf(sequenceService.buildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ)));
+                // S20231123163920999
+                String number = String.format("S%s", sequenceService.buildNumber(Boolean.TRUE));
                 beanJson.put("number", number);
                 beanJson.put("defaultNumber", number);
                 beanJson.put("operTime", operTime);
@@ -1686,7 +1686,7 @@ public class DepotHeadService {
 //        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
 //        System.out.println("operTime>>"+operTime);
 
-        String number = String.format("QTRK%011d", Long.valueOf("1234"));
+        String number = String.format("S%s", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         System.out.println(">>>"+number);
 
 //        System.out.println(">>>"+LocalDateTime.parse(datetimeStr, formatter).format(formatterChange));
