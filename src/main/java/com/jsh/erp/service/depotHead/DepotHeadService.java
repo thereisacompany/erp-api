@@ -1375,15 +1375,11 @@ public class DepotHeadService {
     public void addTransferDepotHead(String beanJson, String rows, HttpServletRequest request) throws Exception {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("S")) {
-                depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
-            }
+            depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
         }
         String subType = depotHead.getSubType();
         if(subType == null||subType.isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("G")) {
-                depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
-            }
+            depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
         }
 
         //判断用户是否已经登录过，登录过不再处理
@@ -1409,7 +1405,7 @@ public class DepotHeadService {
             /**入庫和出庫处理单据子表信息*/
             depotItemService.saveTransferDetails(rows, headId, "add", request);
         }
-        logService.insertLog("单据",
+        logService.insertLog("單據(移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
     }
@@ -1432,7 +1428,7 @@ public class DepotHeadService {
         }
         /**入庫和出庫处理单据子表信息*/
         depotItemService.saveTransferDetails(rows, depotHead.getId(), "update", request);
-        logService.insertLog("单据",
+        logService.insertLog("單據(移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
     }
