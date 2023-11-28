@@ -595,7 +595,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), depotItem.getCounterId());
+                            depotHead.getOrganId(), null);
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
                         //对于sku商品要换个方式计算库存
                         stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -805,7 +805,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), depotItem.getCounterId());
+                            depotHead.getOrganId(), null);
                     if(StringUtil.isNotEmpty(depotItem.getSku())) {
                         //对于sku商品要换个方式计算库存
                         stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
