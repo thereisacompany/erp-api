@@ -7,7 +7,6 @@ import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.DepotHeadExample;
 import com.jsh.erp.datasource.entities.DepotItem;
 import com.jsh.erp.datasource.mappers.DepotHeadMapper;
-import com.jsh.erp.datasource.mappers.DepotItemMapper;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.depotItem.DepotItemService;
@@ -51,7 +50,7 @@ public class TransferWarehouseService {
             DepotHead depotHead = depotHeadService.getDepotHead(depotItem.getHeaderId());
             if("4".equals(status)) {
                 if("5".equals(depotHead.getStatus())) {
-                    dhIds.add(id);
+                    dhIds.add(depotHead.getId());
                 } else {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
@@ -66,6 +65,24 @@ public class TransferWarehouseService {
         if(dhIds.size()>=ids.size()) {
             DepotHead depotHead = new DepotHead();
             depotHead.setStatus(status);
+
+            String myRemark = depotHead.getRemark();
+            try {
+                JSONObject remarkJson = JSONObject.parseObject(myRemark);
+                String move = "";
+                if (remarkJson.containsKey("move")) {
+                    move = remarkJson.getString("move").concat(",").concat(depotItemIDs.trim());
+                    remarkJson.put("move", move);
+                } else {
+                    remarkJson.put("move", depotItemIDs.trim());
+                }
+                depotHead.setRemark(remarkJson.toJSONString());
+            }catch(Exception e) {
+                System.out.println("["+myRemark + "], 非json格式");
+                JSONObject json = new JSONObject();
+                json.put("move", depotItemIDs.trim());
+                depotHead.setRemark(json.toJSONString());
+            }
             DepotHeadExample example = new DepotHeadExample();
             example.createCriteria().andIdIn(dhIds);
             result = depotHeadMapper.updateByExampleSelective(depotHead, example);
@@ -152,6 +169,8 @@ public class TransferWarehouseService {
                     remark = String.format(transferChange, depotItem.getOperNumber(), amount);
                 }
                 depotItem.setRemark(remark);
+
+                depotItemService.updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId(), null);
             }
         }
         if(depotItem.getAnotherDepotId()!=null){
