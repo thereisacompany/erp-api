@@ -595,7 +595,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), depotItem.getCounterId());
+                            depotHead.getOrganId(), null);
 //                    if(StringUtil.isNotEmpty(depotItem.getSku())) {
 //                        //对于sku商品要换个方式计算库存
 //                        stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -645,7 +645,7 @@ public class DepotItemService {
         }
     }
 
-    // 移倉用
+    // TODO 移倉用
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void saveTransferDetails(String rows, Long headerId, String actionType, HttpServletRequest request) throws Exception{
         //查询单据主表信息
@@ -797,7 +797,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), depotItem.getCounterId());
+                            depotHead.getOrganId(), null);
 //                    if(StringUtil.isNotEmpty(depotItem.getSku())) {
 //                        //对于sku商品要换个方式计算库存
 //                        stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -819,8 +819,9 @@ public class DepotItemService {
 //                }
 
                 this.insertDepotItemWithObj(depotItem);
-                //更新当前库存
-//                updateCurrentStock(depotItem);
+
+                // TODO 移倉時，只先更新移出的數量
+                updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId(), depotItem.getCounterId());
             }
         } else {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ROW_FAILED_CODE,

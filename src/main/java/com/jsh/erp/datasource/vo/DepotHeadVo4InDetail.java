@@ -12,8 +12,9 @@ public class DepotHeadVo4InDetail {
 
     private String barCode;
 
-    private Long MId;
     private String MName;
+
+    private String MId;
 
     private String MNumber;
 
@@ -26,6 +27,12 @@ public class DepotHeadVo4InDetail {
     private String mUnit;
 
     private String newRemark;
+
+    private String remark;
+
+    private String subMark;
+
+    private Long SubId;
 
     private BigDecimal OperNumber;
 
@@ -89,11 +96,11 @@ public class DepotHeadVo4InDetail {
         this.barCode = barCode;
     }
 
-    public Long getMId() {
+    public String getMId() {
         return MId;
     }
 
-    public void setMId(Long MId) {
+    public void setMId(String MId) {
         this.MId = MId;
     }
 
@@ -151,6 +158,30 @@ public class DepotHeadVo4InDetail {
 
     public void setNewRemark(String newRemark) {
         this.newRemark = newRemark;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getSubMark() {
+        return subMark;
+    }
+
+    public void setSubMark(String subMark) {
+        this.subMark = subMark;
+    }
+
+    public Long getSubId() {
+        return SubId;
+    }
+
+    public void setSubId(Long subId) {
+        SubId = subId;
     }
 
     public BigDecimal getOperNumber() {

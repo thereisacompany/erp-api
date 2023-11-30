@@ -587,14 +587,6 @@ public class DepotHeadService {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_MSG));
                 }
-            } else if("4".equals(status)) {
-                if("5".equals(depotHead.getStatus())) {
-                    dhIds.add(id);
-                } else {
-                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
-                            String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
-                }
-                updateTransferDepotHeadStock(id);
             }
         }
         if(dhIds.size()>0) {
@@ -690,6 +682,31 @@ public class DepotHeadService {
         try{
             list =depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
                     materialParam, depotList, depotFList, remark, offset, rows);
+
+            list.parallelStream().forEach(detail->{
+                String myRemark = detail.getRemark();
+                // 處理status
+                String status = detail.getStatus();
+                if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING)) {
+                    if(myRemark != null && !myRemark.isEmpty()) {
+                        JSONObject remarkJson = JSONObject.parseObject(remark);
+                        if(remarkJson.containsKey("move")) {
+                            if(remarkJson.getString("move").contains(detail.getMId())) {
+                                detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
+                            }
+                        }
+                    }
+                }
+                // 處理remark
+                if(myRemark != null && !myRemark.isEmpty()) {
+                    JSONObject remarkJson = JSONObject.parseObject(remark);
+                    String memo = "";
+                    if(remarkJson.containsKey("memo")) {
+                        memo = remarkJson.getString("memo");
+                    }
+                    detail.setNewRemark(memo + "   " + detail.getSubMark());
+                }
+            });
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
