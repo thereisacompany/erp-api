@@ -81,7 +81,7 @@ public class TransferWarehouseController {
                                  HttpServletRequest request) throws Exception{
         Map<String, Object> objectMap = new HashMap<>();
         String ids = jsonObject.getString("ids");
-        int res = depotHeadService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
+        int res = transferWarehouseService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {
@@ -95,11 +95,12 @@ public class TransferWarehouseController {
      * @return
      */
     @PostMapping(value = "/setStatus/{id}")
-    public String setStatus(@PathVariable("id") Long id, @RequestParam("mid") Long mid,
-                            @ApiParam("實際入庫數量") @RequestParam("amount") Integer amount,
+    @ApiOperation(value = "單一移倉設置狀態-移倉完成")
+    public String setStatus(@PathVariable("id") Long id, @RequestParam(value = "mid", required = false) Long mid,
+                            @ApiParam("實際入庫數量") @RequestParam(value = "amount", required = false) Integer amount,
                             HttpServletRequest request) throws Exception {
         Map<String, Object> objectMap = new HashMap<>();
-        int res = transferWarehouseService.confirmSingleStatus(id, mid, amount);
+        int res = transferWarehouseService.confirmSingleStatus(id, amount);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {
