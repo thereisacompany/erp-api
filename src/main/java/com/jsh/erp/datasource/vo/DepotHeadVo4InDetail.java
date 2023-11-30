@@ -12,6 +12,7 @@ public class DepotHeadVo4InDetail {
 
     private String barCode;
 
+    private Long MId;
     private String MName;
 
     private String MNumber;
@@ -86,6 +87,14 @@ public class DepotHeadVo4InDetail {
 
     public void setBarCode(String barCode) {
         this.barCode = barCode;
+    }
+
+    public Long getMId() {
+        return MId;
+    }
+
+    public void setMId(Long MId) {
+        this.MId = MId;
     }
 
     public String getMName() {

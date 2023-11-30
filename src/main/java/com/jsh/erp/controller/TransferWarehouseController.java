@@ -5,9 +5,11 @@ import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
 import com.jsh.erp.service.depotHead.DepotHeadService;
+import com.jsh.erp.service.transferwarehouse.TransferWarehouseService;
 import com.jsh.erp.utils.ErpInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,8 @@ public class TransferWarehouseController {
     @Resource
     private DepotHeadService depotHeadService;
 
-
+    @Resource
+    private TransferWarehouseService transferWarehouseService;
 
     /**
      * 新增移倉單
@@ -79,6 +82,24 @@ public class TransferWarehouseController {
         Map<String, Object> objectMap = new HashMap<>();
         String ids = jsonObject.getString("ids");
         int res = depotHeadService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
+        if(res > 0) {
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else {
+            return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
+        }
+    }
+
+    /**
+     * 單一移倉設置狀態-移倉完成
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/setStatus/{id}")
+    public String setStatus(@PathVariable("id") Long id, @RequestParam("mid") Long mid,
+                            @ApiParam("實際入庫數量") @RequestParam("amount") Integer amount,
+                            HttpServletRequest request) throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        int res = transferWarehouseService.confirmSingleStatus(id, mid, amount);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {

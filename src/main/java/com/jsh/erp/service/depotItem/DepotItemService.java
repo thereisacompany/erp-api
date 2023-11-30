@@ -1183,16 +1183,16 @@ public class DepotItemService {
             if(organId != null) {
                 criteria.andOrganIdEqualTo(organId);
             }
-            if(counterId != null) {
-                criteria.andCounterIdEqualTo(counterId);
-            }
+//            if(counterId != null) {
+//                criteria.andCounterIdEqualTo(counterId);
+//            }
             List<MaterialCurrentStock> list = materialCurrentStockMapper.selectByExample(example);
             MaterialCurrentStock materialCurrentStock = new MaterialCurrentStock();
             materialCurrentStock.setMaterialId(mId);
             materialCurrentStock.setDepotId(dId);
             materialCurrentStock.setOrganId(organId);
             materialCurrentStock.setCounterId(counterId);
-            materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId, counterId));
+            materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId, null));
             if(list!=null && list.size()>0) {
                 Long mcsId = list.get(0).getId();
                 materialCurrentStock.setId(mcsId);
