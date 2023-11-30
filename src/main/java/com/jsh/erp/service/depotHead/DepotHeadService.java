@@ -683,28 +683,35 @@ public class DepotHeadService {
             list =depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
                     materialParam, depotList, depotFList, remark, offset, rows);
 
-            list.parallelStream().forEach(detail->{
+            list.stream().forEach(detail->{
                 String myRemark = detail.getRemark();
                 // 處理status
                 String status = detail.getStatus();
                 if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING)) {
-                    if(myRemark != null && !myRemark.isEmpty()) {
-                        JSONObject remarkJson = JSONObject.parseObject(remark);
+                    try {
+                        JSONObject remarkJson = JSONObject.parseObject(myRemark);
                         if(remarkJson.containsKey("move")) {
                             if(remarkJson.getString("move").contains(detail.getMId())) {
                                 detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
                             }
                         }
+                    }catch(Exception e) {
+                        System.out.println("["+myRemark + "], 非json格式");
                     }
                 }
                 // 處理remark
-                if(myRemark != null && !myRemark.isEmpty()) {
-                    JSONObject remarkJson = JSONObject.parseObject(remark);
+                try {
+                    JSONObject remarkJson = JSONObject.parseObject(myRemark);
                     String memo = "";
-                    if(remarkJson.containsKey("memo")) {
+                    if (remarkJson.containsKey("memo")) {
                         memo = remarkJson.getString("memo");
                     }
-                    detail.setNewRemark(memo + "   " + detail.getSubMark());
+                    myRemark = memo + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
+                    detail.setNewRemark(myRemark);
+                }catch(Exception e) {
+                    System.out.println("["+myRemark + "], 非json格式");
+                    myRemark = myRemark + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
+                    detail.setNewRemark(myRemark);
                 }
             });
         }catch(Exception e){
