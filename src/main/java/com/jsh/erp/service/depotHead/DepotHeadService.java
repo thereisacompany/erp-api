@@ -1415,6 +1415,16 @@ public class DepotHeadService {
         }
         depotHead.setPurchaseStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
         depotHead.setPayType(depotHead.getPayType()==null?"現付":depotHead.getPayType());
+
+        // remark
+        JSONObject remarkJson = new JSONObject();
+        if(depotHead.getRemark()!=null) {
+            remarkJson.put("memo", depotHead.getRemark());
+        } else {
+            remarkJson.put("memo", "");
+        }
+        depotHead.setRemark(remarkJson.toJSONString());
+
         try{
             depotHeadMapper.insertSelective(depotHead);
         }catch(Exception e){
@@ -1445,6 +1455,13 @@ public class DepotHeadService {
     public void updateTransferDepotHead(String beanJson, String rows, HttpServletRequest request)throws Exception {
         /**更新单据主表信息*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+        // remark
+        JSONObject remarkJson = new JSONObject();
+        if(depotHead.getRemark()!=null) {
+            remarkJson.put("memo", depotHead.getRemark());
+            depotHead.setRemark(remarkJson.toJSONString());
+        }
+
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
         }catch(Exception e){
