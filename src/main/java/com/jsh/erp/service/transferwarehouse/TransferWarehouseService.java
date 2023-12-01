@@ -21,7 +21,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TransferWarehouseService {
@@ -43,55 +45,97 @@ public class TransferWarehouseService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int batchSetStatus(String status, String depotItemIDs)throws Exception {
         int result = 0;
-        List<Long> dhIds = new ArrayList<>();
+
+        // header_id, item_ids
+        Map<Long, List<Long>> dhIdMap = new HashMap<>();
+
+//        List<Long> dhIds = new ArrayList<>();
         List<Long> ids = StringUtil.strToLongList(depotItemIDs);
         for(Long id: ids) {
-
             DepotItem depotItem = depotItemService.getDepotItem(id);
 
-            DepotHead depotHead = depotHeadService.getDepotHead(depotItem.getHeaderId());
-            if("4".equals(status)) {
-                if("5".equals(depotHead.getStatus())) {
-                    dhIds.add(depotHead.getId());
+            Long headerId = depotItem.getHeaderId();
+            DepotHead depotHead = depotHeadService.getDepotHead(headerId);
+
+            List<Long> headerIdList;
+            if (dhIdMap.containsKey(headerId)) {
+                headerIdList = dhIdMap.get(headerId);
+            } else {
+                headerIdList = new ArrayList<>();
+            }
+
+            if(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED.equals(status)) {
+                if(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING.equals(depotHead.getStatus())) {
+                    headerIdList.add(id);
+//                    dhIds.add(depotHead.getId());
                 } else {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
                 }
 
+                // 更新item的確認數量
                 depotItem.setConfirmNumber(depotItem.getOperNumber());
                 depotItemMapper.updateByPrimaryKeySelective(depotItem);
 
-                //更新當前庫存
+                // TODO 更新當前移入倉的庫存
                 if(depotItem.getAnotherDepotId()!=null){
-                    depotItemService.updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getAnotherDepotId(), null);
+                    depotItemService.updateCurrentStockFun(headerId, depotItem.getMaterialId(), depotItem.getAnotherDepotId(), null);
                 }
             }
         }
-        if(dhIds.size()>=ids.size()) {
-            DepotHead depotHead = new DepotHead();
-            depotHead.setStatus(status);
 
-            String myRemark = depotHead.getRemark();
+        dhIdMap.forEach((headerKey, itemList)->{
             try {
-                JSONObject remarkJson = JSONObject.parseObject(myRemark);
-                String move = "";
-                if (remarkJson.containsKey("move")) {
-                    move = remarkJson.getString("move").concat(",").concat(depotItemIDs.trim());
-                    remarkJson.put("move", move);
-                } else {
-                    remarkJson.put("move", depotItemIDs.trim());
+                // TODO 取得在移倉主單內含多少張細單
+                int totalItemSize = depotItemService.getListByHeaderId(headerKey).size();
+
+                // TODO 有多少細單已經移倉完成
+                int moveItemSize = 0;
+                DepotHead depotHead = depotHeadService.getDepotHead(headerKey);
+                String remark = depotHead.getRemark();
+                if(remark != null) {
+                    JSONObject json = JSONObject.parseObject(remark);
+                    if(json.containsKey("move")) {
+                        moveItemSize = json.getString("move").split(",").length;
+                    }
                 }
-                depotHead.setRemark(remarkJson.toJSONString());
-            }catch(Exception e) {
-                System.out.println("["+myRemark + "], 非json格式");
-                JSONObject json = new JSONObject();
-                json.put("move", depotItemIDs.trim());
-                depotHead.setRemark(json.toJSONString());
+                if(totalItemSize == (moveItemSize+itemList.size())) {
+                    depotHead.setStatus(status);
+                    
+                }
+
+            } catch (Exception e) {
+//                throw new RuntimeException(e);
             }
-            DepotHeadExample example = new DepotHeadExample();
-            example.createCriteria().andIdIn(dhIds);
-            result = depotHeadMapper.updateByExampleSelective(depotHead, example);
-        }
+        });
+
+//        if(dhIds.size()>=ids.size()) {
+//            // TODO 需判斷item屬於那些header
+//            DepotHead depotHead = new DepotHead();
+//            depotHead.setStatus(status);
+//
+//            String myRemark = depotHead.getRemark();
+//            try {
+//                JSONObject remarkJson = JSONObject.parseObject(myRemark);
+//                String move = "";
+//                if (remarkJson.containsKey("move")) {
+//                    move = remarkJson.getString("move").concat(",").concat(depotItemIDs.trim());
+//                    remarkJson.put("move", move);
+//                } else {
+//                    remarkJson.put("move", depotItemIDs.trim());
+//                }
+//                depotHead.setRemark(remarkJson.toJSONString());
+//            }catch(Exception e) {
+//                System.out.println("["+myRemark + "], 非json格式");
+//                JSONObject json = new JSONObject();
+        // TODO 需將舊有的資料取出，一併存入
+//                json.put("move", depotItemIDs.trim());
+//                depotHead.setRemark(json.toJSONString());
+//            }
+//            DepotHeadExample example = new DepotHeadExample();
+//            example.createCriteria().andIdIn(dhIds);
+//            result = depotHeadMapper.updateByExampleSelective(depotHead, example);
+//        }
         return result;
     }
 
@@ -139,6 +183,7 @@ public class TransferWarehouseService {
                     jsonObject.put("move", String.valueOf(id));
                 }
             }
+            // TODO 需將舊有的資料取出，一併存入
             depotHead.setRemark(jsonObject.toJSONString());
             DepotHeadExample example = new DepotHeadExample();
             example.createCriteria().andIdIn(dhIds);
