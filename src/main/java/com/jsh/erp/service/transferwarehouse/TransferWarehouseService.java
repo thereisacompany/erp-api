@@ -161,12 +161,12 @@ public class TransferWarehouseService {
                 depotItem.setOperNumber(decimalAmount);
                 depotItem.setBasicNumber(decimalAmount);
 
-                String transferChange = "移倉數量: %d, 確認數量: %d";
+                String transferChange = "移倉數量: %s, 確認數量: %s";
                 String remark = depotItem.getRemark();
-                if(remark != null || !remark.isEmpty()) {
-                    remark = remark.concat(",").concat(String.format(transferChange, depotItem.getOperNumber(), amount));
+                if(remark == null) {
+                    remark = String.format(transferChange, depotItem.getOperNumber().toString(), amount);
                 } else {
-                    remark = String.format(transferChange, depotItem.getOperNumber(), amount);
+                    remark = remark.concat(",").concat(String.format(transferChange, depotItem.getOperNumber(), amount));
                 }
                 depotItem.setRemark(remark);
 
