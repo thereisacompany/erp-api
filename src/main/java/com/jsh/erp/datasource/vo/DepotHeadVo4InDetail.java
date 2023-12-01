@@ -14,6 +14,8 @@ public class DepotHeadVo4InDetail {
 
     private String MName;
 
+    private String MId;
+
     private String MNumber;
 
     private String Model;
@@ -26,7 +28,16 @@ public class DepotHeadVo4InDetail {
 
     private String newRemark;
 
+    private String remark;
+
+    private String subMark;
+
+    private Long SubId;
+
+    private BigDecimal stock;
     private BigDecimal OperNumber;
+    
+    private BigDecimal ConfirmNumber;
 
     private BigDecimal AllPrice;
 
@@ -88,6 +99,14 @@ public class DepotHeadVo4InDetail {
         this.barCode = barCode;
     }
 
+    public String getMId() {
+        return MId;
+    }
+
+    public void setMId(String MId) {
+        this.MId = MId;
+    }
+
     public String getMName() {
         return MName;
     }
@@ -144,6 +163,38 @@ public class DepotHeadVo4InDetail {
         this.newRemark = newRemark;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getSubMark() {
+        return subMark;
+    }
+
+    public void setSubMark(String subMark) {
+        this.subMark = subMark;
+    }
+
+    public Long getSubId() {
+        return SubId;
+    }
+
+    public void setSubId(Long subId) {
+        SubId = subId;
+    }
+
+    public void setStock(BigDecimal stock) {
+        this.stock = stock;
+    }
+
+    public BigDecimal getStock() {
+        return stock;
+    }
+
     public BigDecimal getOperNumber() {
         return OperNumber;
     }
@@ -152,6 +203,13 @@ public class DepotHeadVo4InDetail {
         OperNumber = operNumber;
     }
 
+    public BigDecimal getConfirmNumber() {
+        return ConfirmNumber;
+    }
+
+    public void setConfirmNumber(BigDecimal confirmNumber) {
+        this.ConfirmNumber = confirmNumber;
+    }
     public BigDecimal getAllPrice() {
         return AllPrice;
     }

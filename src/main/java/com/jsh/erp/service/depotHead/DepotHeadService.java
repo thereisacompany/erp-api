@@ -51,7 +51,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
 import static com.jsh.erp.utils.Tools.getNow3;
@@ -587,14 +586,6 @@ public class DepotHeadService {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_MSG));
                 }
-            } else if("4".equals(status)) {
-                if("5".equals(depotHead.getStatus())) {
-                    dhIds.add(id);
-                } else {
-                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
-                            String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
-                }
-                updateTransferDepotHeadStock(id);
             }
         }
         if(dhIds.size()>0) {
@@ -688,8 +679,62 @@ public class DepotHeadService {
                             String remark, Integer offset, Integer rows) throws Exception{
         List<DepotHeadVo4InDetail> list = null;
         try{
-            list =depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
+            list = depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
                     materialParam, depotList, depotFList, remark, offset, rows);
+
+            list.stream().forEach(detail->{
+                try {
+                    // 處理庫存
+                    BigDecimal stock;
+
+                    Long materialId = Long.parseLong(detail.getMId());
+//                    Unit unitInfo = materialService.findUnit(materialId); //查询计量单位信息
+//                    String materialUnit = diEx.getMaterialUnit();
+                    Long organId = null;
+                    DepotHead depotHead = getDepotHead(detail.getDId());
+                    if (depotHead != null) {
+                        organId = depotHead.getOrganId();
+                    }
+
+                    stock = depotItemService.getStockByParam(detail.getDId(), materialId, null, null, organId, null);
+//                    if (StringUtil.isNotEmpty(unitInfo.getName())) {
+//                        stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
+//                    }
+                    detail.setStock(stock);
+                } catch (Exception e) {
+                    detail.setStock(BigDecimal.ZERO);
+                }
+
+                String myRemark = detail.getRemark();
+                // 處理status
+                String status = detail.getStatus();
+                if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING)) {
+                    try {
+                        JSONObject remarkJson = JSONObject.parseObject(myRemark);
+                        if(remarkJson.containsKey("move")) {
+                            if(remarkJson.getString("move").contains(detail.getMId())) {
+                                detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
+                            }
+                        }
+                    }catch(Exception e) {
+                        System.out.println("["+myRemark + "], 非json格式");
+                    }
+                }
+                // 處理remark
+                try {
+                    JSONObject remarkJson = JSONObject.parseObject(myRemark);
+                    String memo = "";
+                    if (remarkJson.containsKey("memo")) {
+                        memo = remarkJson.getString("memo");
+                    }
+                    myRemark = memo + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
+                    detail.setNewRemark(myRemark);
+                }catch(Exception e) {
+                    System.out.println("["+myRemark + "], 非json格式");
+                    myRemark = myRemark + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
+                    detail.setNewRemark(myRemark);
+                }
+            });
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -1375,15 +1420,11 @@ public class DepotHeadService {
     public void addTransferDepotHead(String beanJson, String rows, HttpServletRequest request) throws Exception {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("S")) {
-                depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
-            }
+            depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_OUT);
         }
         String subType = depotHead.getSubType();
         if(subType == null||subType.isEmpty()) {
-            if(depotHead.getDefaultNumber().contains("G")) {
-                depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
-            }
+            depotHead.setSubType(BusinessConstants.SUB_TYPE_TRANSFER);
         }
 
         //判断用户是否已经登录过，登录过不再处理
@@ -1395,6 +1436,16 @@ public class DepotHeadService {
         }
         depotHead.setPurchaseStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
         depotHead.setPayType(depotHead.getPayType()==null?"現付":depotHead.getPayType());
+
+        // remark
+        JSONObject remarkJson = new JSONObject();
+        if(depotHead.getRemark()!=null) {
+            remarkJson.put("memo", depotHead.getRemark());
+        } else {
+            remarkJson.put("memo", "");
+        }
+        depotHead.setRemark(remarkJson.toJSONString());
+
         try{
             depotHeadMapper.insertSelective(depotHead);
         }catch(Exception e){
@@ -1409,7 +1460,7 @@ public class DepotHeadService {
             /**入庫和出庫处理单据子表信息*/
             depotItemService.saveTransferDetails(rows, headId, "add", request);
         }
-        logService.insertLog("单据",
+        logService.insertLog("單據(移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_ADD).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
     }
@@ -1425,6 +1476,13 @@ public class DepotHeadService {
     public void updateTransferDepotHead(String beanJson, String rows, HttpServletRequest request)throws Exception {
         /**更新单据主表信息*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+        // remark
+        JSONObject remarkJson = new JSONObject();
+        if(depotHead.getRemark()!=null) {
+            remarkJson.put("memo", depotHead.getRemark());
+            depotHead.setRemark(remarkJson.toJSONString());
+        }
+
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
         }catch(Exception e){
@@ -1432,7 +1490,7 @@ public class DepotHeadService {
         }
         /**入庫和出庫处理单据子表信息*/
         depotItemService.saveTransferDetails(rows, depotHead.getId(), "update", request);
-        logService.insertLog("单据",
+        logService.insertLog("單據(移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
     }

@@ -23,6 +23,8 @@ public class DepotItem {
 
     private BigDecimal basicNumber;
 
+    private BigDecimal confirmNumber;
+
     private BigDecimal unitPrice;
 
     private BigDecimal purchaseUnitPrice;
@@ -127,6 +129,14 @@ public class DepotItem {
 
     public void setBasicNumber(BigDecimal basicNumber) {
         this.basicNumber = basicNumber;
+    }
+
+    public BigDecimal getConfirmNumber() {
+        return confirmNumber;
+    }
+
+    public void setConfirmNumber(BigDecimal confirmNumber) {
+        this.confirmNumber = confirmNumber;
     }
 
     public BigDecimal getUnitPrice() {
