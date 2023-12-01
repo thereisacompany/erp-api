@@ -100,7 +100,7 @@ public class TransferWarehouseController {
                             @ApiParam("實際入庫數量") @RequestParam(value = "amount", required = false) Integer amount,
                             HttpServletRequest request) throws Exception {
         Map<String, Object> objectMap = new HashMap<>();
-        int res = transferWarehouseService.confirmSingleStatus(id, amount);
+        int res = transferWarehouseService.confirmSingleStatus(id, amount, request);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {

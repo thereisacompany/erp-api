@@ -25,6 +25,7 @@
         <result column="unit_price" jdbcType="DECIMAL" property="UnitPrice" />
         <result column="SubId" jdbcType="INTEGER" property="SubId" />
         <result column="oper_number" jdbcType="DECIMAL" property="OperNumber" />
+        <result column="confirm_number" jdbcType="DECIMAL" property="ConfirmNumber" />
         <result column="all_price" jdbcType="DECIMAL" property="AllPrice" />
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
         <result column="tax_money" jdbcType="DECIMAL" property="taxMoney" />
@@ -548,7 +549,7 @@
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
         select dh.id header_id, dh.number,me.bar_code, m.`name` MName, m.id MId,
         m.model,m.standard,di.unit_price,di.material_unit as mUnit, dh.organ_id, di.id SubId,
-        di.oper_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_id SCounterId, di.another_counter_name SCounter,
+        di.oper_number,di.confirm_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_id SCounterId, di.another_counter_name SCounter,
         d.dName DName, di.depot_id DId, di.counter_id DCounterId, di.counter_name DCounter, jmc.name categoryName,
         dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, dh.remark, dh.remark , di.remark SubMark,
         concat_ws('  ',dh.remark,di.remark) as newRemark,

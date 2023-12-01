@@ -36,6 +36,8 @@ public class DepotHeadVo4InDetail {
 
     private BigDecimal stock;
     private BigDecimal OperNumber;
+    
+    private BigDecimal ConfirmNumber;
 
     private BigDecimal AllPrice;
 
@@ -201,6 +203,13 @@ public class DepotHeadVo4InDetail {
         OperNumber = operNumber;
     }
 
+    public BigDecimal getConfirmNumber() {
+        return ConfirmNumber;
+    }
+
+    public void setConfirmNumber(BigDecimal confirmNumber) {
+        this.ConfirmNumber = confirmNumber;
+    }
     public BigDecimal getAllPrice() {
         return AllPrice;
     }

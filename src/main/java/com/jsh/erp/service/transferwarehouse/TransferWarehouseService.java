@@ -7,6 +7,7 @@ import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.DepotHeadExample;
 import com.jsh.erp.datasource.entities.DepotItem;
 import com.jsh.erp.datasource.mappers.DepotHeadMapper;
+import com.jsh.erp.datasource.mappers.DepotItemMapper;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.depotItem.DepotItemService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +37,8 @@ public class TransferWarehouseService {
     @Resource
     private DepotHeadMapper depotHeadMapper;
 
-//    @Resource
-//    private DepotItemMapper depotItemMapper;
+    @Resource
+    private DepotItemMapper depotItemMapper;
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int batchSetStatus(String status, String depotItemIDs)throws Exception {
@@ -55,6 +57,9 @@ public class TransferWarehouseService {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
                             String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG));
                 }
+
+                depotItem.setConfirmNumber(depotItem.getOperNumber());
+                depotItemMapper.updateByPrimaryKeySelective(depotItem);
 
                 //更新當前庫存
                 if(depotItem.getAnotherDepotId()!=null){
@@ -91,7 +96,7 @@ public class TransferWarehouseService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public int confirmSingleStatus(Long id, Integer amount) throws Exception {
+    public int confirmSingleStatus(Long id, Integer amount, HttpServletRequest request) throws Exception {
         int result = 0;
         Long dhId;
         DepotItem depotItem = depotItemService.getDepotItem(id);
@@ -160,7 +165,7 @@ public class TransferWarehouseService {
                 BigDecimal decimalAmount = new BigDecimal(amount);
                 depotItem.setOperNumber(decimalAmount);
                 depotItem.setBasicNumber(decimalAmount);
-
+                depotItem.setConfirmNumber(decimalAmount);
                 String transferChange = "移倉數量: %s, 確認數量: %s";
                 String remark = depotItem.getRemark();
                 if(remark == null) {
@@ -170,8 +175,12 @@ public class TransferWarehouseService {
                 }
                 depotItem.setRemark(remark);
 
+                depotItemMapper.updateByPrimaryKeySelective(depotItem);
+
                 depotItemService.updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId(), null);
             }
+        } else {
+            depotItem.setConfirmNumber(depotItem.getOperNumber());
         }
         if(depotItem.getAnotherDepotId()!=null){
             depotItemService.updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getAnotherDepotId(), null);
