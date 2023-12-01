@@ -51,7 +51,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
 import static com.jsh.erp.utils.Tools.getNow3;
@@ -680,10 +679,32 @@ public class DepotHeadService {
                             String remark, Integer offset, Integer rows) throws Exception{
         List<DepotHeadVo4InDetail> list = null;
         try{
-            list =depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
+            list = depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
                     materialParam, depotList, depotFList, remark, offset, rows);
 
             list.stream().forEach(detail->{
+                try {
+                    // 處理庫存
+                    BigDecimal stock;
+
+                    Long materialId = Long.parseLong(detail.getMId());
+//                    Unit unitInfo = materialService.findUnit(materialId); //查询计量单位信息
+//                    String materialUnit = diEx.getMaterialUnit();
+                    Long organId = null;
+                    DepotHead depotHead = getDepotHead(detail.getDId());
+                    if (depotHead != null) {
+                        organId = depotHead.getOrganId();
+                    }
+
+                    stock = depotItemService.getStockByParam(detail.getDId(), materialId, null, null, organId, null);
+//                    if (StringUtil.isNotEmpty(unitInfo.getName())) {
+//                        stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
+//                    }
+                    detail.setStock(stock);
+                } catch (Exception e) {
+                    detail.setStock(BigDecimal.ZERO);
+                }
+
                 String myRemark = detail.getRemark();
                 // 處理status
                 String status = detail.getStatus();

@@ -34,6 +34,7 @@ public class DepotHeadVo4InDetail {
 
     private Long SubId;
 
+    private BigDecimal stock;
     private BigDecimal OperNumber;
 
     private BigDecimal AllPrice;
@@ -182,6 +183,14 @@ public class DepotHeadVo4InDetail {
 
     public void setSubId(Long subId) {
         SubId = subId;
+    }
+
+    public void setStock(BigDecimal stock) {
+        this.stock = stock;
+    }
+
+    public BigDecimal getStock() {
+        return stock;
     }
 
     public BigDecimal getOperNumber() {
