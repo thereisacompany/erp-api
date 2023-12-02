@@ -396,7 +396,7 @@ public class DepotItemService {
         //删除序列号和回收序列号
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
         //删除单据的明细
-        deleteDepotItemHeadId(headerId);
+        deleteDepotItemHeadId(headerId, Boolean.FALSE);
         JSONArray rowArr = JSONArray.parseArray(rows);
         if (null != rowArr && rowArr.size()>0) {
             for (int i = 0; i < rowArr.size(); i++) {
@@ -595,7 +595,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), null);
+                            depotHead.getOrganId());
 //                    if(StringUtil.isNotEmpty(depotItem.getSku())) {
 //                        //对于sku商品要换个方式计算库存
 //                        stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
@@ -645,7 +645,7 @@ public class DepotItemService {
         }
     }
 
-    // TODO 移倉用
+    // 移倉用
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void saveTransferDetails(String rows, Long headerId, String actionType, HttpServletRequest request) throws Exception{
         //查询单据主表信息
@@ -653,8 +653,9 @@ public class DepotItemService {
         //删除序列号和回收序列号
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
         //删除单据的明细
-        deleteDepotItemHeadId(headerId);
+        deleteDepotItemHeadId(headerId, Boolean.TRUE);
         JSONArray rowArr = JSONArray.parseArray(rows);
+        System.out.println(">>>>>>>>>>>  saveTransferDetails  rowArr size >> "+rowArr.size());
         if (null != rowArr && rowArr.size()>0) {
             for (int i = 0; i < rowArr.size(); i++) {
                 DepotItem depotItem = new DepotItem();
@@ -762,7 +763,7 @@ public class DepotItemService {
                 //出庫时判断库存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
                     BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId(), null);
+                            depotHead.getOrganId());
                     BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
                     if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber)<0){
                         throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
@@ -773,7 +774,7 @@ public class DepotItemService {
                 this.insertDepotItemWithObj(depotItem);
 
                 // 移倉時，只先更新移出的數量
-                updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId(), depotItem.getCounterId());
+                updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId());
             }
         } else {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ROW_FAILED_CODE,
@@ -871,7 +872,7 @@ public class DepotItemService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void deleteDepotItemHeadId(Long headerId)throws Exception {
+    public void deleteDepotItemHeadId(Long headerId, boolean isTrans)throws Exception {
         try{
             //1、查询删除前的单据明细
             List<DepotItem> depotItemList = getListByHeaderId(headerId);
@@ -881,7 +882,11 @@ public class DepotItemService {
             depotItemMapper.deleteByExample(example);
             //3、计算删除之后单据明细中商品的库存
             for(DepotItem depotItem : depotItemList){
-                updateCurrentStock(depotItem);
+                if(isTrans) {
+
+                } else {
+                    updateCurrentStock(depotItem);
+                }
             }
         }catch(Exception e){
             JshException.writeFail(logger, e);
@@ -999,12 +1004,12 @@ public class DepotItemService {
      * @param endTime
      * @return
      */
-    public BigDecimal getStockByParam(Long depotId, Long mId, String beginTime, String endTime, Long organId, Long counterId){
+    public BigDecimal getStockByParam(Long depotId, Long mId, String beginTime, String endTime, Long organId){
         List<Long> depotList = new ArrayList<>();
         if(depotId != null) {
             depotList.add(depotId);
         }
-        return getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId, counterId);
+        return getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId);
     }
 
     /**
@@ -1016,12 +1021,17 @@ public class DepotItemService {
      * @return
      */
     public BigDecimal getStockByParamWithDepotList(List<Long> depotList, Long mId, String beginTime, String endTime,
-                                                   Long organId, Long counterId){
+                                                   Long organId){
+        return getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId, null);
+    }
+
+    public BigDecimal getStockByParamWithDepotList(List<Long> depotList, Long mId, String beginTime, String endTime,
+                                                   Long organId, Long diId){
         //初始库存
         BigDecimal initStock = materialService.getInitStockByMidAndDepotList(depotList, mId);
         //盘点复盘后数量的变动
         BigDecimal stockCheckSum = depotItemMapperEx.getStockCheckSumByDepotList(depotList, mId, beginTime, endTime);
-        DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId, counterId);
+        DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepotList(depotList, mId, beginTime, endTime, organId, diId);
         BigDecimal stockSum = BigDecimal.ZERO;
         if(stockObj!=null) {
             BigDecimal inTotal = stockObj.getInTotal();
@@ -1104,9 +1114,9 @@ public class DepotItemService {
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void updateCurrentStock(DepotItem depotItem){
-        updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId(), depotItem.getCounterId());
+        updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getDepotId());
         if(depotItem.getAnotherDepotId()!=null){
-            updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getAnotherDepotId(), depotItem.getAnotherCounterId());
+            updateCurrentStockFun(depotItem.getHeaderId(), depotItem.getMaterialId(), depotItem.getAnotherDepotId());
         }
     }
 
@@ -1115,7 +1125,7 @@ public class DepotItemService {
      * @param mId
      * @param dId
      */
-    public void updateCurrentStockFun(Long headerId, Long mId, Long dId, Long counterId) {
+    public void updateCurrentStockFun(Long headerId, Long mId, Long dId) {
         if(mId!=null && dId!=null) {
             Long organId = null;
             try {
@@ -1144,8 +1154,7 @@ public class DepotItemService {
             materialCurrentStock.setMaterialId(mId);
             materialCurrentStock.setDepotId(dId);
             materialCurrentStock.setOrganId(organId);
-            materialCurrentStock.setCounterId(counterId);
-            materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId, null));
+            materialCurrentStock.setCurrentNumber(getStockByParam(dId, mId,null,null, organId));
             if(list!=null && list.size()>0) {
                 Long mcsId = list.get(0).getId();
                 materialCurrentStock.setId(mcsId);

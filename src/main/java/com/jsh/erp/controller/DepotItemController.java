@@ -135,7 +135,7 @@ public class DepotItemController {
                 if(StringUtil.isNotEmpty(materialVo4Unit.getSku())){
                     stock = depotItemService.getSkuStockByParam(depotId,materialVo4Unit.getMeId(),null,null);
                 } else {
-                    stock = depotItemService.getStockByParam(depotId, materialVo4Unit.getId(),null,null, organId, counterId);
+                    stock = depotItemService.getStockByParam(depotId, materialVo4Unit.getId(),null,null, organId);
                     if(materialVo4Unit.getUnitId()!=null) {
                         Unit unit = unitService.getUnit(materialVo4Unit.getUnitId());
                         String commodityUnit = materialVo4Unit.getCommodityUnit();
@@ -209,7 +209,7 @@ public class DepotItemController {
                             organId = depotHead.getOrganId();
                         }
 
-                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId, diEx.getCounterId());
+                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
                         if (StringUtil.isNotEmpty(unitInfo.getName())) {
                             stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
                         }
@@ -409,7 +409,7 @@ public class DepotItemController {
             if (null != dataList) {
                 for (DepotItemVo4WithInfoEx diEx : dataList) {
                     Long mId = diEx.getMId();
-                    BigDecimal thisSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, endTime, null, null);
+                    BigDecimal thisSum = depotItemService.getStockByParamWithDepotList(depotList, mId,null, endTime, null);
                     BigDecimal unitPrice = diEx.getPurchaseDecimal();
                     if(unitPrice == null) {
                         unitPrice = BigDecimal.ZERO;

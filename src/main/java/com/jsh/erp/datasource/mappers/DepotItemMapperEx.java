@@ -120,7 +120,7 @@ public interface DepotItemMapperEx {
             @Param("beginTime") String beginTime,
             @Param("endTime") String endTime,
             @Param("organId") Long organId,
-            @Param("counterId") Long counterId);
+            @Param("diId") Long diId);
 
     DepotItemVo4Stock getStockByParamWithDepot(
             @Param("depotId") Long depotList,

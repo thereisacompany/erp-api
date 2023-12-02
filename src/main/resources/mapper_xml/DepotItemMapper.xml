@@ -10,6 +10,7 @@
     <result column="sku" jdbcType="VARCHAR" property="sku" />
     <result column="oper_number" jdbcType="DECIMAL" property="operNumber" />
     <result column="basic_number" jdbcType="DECIMAL" property="basicNumber" />
+    <result column="confirm_number" jdbcType="DECIMAL" property="confirmNumber" />
     <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
     <result column="purchase_unit_price" jdbcType="DECIMAL" property="purchaseUnitPrice" />
     <result column="tax_unit_price" jdbcType="DECIMAL" property="taxUnitPrice" />
@@ -92,7 +93,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, header_id, material_id, material_extend_id, material_unit, sku, oper_number, 
-    basic_number, unit_price, purchase_unit_price, tax_unit_price, all_price, remark, 
+    basic_number, confirm_number, unit_price, purchase_unit_price, tax_unit_price, all_price, remark,
     depot_id, counter_id, counter_name, another_depot_id, another_counter_id, another_counter_name,
     tax_rate, tax_money, tax_last_money, material_type, sn_list,
     batch_number, expiration_date, link_id, tenant_id, delete_flag
@@ -491,6 +492,9 @@
       <if test="basicNumber != null">
         basic_number = #{basicNumber,jdbcType=DECIMAL},
       </if>
+      <if test="confirmNumber != null">
+        confirm_number = #{confirmNumber,jdbcType=DECIMAL},
+      </if>
       <if test="unitPrice != null">
         unit_price = #{unitPrice,jdbcType=DECIMAL},
       </if>
@@ -566,6 +570,7 @@
       sku = #{sku,jdbcType=VARCHAR},
       oper_number = #{operNumber,jdbcType=DECIMAL},
       basic_number = #{basicNumber,jdbcType=DECIMAL},
+      confirm_number = #{confirmNumber,jdbcType=DECIMAL},
       unit_price = #{unitPrice,jdbcType=DECIMAL},
       purchase_unit_price = #{purchaseUnitPrice,jdbcType=DECIMAL},
       tax_unit_price = #{taxUnitPrice,jdbcType=DECIMAL},

@@ -505,7 +505,7 @@
     <select id="getStockByParamWithDepotList" resultMap="stockMap">
         select
         sum(case when dh.type='入庫' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
-        sum(case when dh.type='出庫' and dh.sub_type!='配送單' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
         sum(case when dh.sub_type='移倉' <include refid="anotherDepotParam" /> then di.basic_number else 0 end) as transfInTotal,
         sum(case when dh.sub_type='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as transfOutTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
@@ -514,7 +514,8 @@
         sum(case when dh.sub_type='拆卸单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemOutTotal
         from
         jsh_depot_head dh
-        left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'
+        left join jsh_depot_item di on dh.id=di.header_id
+        and ifnull(di.delete_flag,'0') !='1'
         where 1=1
         and ifnull(dh.delete_flag,'0') !='1'
         and di.material_id=#{mId}
@@ -527,8 +528,8 @@
         <if test="organId != null">
             and dh.organ_id = ${organId}
         </if>
-        <if test="counterId != null">
-            and di.counter_id = ${counterId}
+        <if test="diId != null">
+            and di.confirm_number > 0
         </if>
     </select>
 

@@ -244,7 +244,7 @@ public class MaterialService {
                             insertInitialStockByMaterialAndDepot(depotId, material.getId(), parseBigDecimalEx(number), lowSafeStock, highSafeStock);
                         }
                         //更新当前库存
-                        depotItemService.updateCurrentStockFun(null, material.getId(), depotId, null);
+                        depotItemService.updateCurrentStockFun(null, material.getId(), depotId);
                     }
                 }
             }
@@ -1183,7 +1183,7 @@ public class MaterialService {
         List<Depot> depotList = depotService.getAllList();
         for(Long mId: idList) {
             for(Depot depot: depotList) {
-                depotItemService.updateCurrentStockFun(null, mId, depot.getId(), null);
+                depotItemService.updateCurrentStockFun(null, mId, depot.getId());
                 res = 1;
             }
         }

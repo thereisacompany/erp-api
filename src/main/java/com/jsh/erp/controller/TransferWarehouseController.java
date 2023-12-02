@@ -77,6 +77,7 @@ public class TransferWarehouseController {
     public String batchSetStatus(@RequestBody JSONObject jsonObject,
                                  HttpServletRequest request) throws Exception{
         Map<String, Object> objectMap = new HashMap<>();
+        // 各細單id depot_item
         String ids = jsonObject.getString("ids");
         int res = transferWarehouseService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
         if(res > 0) {
