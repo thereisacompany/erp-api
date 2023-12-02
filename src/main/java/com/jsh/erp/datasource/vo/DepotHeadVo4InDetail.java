@@ -28,10 +28,6 @@ public class DepotHeadVo4InDetail {
 
     private String newRemark;
 
-    private String remark;
-
-    private String subMark;
-
     private Long SubId;
 
     private BigDecimal stock;
@@ -162,23 +158,6 @@ public class DepotHeadVo4InDetail {
     public void setNewRemark(String newRemark) {
         this.newRemark = newRemark;
     }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getSubMark() {
-        return subMark;
-    }
-
-    public void setSubMark(String subMark) {
-        this.subMark = subMark;
-    }
-
     public Long getSubId() {
         return SubId;
     }

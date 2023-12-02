@@ -551,7 +551,7 @@
         m.model,m.standard,di.unit_price,di.material_unit as mUnit, dh.organ_id, di.id SubId,
         di.oper_number,di.confirm_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_id SCounterId, di.another_counter_name SCounter,
         d.dName DName, di.depot_id DId, di.counter_id DCounterId, di.counter_name DCounter, jmc.name categoryName,
-        dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status, dh.remark, dh.remark , di.remark SubMark,
+        dh.oper_time OperTime, concat(dh.sub_type,dh.type) as NewType, dh.status,
         concat_ws('  ',dh.remark,di.remark) as newRemark,
         CONCAT(dh.organ_id,'-',me.`number`) MNumber
         from jsh_depot_head dh

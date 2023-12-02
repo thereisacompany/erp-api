@@ -705,34 +705,13 @@ public class DepotHeadService {
                     detail.setStock(BigDecimal.ZERO);
                 }
 
-                String myRemark = detail.getRemark();
+                BigDecimal confirmNumber = detail.getConfirmNumber();
                 // 處理status
                 String status = detail.getStatus();
                 if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING)) {
-                    try {
-                        JSONObject remarkJson = JSONObject.parseObject(myRemark);
-                        if(remarkJson.containsKey("move")) {
-                            if(remarkJson.getString("move").contains(detail.getMId())) {
-                                detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
-                            }
-                        }
-                    }catch(Exception e) {
-                        System.out.println("["+myRemark + "], 非json格式");
+                    if(confirmNumber != null) {
+                        detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
                     }
-                }
-                // 處理remark
-                try {
-                    JSONObject remarkJson = JSONObject.parseObject(myRemark);
-                    String memo = "";
-                    if (remarkJson.containsKey("memo")) {
-                        memo = remarkJson.getString("memo");
-                    }
-                    myRemark = memo + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
-                    detail.setNewRemark(myRemark);
-                }catch(Exception e) {
-                    System.out.println("["+myRemark + "], 非json格式");
-                    myRemark = myRemark + "   " + (detail.getSubMark()==null?"":detail.getSubMark());
-                    detail.setNewRemark(myRemark);
                 }
             });
         }catch(Exception e){
