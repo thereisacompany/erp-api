@@ -30,9 +30,6 @@ public class TransferWarehouseController {
     private Logger logger = LoggerFactory.getLogger(TransferWarehouseController.class);
 
     @Resource
-    private DepotHeadService depotHeadService;
-
-    @Resource
     private TransferWarehouseService transferWarehouseService;
 
     /**
@@ -48,7 +45,7 @@ public class TransferWarehouseController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.addTransferDepotHead(beanJson, rows, request);
+        transferWarehouseService.addTransferDepotHead(beanJson, rows, request);
         return result;
     }
 
@@ -65,7 +62,7 @@ public class TransferWarehouseController {
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
         String rows = body.getRows();
-        depotHeadService.updateTransferDepotHead(beanJson, rows, request);
+        transferWarehouseService.updateTransferDepotHead(beanJson, rows, request);
         return result;
     }
 
