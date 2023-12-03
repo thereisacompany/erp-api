@@ -298,7 +298,7 @@ public class DepotItemController {
     }
 
     /**
-     * 进销存统计
+     * 進銷存統計
      * @param currentPage
      * @param pageSize
      * @param depotIds
@@ -324,7 +324,7 @@ public class DepotItemController {
             String timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
             String timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
             List<Long> depotList = parseListByDepotIds(depotIds);
-            List<DepotItemVo4WithInfoEx> dataList = depotItemService.findByAll(StringUtil.toNull(materialParam),
+            List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
                     timeB,(currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
             int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeB);
@@ -332,7 +332,7 @@ public class DepotItemController {
             //存放数据json数组
             JSONArray dataArray = new JSONArray();
             if (null != dataList) {
-                for (DepotItemVo4WithInfoEx diEx : dataList) {
+                for (DepotItemVo4WithMaterial diEx : dataList) {
                     if(depotList.size()==1) {
                         if(diEx.getDepotId() != depotList.get(0)) {
                             continue;
@@ -349,13 +349,13 @@ public class DepotItemController {
                     item.put("materialModel", diEx.getMModel());
                     item.put("materialStandard", diEx.getMStandard());
                     //扩展信息
-                    String materialOther = getOtherInfo(mpArr, diEx);
-                    item.put("materialOther", materialOther);
+//                    String materialOther = getOtherInfo(mpArr, diEx);
+                    item.put("materialOther", "");
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
-                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(diEx.getDepotId(), mId,null, timeA, organId, diEx.getCounterId());
-                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(diEx.getDepotId(), mId, timeA, timeB, organId, diEx.getCounterId());
+                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(diEx.getDepotId(), mId,null, timeA, organId);
+                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(diEx.getDepotId(), mId, timeA, timeB, organId);
                     BigDecimal inSum = intervalMap.get("inSum");
                     BigDecimal outSum = intervalMap.get("outSum");
                     BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);

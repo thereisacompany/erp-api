@@ -44,6 +44,13 @@ public interface DepotItemMapperEx {
     List<DepotItemVo4WithInfoEx> getDetailList(
             @Param("headerId") Long headerId);
 
+    List<DepotItemVo4WithMaterial> findByAllMaterial(
+            @Param("materialParam") String materialParam,
+            @Param("endTime") String endTime,
+            @Param("offset") Integer offset,
+            @Param("rows") Integer rows
+    );
+
     List<DepotItemVo4WithInfoEx> findByAll(
             @Param("materialParam") String materialParam,
             @Param("endTime") String endTime,
@@ -123,12 +130,12 @@ public interface DepotItemMapperEx {
             @Param("diId") Long diId);
 
     DepotItemVo4Stock getStockByParamWithDepot(
-            @Param("depotId") Long depotList,
+            @Param("depotList") List<Long> depotList,
+            @Param("depotId") Long depotId,
             @Param("mId") Long mId,
             @Param("beginTime") String beginTime,
             @Param("endTime") String endTime,
-            @Param("organId") Long organId,
-            @Param("counterId") Long counterId);
+            @Param("organId") Long organId);
 
     /**
      * 通过单据主表id查询所有单据子表数据

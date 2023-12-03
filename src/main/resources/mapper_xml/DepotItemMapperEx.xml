@@ -37,6 +37,27 @@
         <result column="purchase_decimal" jdbcType="DECIMAL" property="purchaseDecimal" />
     </resultMap>
 
+    <resultMap id="ResultByWithMaterial" type="com.jsh.erp.datasource.entities.DepotItemVo4WithMaterial">
+        <result column="MId" jdbcType="VARCHAR" property="MId" />
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+        <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
+        <result column="DepotId" jdbcType="BIGINT" property="depotId" />
+        <result column="DepotName" jdbcType="VARCHAR" property="depotName" />
+        <result column="counterName" jdbcType="VARCHAR" property="counterName" />
+        <result column="MName" jdbcType="VARCHAR" property="MName" />
+        <result column="MMfrs" jdbcType="VARCHAR" property="MMfrs" />
+        <result column="MModel" jdbcType="VARCHAR" property="MModel" />
+        <result column="MStandard" jdbcType="VARCHAR" property="MStandard" />
+        <result column="MaterialUnit" jdbcType="VARCHAR" property="MaterialUnit" />
+        <result column="MOtherField1" jdbcType="VARCHAR" property="MOtherField1" />
+        <result column="MOtherField2" jdbcType="VARCHAR" property="MOtherField2" />
+        <result column="MOtherField3" jdbcType="VARCHAR" property="MOtherField3" />
+        <result column="unit_id" jdbcType="BIGINT" property="unitId" />
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+        <result column="MColor" jdbcType="VARCHAR" property="MColor" />
+        <result column="purchase_decimal" jdbcType="DECIMAL" property="purchaseDecimal" />
+    </resultMap>
+
     <resultMap extends="com.jsh.erp.datasource.mappers.DepotItemMapper.BaseResultMap" id="ResultByMaterial" type="com.jsh.erp.datasource.entities.DepotItemVo4WithInfoEx">
         <result column="MId" jdbcType="VARCHAR" property="MId" />
         <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
@@ -251,9 +272,9 @@
         order by di.id asc
     </select>
 
-    <select id="findByAll" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
+    <select id="findByAllMaterial" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByWithMaterial">
         select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber,
-        jd.name DepotName, jc.name counterName,
+        jd.id DepotId, jd.name DepotName, me.counter counterName,
         m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
         concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, m.unit_id, u.name unit_name, ifnull(me.purchase_decimal,0) purchase_decimal
@@ -262,8 +283,33 @@
         left join jsh_depot_item di on di.material_id=m.id and ifnull(di.delete_Flag,'0') !='1'
         left join jsh_depot_head dh on di.header_id=dh.id and ifnull(dh.delete_flag,'0') !='1'
         left join jsh_unit u on m.unit_id=u.id and ifnull(u.delete_Flag,'0') !='1'
-        left join erp.jsh_depot jd on di.depot_id = jd.id
-        left join erp.jsh_counter jc on di.counter_id = jc.id
+        LEFT JOIN jsh_depot jd ON di.depot_id = jd.id
+        where 1=1 and me.default_flag=1
+        <if test="materialParam != null and materialParam !=''">
+            <bind name="bindKey" value="'%'+materialParam+'%'"/>
+            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+        </if>
+        <if test="endTime != null">
+            and dh.oper_time &lt;= #{endTime}
+        </if>
+        and ifnull(m.delete_flag,'0') !='1'
+        group by m.id, dh.organ_id
+        order by m.id desc
+        <if test="offset != null and rows != null">
+            limit #{offset},#{rows}
+        </if>
+    </select>
+
+    <select id="findByAll" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
+        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber,
+        m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
+        m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
+        concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, m.unit_id, u.name unit_name, ifnull(me.purchase_decimal,0) purchase_decimal
+        from jsh_material m
+        left join jsh_material_extend me on me.material_id=m.id and ifnull(me.delete_Flag,'0') !='1'
+        left join jsh_depot_item di on di.material_id=m.id and ifnull(di.delete_Flag,'0') !='1'
+        left join jsh_depot_head dh on di.header_id=dh.id and ifnull(dh.delete_flag,'0') !='1'
+        left join jsh_unit u on m.unit_id=u.id and ifnull(u.delete_Flag,'0') !='1'
         where 1=1 and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
@@ -560,9 +606,6 @@
         </if>
         <if test="depotId != null">
             and di.depot_id = ${depotId}
-        </if>
-        <if test="counterId != null">
-            and di.counter_id = ${counterId}
         </if>
     </select>
 
