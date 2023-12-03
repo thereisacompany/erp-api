@@ -1059,12 +1059,8 @@ public class DepotItemService {
         return initStock.add(stockCheckSum).add(stockSum);
     }
 
-    public BigDecimal getStockByParamWithDepot(Long depotId, Long mId, String beginTime, String endTime, Long organId) {
-        List<Long> depotList =new ArrayList<>();
-        depotList.add(depotId);
+    public BigDecimal getStockByParamWithDepot(List<Long> depotList, Long depotId, Long mId, String beginTime, String endTime, Long organId) {
         //初始库存
-        System.out.println(depotList);
-        System.out.println(depotId);
         BigDecimal initStock = materialService.getInitStockByMidAndDepotList(depotList, mId);
         DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotList, depotId, mId, beginTime, endTime, organId);
         BigDecimal stockSum = BigDecimal.ZERO;
@@ -1090,14 +1086,12 @@ public class DepotItemService {
      * @param endTime
      * @return
      */
-    public Map<String, BigDecimal> getIntervalMapByParamWithDepotList(Long depotId, Long mId, String beginTime, String endTime,
-                                                                      Long organId){
+    public Map<String, BigDecimal> getIntervalMapByParamWithDepotList(List<Long> depotList, Long depotId, Long mId,
+                                                                      String beginTime, String endTime, Long organId){
         Map<String,BigDecimal> intervalMap = new HashMap<>();
         BigDecimal inSum = BigDecimal.ZERO;
         BigDecimal outSum = BigDecimal.ZERO;
 
-        List<Long> depotList =new ArrayList<>();
-        depotList.add(depotId);
         //盘点复盘后数量的变动
 //        BigDecimal stockCheckSum = depotItemMapperEx.getStockCheckSumByDepotList(depotList, mId, beginTime, endTime);
         DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotList, depotId, mId, beginTime, endTime, organId);

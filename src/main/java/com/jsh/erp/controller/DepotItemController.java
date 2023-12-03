@@ -354,8 +354,8 @@ public class DepotItemController {
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
-                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(diEx.getDepotId(), mId,null, timeA, organId);
-                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(diEx.getDepotId(), mId, timeA, timeB, organId);
+                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(depotList, diEx.getDepotId(), mId,null, timeA, organId);
+                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, diEx.getDepotId(), mId, timeA, timeB, organId);
                     BigDecimal inSum = intervalMap.get("inSum");
                     BigDecimal outSum = intervalMap.get("outSum");
                     BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);
