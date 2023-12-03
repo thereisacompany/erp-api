@@ -106,6 +106,12 @@
     from jsh_material_extend
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByMaterialId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from jsh_material_extend
+    where material_id = #{id,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from jsh_material_extend
     where id = #{id,jdbcType=BIGINT}

@@ -20,6 +20,8 @@ public interface MaterialExtendMapper {
 
     MaterialExtend selectByPrimaryKey(Long id);
 
+    MaterialExtend selectByMaterialId(Long id);
+
     int updateByExampleSelective(@Param("record") MaterialExtend record, @Param("example") MaterialExtendExample example);
 
     int updateByExample(@Param("record") MaterialExtend record, @Param("example") MaterialExtendExample example);

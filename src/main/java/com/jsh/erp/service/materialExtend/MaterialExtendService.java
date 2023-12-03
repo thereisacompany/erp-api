@@ -102,6 +102,17 @@ public class MaterialExtendService {
                     json.put("counter", obj.getString("counter"));
                 }
                 meArr.add(json);
+            } else if("update".equals(type)) {
+                JSONObject json = new JSONObject();
+                MaterialExtend extend = materialExtendMapper.selectByMaterialId(materialId);
+                json.put("id", extend.getId());
+                if(obj.containsKey("organId")) {
+                    json.put("organId", obj.getLong("organId"));
+                }
+                if(obj.containsKey("counter")) {
+                    json.put("counter", obj.getString("counter"));
+                }
+                meArr.add(json);
             }
         }
         JSONArray insertedJson = new JSONArray();
@@ -125,12 +136,12 @@ public class MaterialExtendService {
                     if(tempId.length()>19){
                         insertedJson.add(tempJson);
                     } else {
-                        if(obj.containsKey("organId")) {
-                            tempJson.put("organId", obj.getLong("organId"));
-                        }
-                        if(obj.containsKey("counter")) {
-                            tempJson.put("counter", obj.getString("counter"));
-                        }
+//                        if(obj.containsKey("organId")) {
+//                            tempJson.put("organId", obj.getLong("organId"));
+//                        }
+//                        if(obj.containsKey("counter")) {
+//                            tempJson.put("counter", obj.getString("counter"));
+//                        }
                         updatedJson.add(tempJson);
                     }
                 }
