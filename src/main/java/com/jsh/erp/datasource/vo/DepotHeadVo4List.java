@@ -69,6 +69,10 @@ public class DepotHeadVo4List extends DepotHead{
      */
     private BigDecimal realNeedDebt;
 
+    private String install;
+
+    private String recycle;
+
     public String getProjectName() {
         return projectName;
     }
@@ -283,5 +287,21 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setRealNeedDebt(BigDecimal realNeedDebt) {
         this.realNeedDebt = realNeedDebt;
+    }
+
+    public String getInstall() {
+        return install;
+    }
+
+    public void setInstall(String install) {
+        this.install = install;
+    }
+
+    public String getRecycle() {
+        return recycle;
+    }
+
+    public void setRecycle(String recycle) {
+        this.recycle = recycle;
     }
 }

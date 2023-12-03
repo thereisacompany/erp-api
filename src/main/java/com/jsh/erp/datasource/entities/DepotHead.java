@@ -83,6 +83,9 @@ public class DepotHead {
 
     private String purchaseStatus;
 
+    private String customNumber;
+    private String sourceNumber;
+
     private String linkNumber;
 
     private String importFlag;
@@ -337,6 +340,22 @@ public class DepotHead {
 
     public void setPurchaseStatus(String purchaseStatus) {
         this.purchaseStatus = purchaseStatus == null ? null : purchaseStatus.trim();
+    }
+
+    public String getCustomNumber() {
+        return customNumber;
+    }
+
+    public void setCustomNumber(String customNumber) {
+        this.customNumber = customNumber;
+    }
+
+    public String getSourceNumber() {
+        return sourceNumber;
+    }
+
+    public void setSourceNumber(String sourceNumber) {
+        this.sourceNumber = sourceNumber;
     }
 
     public String getLinkNumber() {

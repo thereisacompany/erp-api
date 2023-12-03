@@ -232,6 +232,19 @@ public class DepotHeadService {
                         dh.setCounterName("");
                     }
 
+                    // 配送單要額外處理remark
+                    if(dh.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+                        if (dh.getRemark() != null && !dh.getRemark().isEmpty()) {
+                            JSONObject json = JSONObject.parseObject(dh.getRemark());
+                            dh.setInstall(json.getString("install"));
+                            dh.setRecycle(json.getString("recycle"));
+                            dh.setRemark(json.getString("memo"));
+                        } else {
+                            dh.setInstall("");
+                            dh.setRecycle("");
+                        }
+                    }
+
                     resList.add(dh);
                 }
             }
@@ -999,11 +1012,25 @@ public class DepotHeadService {
             }
         }
 
-        if(depotHead.getImportFlag() == null || (depotHead.getImportFlag() != null && depotHead.getImportFlag().equals("0"))) {
+        // 是否為匯入單
+        if(depotHead.getImportFlag() == null ||
+                (depotHead.getImportFlag() != null &&
+                        (depotHead.getImportFlag().isEmpty() || depotHead.getImportFlag().equals("0")))) {
             if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+                JSONObject base = JSONObject.parseObject(beanJson);
                 JSONArray rowArr = JSONArray.parseArray(rows);
                 JSONObject firstObj = rowArr.getJSONObject(0);
-                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
+                String install = "";
+                String recycle = "";
+                if(base.containsKey("install")) {
+                    install = base.getString("install");
+                }
+                if(base.containsKey("recycle")) {
+                    recycle = base.getString("recycle");
+                }
+                JSONObject json = new JSONObject();
+                json.put("install", install);
+                json.put("recycle", recycle);
                 json.put("confirm", firstObj.getString("categoryName"));
                 json.put("memo", depotHead.getRemark());
                 depotHead.setRemark(json.toJSONString());
@@ -1134,16 +1161,27 @@ public class DepotHeadService {
                 }
             }
         }
+        // 若為出庫配送庫，需額外處理remark
         if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            if(depotHead.getRemark() != null) {
-                JSONObject json = JSONObject.parseObject("{\"install\":\"\",\"recycle\":\"\"}");
-                JSONArray rowArr = JSONArray.parseArray(rows);
-                JSONObject firstObj = rowArr.getJSONObject(0);
-                json.put("confirm", firstObj.getString("categoryName"));
-                json.put("memo", depotHead.getRemark());
-                depotHead.setRemark(json.toJSONString());
+            DepotHead oldDepotHead = depotHeadMapper.selectByPrimaryKey(depotHead.getId());
+            JSONObject json = JSONObject.parseObject(oldDepotHead.getRemark());
+            JSONObject base = JSONObject.parseObject(beanJson);
+            if(base.containsKey("install")) {
+                json.put("install", base.getString("install"));
             }
+            if(base.containsKey("recycle")) {
+                json.put("recycle", base.getString("recycle"));
+            }
+            JSONArray rowArr = JSONArray.parseArray(rows);
+            JSONObject firstObj = rowArr.getJSONObject(0);
+            json.put("confirm", firstObj.getString("categoryName"));
+
+            if(depotHead.getRemark() != null) {
+                json.put("memo", depotHead.getRemark());
+            }
+            depotHead.setRemark(json.toJSONString());
         }
+
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
         }catch(Exception e){

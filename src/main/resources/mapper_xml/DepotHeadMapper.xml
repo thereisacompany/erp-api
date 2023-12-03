@@ -39,6 +39,8 @@
     <result column="delivered" jdbcType="DATE" property="delivered" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="purchase_status" jdbcType="VARCHAR" property="purchaseStatus" />
+    <result column="custom_number" jdbcType="VARCHAR" property="customNumber" />
+    <result column="source_number" jdbcType="VARCHAR" property="sourceNumber" />
     <result column="link_number" jdbcType="VARCHAR" property="linkNumber" />
     <result column="import_flag" jdbcType="VARCHAR" property="importFlag" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -108,7 +110,7 @@
     noti_number, taxid, buyer_name, receive_name, telephone, cellphone, address, remark,
     file_name, sales_man, account_id_list, account_money_list, discount, discount_money, 
     discount_last_money, other_money, deposit, main_arrival, extras_arrival, agreed_delivery, delivered,
-    status, purchase_status, link_number, import_flag, tenant_id, delete_flag
+    status, purchase_status, custom_number, source_number, link_number, import_flag, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="BaseResultMap">
     select
@@ -151,7 +153,7 @@
       account_id_list, account_money_list, discount, 
       discount_money, discount_last_money, other_money, 
       deposit, main_arrival, extras_arrival, agreed_delivery, delivered,
-      status, purchase_status, link_number,import_flag, tenant_id, delete_flag
+      status, purchase_status, custom_number, source_number, link_number,import_flag, tenant_id, delete_flag
       )
     values (#{id,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR}, #{subType,jdbcType=VARCHAR}, 
       #{defaultNumber,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -166,7 +168,7 @@
       #{discountMoney,jdbcType=DECIMAL}, #{discountLastMoney,jdbcType=DECIMAL}, #{otherMoney,jdbcType=DECIMAL}, 
       #{deposit,jdbcType=DECIMAL}, #{mainArrival,jdbcType=DATE}, #{extrasArrival,jdbcType=DATE},
       #{agreedDelivery,jdbcType=DATE}, #{delivered,jdbcType=DATE},
-      #{status,jdbcType=VARCHAR}, #{purchaseStatus,jdbcType=VARCHAR},
+      #{status,jdbcType=VARCHAR}, #{purchaseStatus,jdbcType=VARCHAR}, #{customNumber,jdbcType=VARCHAR}, #{sourceNumber,jdbcType=VARCHAR},
       #{linkNumber,jdbcType=VARCHAR}, #{importFlag,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
       )
   </insert>
@@ -286,6 +288,12 @@
       </if>
       <if test="purchaseStatus != null">
         purchase_status,
+      </if>
+      <if test="customNumber != null">
+        custom_number,
+      </if>
+      <if test="sourceNumber != null">
+        source_number,
       </if>
       <if test="linkNumber != null">
         link_number,
@@ -414,6 +422,12 @@
       </if>
       <if test="purchaseStatus != null">
         #{purchaseStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="customNumber != null">
+        #{customNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceNumber != null">
+        #{sourceNumber,jdbcType=VARCHAR},
       </if>
       <if test="linkNumber != null">
         #{linkNumber,jdbcType=VARCHAR},
@@ -573,6 +587,12 @@
       <if test="record.purchaseStatus != null">
         purchase_status = #{record.purchaseStatus,jdbcType=VARCHAR},
       </if>
+      <if test="record.customNumber != null">
+        custom_number = #{record.customNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceNumber != null">
+        source_number = #{record.sourceNumber,jdbcType=VARCHAR},
+      </if>
       <if test="record.linkNumber != null">
         link_number = #{record.linkNumber,jdbcType=VARCHAR},
       </if>
@@ -627,6 +647,8 @@
       delivered = #{record.delivered,jdbcType=DATE},
       status = #{record.status,jdbcType=VARCHAR},
       purchase_status = #{record.purchaseStatus,jdbcType=VARCHAR},
+      custom_number = #{record.customNumber,jdbcType=VARCHAR},
+      source_number = #{record.sourceNumber,jdbcType=VARCHAR},
       link_number = #{record.linkNumber,jdbcType=VARCHAR},
       import_flag = #{record.importFlag,jdbcType=VARCHAR},
       tenant_id = #{record.tenantId,jdbcType=BIGINT},
@@ -749,6 +771,12 @@
       <if test="purchaseStatus != null">
         purchase_status = #{purchaseStatus,jdbcType=VARCHAR},
       </if>
+      <if test="customNumber != null">
+        custom_number = #{customNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceNumber != null">
+        source_number = #{sourceNumber,jdbcType=VARCHAR},
+      </if>
       <if test="linkNumber != null">
         link_number = #{linkNumber,jdbcType=VARCHAR},
       </if>
@@ -803,6 +831,8 @@
       delivered = #{record.jdbcType=DATE},
       status = #{status,jdbcType=VARCHAR},
       purchase_status = #{purchaseStatus,jdbcType=VARCHAR},
+      custom_number = #{customNumber,jdbcType=VARCHAR},
+      source_number = #{sourceNumber,jdbcType=VARCHAR},
       link_number = #{linkNumber,jdbcType=VARCHAR},
       import_flag = #{importFlag,jdbcType=VARCHAR},
       tenant_id = #{tenantId,jdbcType=BIGINT},

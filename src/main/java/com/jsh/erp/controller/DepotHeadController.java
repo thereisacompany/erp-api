@@ -367,11 +367,14 @@ public class DepotHeadController {
             if(list.size() == 1) {
                 dhl = list.get(0);
                 if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-                    if(dhl.getRemark() != null && !dhl.getRemark().isEmpty()) {
+                    if (dhl.getRemark() != null && !dhl.getRemark().isEmpty()) {
                         JSONObject json = JSONObject.parseObject(dhl.getRemark());
-                        if(json.containsKey("memo")) {
-                            dhl.setRemark(json.getString("memo"));
-                        }
+                        dhl.setInstall(json.getString("install"));
+                        dhl.setRecycle(json.getString("recycle"));
+                        dhl.setRemark(json.getString("memo"));
+                    } else {
+                        dhl.setInstall("");
+                        dhl.setRecycle("");
                     }
                 }
             }
