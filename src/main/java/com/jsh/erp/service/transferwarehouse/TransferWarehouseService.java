@@ -132,7 +132,7 @@ public class TransferWarehouseService {
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int batchSetStatus(String status, String depotItemIDs) throws Exception {
-        int result = 0;
+        int result = 1;
 
         // header_id, item_ids
         Map<Long, List<Long>> dhIdMap = new HashMap<>();
