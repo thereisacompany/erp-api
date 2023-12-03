@@ -274,7 +274,6 @@ public class TransferWarehouseService {
         // 判斷確認數量是否有帶值，若與原移倉數量不相同，需額外調整
         if (amount != null) {
             if (depotItem.getOperNumber().longValue() != amount) {
-
                 // TODO 2023-11-30 是否要判斷確認的數量，是否有超過商品的庫存
                 BigDecimal sourceAmount = depotItem.getOperNumber();
                 BigDecimal decimalAmount = new BigDecimal(amount);
@@ -340,18 +339,18 @@ public class TransferWarehouseService {
             materialCurrentStock.setMaterialId(mId);
             materialCurrentStock.setDepotId(dId);
             materialCurrentStock.setOrganId(organId);
-            User user = userService.getCurrentUser();
-            Long tenantId = 63L;
-            if(user != null) {
-                tenantId = user.getTenantId();
-            }
-            materialCurrentStock.setTenantId(tenantId);
             materialCurrentStock.setCurrentNumber(depotItemService.getStockByParamWithDepotList(depotList, mId,null,null, organId, diId));
             if(list!=null && list.size()>0) {
                 Long mcsId = list.get(0).getId();
                 materialCurrentStock.setId(mcsId);
                 materialCurrentStockMapper.updateByPrimaryKeySelective(materialCurrentStock);
             } else {
+//                User user = userService.getCurrentUser();
+//                Long tenantId = 63L;
+//                if (user != null) {
+//                    tenantId = user.getTenantId();
+//                }
+//                materialCurrentStock.setTenantId(tenantId);
                 materialCurrentStockMapper.insertSelective(materialCurrentStock);
             }
         }

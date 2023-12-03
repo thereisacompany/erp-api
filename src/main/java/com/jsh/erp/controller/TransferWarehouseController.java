@@ -94,10 +94,18 @@ public class TransferWarehouseController {
      */
     @PostMapping(value = "/setStatus/{id}")
     @ApiOperation(value = "單一移倉設置狀態-移倉完成")
-    public String setStatus(@PathVariable("id") Long id, @RequestParam(value = "mid", required = false) Long mid,
-                            @ApiParam("實際入庫數量") @RequestParam(value = "amount", required = false) Integer amount,
+    public String setStatus(@PathVariable("id") Long id,
+                            @ApiParam("實際入庫數量") @RequestBody String body,
                             HttpServletRequest request) throws Exception {
         Map<String, Object> objectMap = new HashMap<>();
+        Integer amount=null;
+        if(body!=null) {
+            try{
+                JSONObject json = JSONObject.parseObject(body);
+                amount = json.getInteger("amount");
+            }catch (Exception e) {
+            }
+        }
         int res = transferWarehouseService.confirmSingleStatus(id, amount, request);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
