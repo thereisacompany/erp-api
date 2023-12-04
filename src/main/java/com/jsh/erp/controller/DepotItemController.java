@@ -341,8 +341,10 @@ public class DepotItemController {
                     JSONObject item = new JSONObject();
                     Long mId = diEx.getMId();
                     item.put("barCode", diEx.getBarCode());
-                    Long organId = Long.valueOf(diEx.getMNumber().split("-")[0]);
-                    item.put("materialNumber", diEx.getMNumber());
+                    String[] mNumber = diEx.getMNumber().split("-");
+                    Long organId = Long.valueOf(mNumber[0]);
+                    item.put("organId", organId);
+                    item.put("materialNumber", mNumber[1]);
                     item.put("depotName", diEx.getDepotName());
                     item.put("counterName", diEx.getCounterName());
                     item.put("materialName", diEx.getMName());
