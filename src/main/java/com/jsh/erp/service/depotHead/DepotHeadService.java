@@ -51,6 +51,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
@@ -63,7 +64,7 @@ public class DepotHeadService {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private static DateTimeFormatter formatterChange = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private static DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("M/d/yy");
+    private static DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy/M/d");
     private static DateTimeFormatter formatterChangeDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Resource
@@ -1432,10 +1433,9 @@ public class DepotHeadService {
     public BaseResponseInfo importExcel(MultipartFile file, HttpServletRequest request) throws Exception {
         BaseResponseInfo info = new BaseResponseInfo();
 
-//        User userInfo = userService.getCurrentUser();
+        User userInfo = userService.getCurrentUser();
 
 //        String customNumber = "";
-
         try {
             Long beginTime = System.currentTimeMillis();
             //文件副檔名只能為 xls
@@ -1454,7 +1454,7 @@ public class DepotHeadService {
 //            List<DepotCounter> depotCountList = depotCounterService.getAllList();
 //            List<Material> materialList = materialService.getMaterial();
             List<MaterialVo4Unit> materialList =  materialMapperEx.selectByConditionMaterial(null, null, null, null, null,
-                    null, null, null, null, null, null, null, null);
+                    null, null, null, null, null, null, 1, 10000);
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
@@ -1463,6 +1463,7 @@ public class DepotHeadService {
             int blockTimes = 0; // 用來判斷excel確認書及客單編號欄位，空白次數是否超過2次
             int importCount = 0; // 匯入筆數
             Map<String, String> importError = new HashMap<>(); // 匯入有缺欄位的客單編號+原始編號，或是重複的客單編號+原始編號
+
             for (int i = 1; i < mainData.getRows(); i++) {
                 JSONObject beanJson = new JSONObject();
 
@@ -1492,8 +1493,10 @@ public class DepotHeadService {
                     continue;
                 }
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
-                    if(dh.getCustomNumber().equals(customNumber) && dh.getSourceNumber().equals(sourceNumber)) {
-                        return true;
+                    if(dh.getCustomNumber() != null && dh.getSourceNumber() != null) {
+                        if (dh.getCustomNumber().equals(customNumber) && dh.getSourceNumber().equals(sourceNumber)) {
+                            return true;
+                        }
                     }
                     return false;
                 }).findFirst();
@@ -1546,6 +1549,7 @@ public class DepotHeadService {
 //                if(counter == null || (counter != null && counter.isEmpty())) {
 //                    counter = getJsonValue(saveJson, "counter");
 //                }
+
                 // 品號 (必填)
                 String mNumber = ExcelUtils.getContent(mainData, i, 8);
                 MaterialVo4Unit materialVo4Unit=null;
@@ -1601,10 +1605,17 @@ public class DepotHeadService {
 //                    organId = Long.valueOf(organAndNumber[0]);
 //                }
 
-                LocalDate date = LocalDate.parse(issueDate, formatterDate);
-                String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                try {
+                    LocalDate date = LocalDate.parse(issueDate, formatterDate);
+                    String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                    beanJson.put("operTime", operTime);
+                } catch(DateTimeParseException e) {
+                    // TODO 記錄
+                    importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 "+formatterDate.toString());
+                    continue;
+                }
 
-                String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
                 JSONObject json = new JSONObject();
                 json.put("confirm", confirm);
                 json.put("install", install);
@@ -1616,7 +1627,6 @@ public class DepotHeadService {
                 String number = String.format("S%s", sequenceService.buildNumber(Boolean.TRUE));
                 beanJson.put("number", number);
                 beanJson.put("defaultNumber", number);
-                beanJson.put("operTime", operTime);
                 beanJson.put("organId", organId);
                 beanJson.put("changeAmount", 0);
                 beanJson.put("totalPrice", 0);
@@ -1629,6 +1639,8 @@ public class DepotHeadService {
                 beanJson.put("address", address);
                 beanJson.put("remark", remark);
                 beanJson.put("importFlag", 1);
+                beanJson.put("customNumber", customNumber);
+                beanJson.put("sourceNumber", sourceNumber);
 //                beanJson.put("mainArrival", mainArrival);
 //                beanJson.put("extrasArrival", extrasArrival);
 //                beanJson.put("agreedDelivery", agreedDelivery);
@@ -1676,11 +1688,9 @@ public class DepotHeadService {
                 obj.put("taxLastMoney", 0);
                 ary.add(obj);
 
-                System.out.println(">>>"+beanJson.toJSONString());
-
                 String rows = ary.toJSONString();
-                System.out.println(rows);
-//                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
+
+                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
 
                 importCount++;
             }
@@ -1695,20 +1705,21 @@ public class DepotHeadService {
             // TODO 加入顯示匯入失敗的記錄 及判斷importCount 是否等於匯入數量
             if(importError.size() > 0) {
                 StringBuffer sb= new StringBuffer();
+                sb.append(", 匯入失敗列數:\n");
                 importError.entrySet().stream().forEach(value->{
-                    sb.append(value.getKey());
+                    sb.append("Excel文件第"+value.getKey()+"列");
                     sb.append("->");
                     sb.append(value.getValue());
                     sb.append("\n");
                 });
                 info.data += sb.toString();
             }
-
+            logger.info((String) info.data);
         } catch (BusinessRunTimeException brte) {
             info.code = brte.getCode();
             info.data = brte.getData().get("message");
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             logger.error(e.toString());
             info.code = 500;
             info.data = "匯入失敗";
@@ -1728,11 +1739,11 @@ public class DepotHeadService {
 //        String datetimeStr = "10/10/23 17:10:10";
 //        String dateStr = "12/4/23";
 
-//        String issueDate = "12/4/23";
-//
-//        LocalDate date = LocalDate.parse(issueDate, formatterDate);
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//
+        String issueDate = "2023/11/6";
+
+        LocalDate date = LocalDate.parse(issueDate, formatterDate);
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        System.out.println(time);
 //        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
 //        System.out.println("operTime>>"+operTime);
 

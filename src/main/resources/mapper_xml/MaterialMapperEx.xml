@@ -82,7 +82,7 @@
             <bind name="bindRemark" value="'%'+remark+'%'"/>
             and m.remark like #{bindRemark}
         </if>
-        <if test="idList.size()>0">
+        <if test="idList != null and idList.size()>0">
             and m.category_id in
             <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
                 #{item}
