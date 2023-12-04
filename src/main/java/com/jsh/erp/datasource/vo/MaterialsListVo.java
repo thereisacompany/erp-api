@@ -6,6 +6,7 @@ import java.util.List;
 
 public class MaterialsListVo {
 
+    private Long id;
     private Long headerId;
 
     private String materialsList;
@@ -17,6 +18,14 @@ public class MaterialsListVo {
     private String materialNumber;
 
     private String depotList;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getHeaderId() {
         return headerId;

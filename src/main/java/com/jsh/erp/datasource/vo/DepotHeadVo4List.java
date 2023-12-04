@@ -19,6 +19,7 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String depotName;
 
+    private Long Did;
     private String counterName;
 
     private String allocationProjectName;
@@ -119,6 +120,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setDepotName(String depotName) {
         this.depotName = depotName;
+    }
+
+    public Long getDid() {
+        return Did;
+    }
+
+    public void setDid(Long did) {
+        Did = did;
     }
 
     public String getCounterName() {

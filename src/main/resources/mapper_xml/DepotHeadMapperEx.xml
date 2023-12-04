@@ -67,7 +67,7 @@
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
         select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
-        me.`number` MNumber, jd.name depotName, di.counter_name counterName
+        me.`number` MNumber, jd.name depotName, di.id Did, di.counter_name counterName
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
@@ -287,7 +287,7 @@
     </select>
 
     <select id="findMaterialsListMapByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialsListVo">
-        select jsh_depot_item.header_id,
+        select jsh_depot_item.id,jsh_depot_item.header_id,
             jsh_material.name materialsList,
             jsh_depot_item.oper_number materialCount,
             jsh_material_extend.number materialNumber,
