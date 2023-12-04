@@ -56,13 +56,17 @@ public interface MaterialMapperEx {
                                                   @Param("q") String q,
                                                   @Param("enableSerialNumber") String enableSerialNumber,
                                                   @Param("enableBatchNumber") String enableBatchNumber,
+                                                  @Param("depotId") Long depotId,
+                                                  @Param("organId") Long orgnaId,
                                                   @Param("offset") Integer offset,
                                                   @Param("rows") Integer rows);
 
     int findBySelectWithBarCodeCount(@Param("idList") List<Long> idList,
                                      @Param("q") String q,
                                      @Param("enableSerialNumber") String enableSerialNumber,
-                                     @Param("enableBatchNumber") String enableBatchNumber);
+                                     @Param("enableBatchNumber") String enableBatchNumber,
+                                     @Param("depotId") Long depotId,
+                                     @Param("organId") Long orgnaId);
 
     List<MaterialVo4Unit> exportExcel(
             @Param("materialParam") String materialParam,

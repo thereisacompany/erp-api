@@ -191,10 +191,10 @@ public class MaterialController {
         JSONObject object = new JSONObject();
         try {
             List<MaterialVo4Unit> dataList = materialService.findBySelectWithBarCode(categoryId, q, enableSerialNumber,
-                    enableBatchNumber, (currentPage-1)*pageSize, pageSize);
+                    enableBatchNumber, depotId, organId,  (currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
             int total = materialService.findBySelectWithBarCodeCount(categoryId, q, enableSerialNumber,
-                    enableBatchNumber);
+                    enableBatchNumber, depotId, organId);
             object.put("total", total);
             JSONArray dataArray = new JSONArray();
             //存放数据json数组
