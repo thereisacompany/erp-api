@@ -56,8 +56,7 @@ public interface MaterialMapperEx {
                                                   @Param("q") String q,
                                                   @Param("enableSerialNumber") String enableSerialNumber,
                                                   @Param("enableBatchNumber") String enableBatchNumber,
-                                                  @Param("depotId") Long depotId,
-                                                  @Param("organId") Long orgnaId,
+                                                  @Param("organId") Long organId,
                                                   @Param("offset") Integer offset,
                                                   @Param("rows") Integer rows);
 
@@ -65,8 +64,7 @@ public interface MaterialMapperEx {
                                      @Param("q") String q,
                                      @Param("enableSerialNumber") String enableSerialNumber,
                                      @Param("enableBatchNumber") String enableBatchNumber,
-                                     @Param("depotId") Long depotId,
-                                     @Param("organId") Long orgnaId);
+                                     @Param("organId") Long organId);
 
     List<MaterialVo4Unit> exportExcel(
             @Param("materialParam") String materialParam,

@@ -398,7 +398,7 @@ public class MaterialService {
     }
 
     public List<MaterialVo4Unit> findBySelectWithBarCode(Long categoryId, String q, String enableSerialNumber,
-                                                         String enableBatchNumber, Long depotId, Long organId,
+                                                         String enableBatchNumber, Long organId,
                                                          Integer offset, Integer rows)throws Exception{
         List<MaterialVo4Unit> list =null;
         try{
@@ -411,7 +411,7 @@ public class MaterialService {
                 q = q.replace("'", "");
                 q = q.trim();
             }
-            list=  materialMapperEx.findBySelectWithBarCode(idList, q, enableSerialNumber, enableBatchNumber, depotId, organId, offset, rows);
+            list=  materialMapperEx.findBySelectWithBarCode(idList, q, enableSerialNumber, enableBatchNumber, organId, offset, rows);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -419,7 +419,7 @@ public class MaterialService {
     }
 
     public int findBySelectWithBarCodeCount(Long categoryId, String q, String enableSerialNumber,
-                                            String enableBatchNumber, Long depotId, Long organId)throws Exception{
+                                            String enableBatchNumber, Long organId)throws Exception{
         int result=0;
         try{
             List<Long> idList = new ArrayList<>();
@@ -430,7 +430,7 @@ public class MaterialService {
             if(StringUtil.isNotEmpty(q)) {
                 q = q.replace("'", "");
             }
-            result = materialMapperEx.findBySelectWithBarCodeCount(idList, q, enableSerialNumber, enableBatchNumber, depotId, organId);
+            result = materialMapperEx.findBySelectWithBarCodeCount(idList, q, enableSerialNumber, enableBatchNumber, organId);
         }catch(Exception e){
             logger.error("异常码[{}],异常提示[{}],异常[{}]",
                     ExceptionConstants.DATA_READ_FAIL_CODE,ExceptionConstants.DATA_READ_FAIL_MSG,e);
