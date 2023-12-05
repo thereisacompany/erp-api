@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -88,31 +89,33 @@ public class ExcelUtils {
 
 			Row row4 = sheet.getRow(4);
 			//品號
-			if(item.getMaterialNumber() != null) {
-				if (!item.getMaterialNumber().isEmpty()) {
-					String[] n = item.getMaterialNumber().split("[|]");
-					String numStr = "0";
-					if(n.length > 1) {
-						numStr = n[0].concat(n[1]);
-					} else {
-						numStr = n[0];
-					}
-					row4.getCell(0).setCellValue(numStr);
-				}
-			}
+			row4.getCell(0).setCellValue(item.getMaterialNumber());
+//			if(item.getMaterialNumber() != null) {
+//				if (!item.getMaterialNumber().isEmpty()) {
+//					String[] n = item.getMaterialNumber().split("[|]");
+//					String numStr = "0";
+//					if(n.length > 1) {
+//						numStr = n[0].concat(n[1]);
+//					} else {
+//						numStr = n[0];
+//					}
+//					row4.getCell(0).setCellValue(numStr);
+//				}
+//			}
 
-			System.out.println("item.getMaterialsList() >>>" + item.getMaterialsList());
-			String[] list = item.getMaterialsList().split(",");
-			if(list.length >= 1) {
-				String[] detail = list[0].split("[*]");
-
-				row4.getCell(1).setCellValue(detail[0]);		// 商品型號
-				if(detail.length > 1) {
-					row4.getCell(4).setCellValue(detail[1]);        // 數量
-				}
-			}
+			row4.getCell(1).setCellValue(item.getMaterialsList());		// 商品型號
+//			System.out.println("item.getMaterialsList() >>>" + item.getMaterialsList());
+//			String[] list = item.getMaterialsList().split(",");
+//			if(list.length >= 1) {
+//				String[] detail = list[0].split("[*]");
+//				row4.getCell(1).setCellValue(detail[0]);		// 商品型號
+//				if(detail.length > 1) {
+//					row4.getCell(4).setCellValue(detail[1]);        // 數量
+//				}
+//			}
 			if(item.getMaterialCount() != null) {
-				row4.getCell(4).setCellValue(String.valueOf(item.getMaterialCount()));
+				BigDecimal amount = new BigDecimal(String.valueOf(item.getMaterialCount()));
+				row4.getCell(4).setCellValue(amount.intValue());
 			} else {
 				row4.getCell(4).setCellValue(0);
 			}
