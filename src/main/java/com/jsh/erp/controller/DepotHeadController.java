@@ -537,9 +537,6 @@ public class DepotHeadController {
     @GetMapping(value = "/export")
     @ApiOperation(value = "匯出(家電、冷氣)確認書")
     public void export(@ApiParam(value = "配送單單號") @RequestParam(value = "number") String number,
-                       @ApiParam(value = "匯出類型(1 家電 2 冷氣)") @RequestParam(value = "type", required = false) int type,
-                       @ApiParam(value = "舊機是否回收 0 否 1 是") @RequestParam(value = "isRecycle", required = false) boolean isRecycle,
-                       @ApiParam(value = "舊機品牌") @RequestParam(value = "brand", required = false) String brand,
                        HttpServletRequest request, HttpServletResponse response) {
         try {
             DepotHeadVo4List dhl = new DepotHeadVo4List();
@@ -549,8 +546,17 @@ public class DepotHeadController {
                 dhl = list.get(0);
             }
 
+//            if(!dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT) &&
+//                    !dhl.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+//
+//            }
+
             File file = ExcelUtils.exportHAConfirm(dhl);
             ExportExecUtil.showExec(file, file.getName(), response);
+
+            if(file.exists()) {
+                file.delete();
+            }
         }catch (Exception e) {
             e.printStackTrace();
         }
