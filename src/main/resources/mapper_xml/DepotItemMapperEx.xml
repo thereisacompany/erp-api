@@ -257,7 +257,7 @@
     </select>
 
     <select id="getDetailList" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
-        select di.*,m.name MName,m.model MModel, CONCAT(dh.organ_id, '-', me.`number`) MNumber,m.unit MaterialUnit,m.color MColor,m.standard MStandard,m.mfrs MMfrs,
+        select di.*,m.name MName,m.model MModel, me.`number` MNumber,m.unit MaterialUnit,m.color MColor,m.standard MStandard,m.mfrs MMfrs,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,m.enable_serial_number, m.enable_batch_number,
         jmc.name categoryName, dp1.name DepotName,dp2.name AnotherDepotName, me.bar_code barCode, me.purchase_decimal
         from jsh_depot_item di

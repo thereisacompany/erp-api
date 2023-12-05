@@ -302,7 +302,6 @@ public class DepotItemService {
         List<DepotItemVo4WithInfoEx> list =null;
         try{
             list = depotItemMapperEx.findByAll(materialParam, endTime, offset, rows);
-            System.out.println("findByAll list>>> "+list);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
