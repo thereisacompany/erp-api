@@ -8,6 +8,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
+import com.jsh.erp.datasource.vo.MaterialsListVo;
 import jxl.*;
 import jxl.format.Alignment;
 import jxl.format.Border;
@@ -46,10 +47,10 @@ public class ExcelUtils {
 	 * @param item
 	 * @return
 	 */
-	public static File exportHAConfirm(DepotHeadVo4List item) {
+	public static File exportHAConfirm(DepotHeadVo4List item, MaterialsListVo material) {
 		File excelFile = null;
 
-		System.out.println("exportHAConfirm item >>>"+item);
+//		System.out.println("exportHAConfirm item >>>"+item);
 
 		try {
 			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
@@ -74,7 +75,13 @@ public class ExcelUtils {
 			row1.getCell(3).setCellValue(item.getCellphone());	// 電話
 			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
 			row1.getCell(7).setCellValue(item.getNumber());		// 客單編號
-			outputName = String.format(outputName, item.getNumber());
+
+			// 匯出檔名
+			if(material != null) {
+				outputName = String.format(outputName, item.getNumber()+"-"+material.getId());
+			} else {
+				outputName = String.format(outputName, item.getNumber());
+			}
 
 			Row row2 = sheet.getRow(2);
 			row2.getCell(1).setCellValue(item.getAddress()); // 裝機地址
@@ -84,40 +91,32 @@ public class ExcelUtils {
 //			} else {
 //				row2.getCell(7).setCellValue("\u2610 扣庫存  \u2611 "+item.getMainArrival()+" 到貨");
 //			}
-			// 出貨倉別
-			row2.getCell(7).setCellValue(item.getDepotList());
 
 			Row row4 = sheet.getRow(4);
-			//品號
-			row4.getCell(0).setCellValue(item.getMaterialNumber());
-//			if(item.getMaterialNumber() != null) {
-//				if (!item.getMaterialNumber().isEmpty()) {
-//					String[] n = item.getMaterialNumber().split("[|]");
-//					String numStr = "0";
-//					if(n.length > 1) {
-//						numStr = n[0].concat(n[1]);
-//					} else {
-//						numStr = n[0];
-//					}
-//					row4.getCell(0).setCellValue(numStr);
-//				}
-//			}
-
-			row4.getCell(1).setCellValue(item.getMaterialsList());		// 商品型號
-//			System.out.println("item.getMaterialsList() >>>" + item.getMaterialsList());
-//			String[] list = item.getMaterialsList().split(",");
-//			if(list.length >= 1) {
-//				String[] detail = list[0].split("[*]");
-//				row4.getCell(1).setCellValue(detail[0]);		// 商品型號
-//				if(detail.length > 1) {
-//					row4.getCell(4).setCellValue(detail[1]);        // 數量
-//				}
-//			}
-			if(item.getMaterialCount() != null) {
-				BigDecimal amount = new BigDecimal(String.valueOf(item.getMaterialCount()));
-				row4.getCell(4).setCellValue(amount.intValue());
+			if(material == null) {
+				// 出貨倉別
+				row2.getCell(7).setCellValue(item.getDepotList());
+				//品號
+				row4.getCell(0).setCellValue(item.getMaterialNumber());
+				// 商品型號
+				row4.getCell(1).setCellValue(item.getMaterialsList());
+				if (item.getMaterialCount() != null) {
+					BigDecimal amount = new BigDecimal(String.valueOf(item.getMaterialCount()));
+					row4.getCell(4).setCellValue(amount.intValue());
+				} else {
+					row4.getCell(4).setCellValue(0);
+				}
 			} else {
-				row4.getCell(4).setCellValue(0);
+				row2.getCell(7).setCellValue(material.getDepotList());
+
+				row4.getCell(0).setCellValue(material.getMaterialNumber());
+				row4.getCell(1).setCellValue(material.getMaterialsList());
+				if (material.getMaterialCount() != null) {
+					BigDecimal amount = new BigDecimal(String.valueOf(material.getMaterialCount()));
+					row4.getCell(4).setCellValue(amount.intValue());
+				} else {
+					row4.getCell(4).setCellValue(0);
+				}
 			}
 
 			// 安裝方式
@@ -458,6 +457,6 @@ public class ExcelUtils {
 		item.setRemark(json.toJSONString());
 
 
-		exportHAConfirm(item);
+		exportHAConfirm(item, null);
 	}
 }

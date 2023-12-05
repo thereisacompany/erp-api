@@ -2,14 +2,12 @@ package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
-import com.jsh.erp.datasource.vo.DepotHeadVo4InDetail;
-import com.jsh.erp.datasource.vo.DepotHeadVo4InOutMCount;
-import com.jsh.erp.datasource.vo.DepotHeadVo4List;
-import com.jsh.erp.datasource.vo.DepotHeadVo4StatementAccount;
+import com.jsh.erp.datasource.vo.*;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.redis.RedisService;
@@ -27,10 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
@@ -539,23 +534,37 @@ public class DepotHeadController {
     public void export(@ApiParam(value = "配送單單號") @RequestParam(value = "number") String number,
                        HttpServletRequest request, HttpServletResponse response) {
         try {
-            DepotHeadVo4List dhl = new DepotHeadVo4List();
             String[] numbers = new String[]{number};
             List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
-            if (list.size() == 1) {
-                dhl = list.get(0);
-            }
+            DepotHeadVo4List dhl = list.get(0);
+            List<Long> idList = new ArrayList<>();
+            idList.add(dhl.getId());
+            Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+                    depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
 
 //            if(!dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT) &&
 //                    !dhl.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
 //
 //            }
 
-            File file = ExcelUtils.exportHAConfirm(dhl);
-            ExportExecUtil.showExec(file, file.getName(), response);
+            if(findMaterialsListMapByHeaderIdList.size()==1) {
+                File file = ExcelUtils.exportHAConfirm(dhl, null);
+                ExportExecUtil.showExec(file, file.getName(), response);
 
-            if(file.exists()) {
-                file.delete();
+                if(file.exists()) {
+                    file.delete();
+                }
+            } else {
+                List<File> files = new ArrayList<>();
+                findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+                    File file = ExcelUtils.exportHAConfirm(dhl, materialMap.getValue());
+                    files.add(file);
+                });
+                if(!files.isEmpty()) {
+                    ExportExecUtil.showExecs(files, response);
+
+                    files.stream().forEach(File::delete);
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -565,22 +574,35 @@ public class DepotHeadController {
     @GetMapping(value = "/export/list")
     @ApiOperation(value = "批次匯出確認書")
     public void exportList(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
+                           @ApiParam(value = "細單單號") @RequestParam(value = "subIds") Long[] sudIds,
                            HttpServletRequest request, HttpServletResponse response) {
         try {
             List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
 
             List<File> files = new ArrayList<>();
             for (DepotHeadVo4List depotHeadVo4List : list) {
+                List<Long> idList = new ArrayList<>();
+                idList.add(depotHeadVo4List.getId());
+                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
 
-                File file = ExcelUtils.exportHAConfirm(depotHeadVo4List);
-//                if(list.size() == 1) {
-//                    ExportExecUtil.showExec(file, file.getName(), response);
-//                } else {
+                if(findMaterialsListMapByHeaderIdList.size()==1) {
+                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
                     files.add(file);
-//                }
+                } else {
+                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+                        MaterialsListVo vo = materialMap.getValue();
+                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
+                            files.add(file);
+                        }
+                    });
+                }
             }
             if(!files.isEmpty()) {
                 ExportExecUtil.showExecs(files, response);
+
+                files.stream().forEach(File::delete);
             }
 
         }catch (Exception e) {
