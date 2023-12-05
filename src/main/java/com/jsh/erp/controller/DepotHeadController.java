@@ -364,7 +364,7 @@ public class DepotHeadController {
         try {
             String[] numbers = new String[] {number};
             List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
-            if(list.size() == 1) {
+            if(list.size() >= 1) {
                 dhl = list.get(0);
                 if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
                     if (dhl.getRemark() != null && !dhl.getRemark().isEmpty()) {

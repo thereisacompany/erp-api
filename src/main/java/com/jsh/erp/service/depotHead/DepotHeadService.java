@@ -855,7 +855,7 @@ public class DepotHeadService {
     }
 
     public List<DepotHeadVo4List> getDetailByNumber(String[] number)throws Exception {
-        List<DepotHeadVo4List> resList = new ArrayList<DepotHeadVo4List>();
+        List<DepotHeadVo4List> resList = new ArrayList<>();
         try{
             Map<Long,String> personMap = personService.getPersonMap();
             Map<Long,String> accountMap = accountService.getAccountMap();
