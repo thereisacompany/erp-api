@@ -53,12 +53,12 @@ public class ExcelUtils {
 		try {
 			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
 
-			String filePath = "./excelFile/2023家電-安裝確認書.xlsx";
+			String filePath = "./excelFile/2023家電-安裝確認書(新).xlsx";
 			String outputName = "%s家電-安裝確認書.xlsx";
 			if(remarkJson != null) {
 				if(remarkJson.containsKey("confirm")) {
 					if (remarkJson.getString("confirm").contains("冷氣")) { // 冷氣
-						filePath = "./excelFile/2023冷氣-安裝確認書.xlsx";
+						filePath = "./excelFile/2023冷氣-安裝確認書(新).xlsx";
 						outputName = "%s冷氣-安裝確認書.xlsx";
 					}
 				}
