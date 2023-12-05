@@ -165,7 +165,7 @@ public class DepotHeadService {
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
 //                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
-                    String mKey = dh.getId()+""+dh.getDid()+""+dh.getMNumber();
+                    String mKey = dh.getId()+""+dh.getSubId()+""+dh.getMNumber();
 
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());

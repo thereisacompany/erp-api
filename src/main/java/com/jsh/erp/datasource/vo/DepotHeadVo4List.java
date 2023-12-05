@@ -3,7 +3,6 @@ package com.jsh.erp.datasource.vo;
 import com.jsh.erp.datasource.entities.DepotHead;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class DepotHeadVo4List extends DepotHead{
 
@@ -19,7 +18,7 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String depotName;
 
-    private Long Did;
+    private Long SubId;
     private String counterName;
 
     private String allocationProjectName;
@@ -122,12 +121,12 @@ public class DepotHeadVo4List extends DepotHead{
         this.depotName = depotName;
     }
 
-    public Long getDid() {
-        return Did;
+    public Long getSubId() {
+        return SubId;
     }
 
-    public void setDid(Long did) {
-        Did = did;
+    public void setSubId(Long subId) {
+        SubId = subId;
     }
 
     public String getCounterName() {
