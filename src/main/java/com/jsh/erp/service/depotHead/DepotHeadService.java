@@ -167,6 +167,11 @@ public class DepotHeadService {
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId()+""+dh.getSubId()+""+dh.getMNumber();
 
+                    //客單編號
+                    if(dh.getCustomNumber()!=null) {
+                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+                    }
+
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
                         dh.setAccountName(accountStr);
@@ -872,6 +877,9 @@ public class DepotHeadService {
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
                 for (DepotHeadVo4List dh : list) {
+                    if(dh.getCustomNumber()!=null) {
+                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+                    }
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
                         dh.setAccountName(accountStr);
@@ -988,6 +996,17 @@ public class DepotHeadService {
     public void addDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request, User userInfo) throws Exception {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+
+        /**若有帶入客單編號及原始客編,檢查是否有重覆*/
+        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
+                && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
+            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber(), depotHead.getSourceNumber()) > 1;
+            if(isExist) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
+            }
+        }
+
         if(depotHead.getType()==null||depotHead.getType().isEmpty()) {
             if(depotHead.getDefaultNumber().contains("G")) {
                 depotHead.setType(BusinessConstants.DEPOTHEAD_TYPE_IN);
@@ -1124,6 +1143,17 @@ public class DepotHeadService {
     public void updateDepotHeadAndDetail(String beanJson, String rows, HttpServletRequest request)throws Exception {
         /**更新单据主表信息*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
+
+        /**若有帶入客單編號及原始客編,檢查是否有重覆*/
+        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
+                && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
+            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber(), depotHead.getSourceNumber()) > 1;
+            if(isExist) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
+            }
+        }
+
         //获取之前的金额数据
         BigDecimal preTotalPrice = getDepotHead(depotHead.getId()).getTotalPrice().abs();
         String subType = depotHead.getSubType();
@@ -1471,7 +1501,7 @@ public class DepotHeadService {
                 String confirm = ExcelUtils.getContent(mainData, i, 0);
                 // 客單編號(必填)
                 String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
-                String customNumber = excelCustomNum.split("-")[0];
+//                String customNumber = excelCustomNum.split("-")[0];
 
                 if (confirm == null || (confirm != null && confirm.isEmpty())
                         && excelCustomNum == null || (excelCustomNum != null && excelCustomNum.isEmpty())) {
@@ -1494,7 +1524,7 @@ public class DepotHeadService {
                 }
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
                     if(dh.getCustomNumber() != null && dh.getSourceNumber() != null) {
-                        if (dh.getCustomNumber().equals(customNumber) && dh.getSourceNumber().equals(sourceNumber)) {
+                        if (dh.getCustomNumber().equals(excelCustomNum) && dh.getSourceNumber().equals(sourceNumber)) {
                             return true;
                         }
                     }
@@ -1639,7 +1669,7 @@ public class DepotHeadService {
                 beanJson.put("address", address);
                 beanJson.put("remark", remark);
                 beanJson.put("importFlag", 1);
-                beanJson.put("customNumber", customNumber);
+                beanJson.put("customNumber", excelCustomNum);
                 beanJson.put("sourceNumber", sourceNumber);
 //                beanJson.put("mainArrival", mainArrival);
 //                beanJson.put("extrasArrival", extrasArrival);

@@ -237,4 +237,7 @@ public interface DepotHeadMapperEx {
     BigDecimal getFinishDepositByNumberExceptCurrent(
             @Param("linkNumber") String linkNumber,
             @Param("number") String number);
+
+    int checkIsExist(@Param("customNumber") String customNumber,
+                     @Param("sourceNumber") String sourceNumber);
 }

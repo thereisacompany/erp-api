@@ -1056,4 +1056,12 @@
         and dh.number!=#{number}
         and ifnull(dh.delete_flag,'0') !='1'
     </select>
+
+    <select id="checkIsExist" resultType="java.lang.Integer">
+        select count(1)
+        from jsh_depot_head
+        where custom_number=#{customNumber}
+        and source_number=#{sourceNumber}
+        and ifnull(delete_flag,'0') !='1'
+    </select>
 </mapper>
