@@ -547,24 +547,26 @@ public class DepotHeadController {
 //
 //            }
 
+            List<File> files = new ArrayList<>();
             if(findMaterialsListMapByHeaderIdList.size()==1) {
                 File file = ExcelUtils.exportHAConfirm(dhl, null);
-                ExportExecUtil.showExec(file, file.getName(), response);
+                files.add(file);
+//                ExportExecUtil.showExec(file, file.getName(), response);
 
-                if(file.exists()) {
-                    file.delete();
-                }
+//                if(file.exists()) {
+//                    file.delete();
+//                }
             } else {
-                List<File> files = new ArrayList<>();
                 findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                     File file = ExcelUtils.exportHAConfirm(dhl, materialMap.getValue());
                     files.add(file);
                 });
-                if(!files.isEmpty()) {
-                    ExportExecUtil.showExecs(files, response);
 
-                    files.stream().forEach(File::delete);
-                }
+            }
+            if(!files.isEmpty()) {
+                ExportExecUtil.showExecs(files, response);
+
+                files.stream().forEach(File::delete);
             }
         }catch (Exception e) {
             e.printStackTrace();
