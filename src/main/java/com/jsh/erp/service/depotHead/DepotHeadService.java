@@ -1484,7 +1484,7 @@ public class DepotHeadService {
 //            List<DepotCounter> depotCountList = depotCounterService.getAllList();
 //            List<Material> materialList = materialService.getMaterial();
             List<MaterialVo4Unit> materialList =  materialMapperEx.selectByConditionMaterial(null, null, null, null, null,
-                    null, null, null, null, null, null, 1, 10000);
+                    null, null, null, null, null, null, null,1,10000);
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料

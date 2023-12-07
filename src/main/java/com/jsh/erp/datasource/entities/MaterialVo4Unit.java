@@ -32,6 +32,8 @@ public class MaterialVo4Unit extends Material{
 
     private Long organId;
 
+    private String organName;
+
     private String commodityUnit;
 
     private Long meId;
@@ -153,6 +155,14 @@ public class MaterialVo4Unit extends Material{
 
     public void setOrganId(Long organId) {
         this.organId = organId;
+    }
+
+    public String getOrganName() {
+        return organName;
+    }
+
+    public void setOrganName(String organName) {
+        this.organName = organName;
     }
 
     public String getCounter() {

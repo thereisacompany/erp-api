@@ -28,6 +28,7 @@ public interface MaterialMapperEx {
             @Param("remark") String remark,
             @Param("idList") List<Long> idList,
             @Param("mpList") String mpList,
+            @Param("organId") String organId,
             @Param("offset") Integer offset,
             @Param("rows") Integer rows);
 

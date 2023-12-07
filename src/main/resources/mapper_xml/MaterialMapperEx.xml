@@ -43,11 +43,12 @@
 
     <select id="selectByConditionMaterial" parameterType="com.jsh.erp.datasource.entities.MaterialExample" resultMap="ResultMapList">
         select m.*,u.name unitName, mc.name categoryName, me.bar_code, me.barcode, me.number,
-        me.purchase_decimal, me.commodity_decimal, me.wholesale_decimal,me.low_decimal,me.sku,me.organ_id,me.counter
+        me.purchase_decimal, me.commodity_decimal, me.wholesale_decimal,me.low_decimal,me.sku,me.organ_id,js.supplier organName,me.counter
         FROM jsh_material m
         left JOIN jsh_material_extend me on m.id = me.material_id and ifnull(me.delete_Flag,'0') !='1'
         left JOIN jsh_unit u on m.unit_id = u.id and ifnull(u.delete_Flag,'0') !='1'
         left JOIN jsh_material_category mc on m.category_id = mc.id and ifnull(mc.delete_Flag,'0') !='1'
+        JOIN erp.jsh_supplier js on me.organ_id = js.id
         where 1=1
         and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
@@ -93,6 +94,9 @@
             <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
                 #{item}
             </foreach>
+        </if>
+        <if test="organId != null and organId !=''">
+            and me.organ_id = #{organId}
         </if>
         and ifnull(m.delete_flag,'0') !='1'
         group by m.id
