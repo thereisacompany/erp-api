@@ -43,7 +43,8 @@ public interface MaterialMapperEx {
             @Param("enabled") String enabled,
             @Param("remark") String remark,
             @Param("idList") List<Long> idList,
-            @Param("mpList") String mpList);
+            @Param("mpList") String mpList,
+            @Param("organId") String organId);
 
     Long insertSelectiveEx(Material record);
 

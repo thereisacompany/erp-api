@@ -151,7 +151,7 @@ public class MaterialService {
 
     public Long countMaterial(String materialParam, String color, String materialOther, String weight, String expiryNum,
                               String enableSerialNumber, String enableBatchNumber, String enabled,
-                              String remark, String categoryId,String mpList)throws Exception {
+                              String remark, String categoryId,String mpList, String organId)throws Exception {
         Long result =null;
         try{
             List<Long> idList = new ArrayList<>();
@@ -159,7 +159,7 @@ public class MaterialService {
                 idList = getListByParentId(Long.parseLong(categoryId));
             }
             result= materialMapperEx.countsByMaterial(materialParam, color, materialOther, weight, expiryNum,
-                    enableSerialNumber, enableBatchNumber, enabled, remark, idList, mpList);
+                    enableSerialNumber, enableBatchNumber, enabled, remark, idList, mpList, organId);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }

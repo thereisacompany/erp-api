@@ -48,7 +48,7 @@
         left JOIN jsh_material_extend me on m.id = me.material_id and ifnull(me.delete_Flag,'0') !='1'
         left JOIN jsh_unit u on m.unit_id = u.id and ifnull(u.delete_Flag,'0') !='1'
         left JOIN jsh_material_category mc on m.category_id = mc.id and ifnull(mc.delete_Flag,'0') !='1'
-        JOIN erp.jsh_supplier js on me.organ_id = js.id
+        left JOIN jsh_supplier js on me.organ_id = js.id
         where 1=1
         and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
@@ -117,7 +117,13 @@
         and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
-            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+            and (
+            me.bar_code like #{bindKey}
+            or m.name like #{bindKey}
+            or m.standard like #{bindKey}
+            or m.model like #{bindKey}
+            or me.number like #{bindKey}
+            )
         </if>
         <if test="color != null and color !=''">
             <bind name="bindColor" value="'%'+color+'%'"/>
@@ -152,6 +158,9 @@
             <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
                 #{item}
             </foreach>
+        </if>
+        <if test="organId != null and organId !=''">
+            and me.organ_id = #{organId}
         </if>
         and ifnull(m.delete_flag,'0') !='1'
     </select>
