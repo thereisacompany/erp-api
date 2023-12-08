@@ -6,7 +6,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
 import com.jsh.erp.datasource.vo.MaterialsListVo;
 import jxl.*;
@@ -151,8 +150,8 @@ public class ExcelUtils {
 
 			// TODO QRCode
 			String FILE_MIME_TYPE = "PNG";
-			int QRCODE_IMAGE_WIDTH = 70;
-			int QRCODE_IMAGE_HEIGHT = 70;
+			int QRCODE_IMAGE_WIDTH = 80;
+			int QRCODE_IMAGE_HEIGHT = 80;
 			byte[] qrcode = generateQRCodeImage(QRCODE_IMAGE_WIDTH, QRCODE_IMAGE_HEIGHT, FILE_MIME_TYPE, item.getNumber());
 			// Set the asset no in the second cell and brand in the third cell
 
@@ -429,7 +428,7 @@ public class ExcelUtils {
 		return new File(dir + File.separator + fileName);
 	}
 
-	public static byte[] generateQRCodeImage(int width, int height, String type, String contents) throws WriterException, IOException {
+	private static byte[] generateQRCodeImage(int width, int height, String type, String contents) throws WriterException, IOException {
 
 		QRCodeWriter qrCodeWriter = new QRCodeWriter();
 		Map<EncodeHintType, Object> hints = new HashMap<>();
