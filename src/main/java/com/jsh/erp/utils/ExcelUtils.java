@@ -55,12 +55,12 @@ public class ExcelUtils {
 		try {
 			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
 
-			String filePath = "./excelFile/2023家電-安裝確認書(新).xlsx";
+			String filePath = "./excelFile/2023-12-05-家電-安裝確認書.xlsx";
 			String outputName = "%s家電-安裝確認書.xlsx";
 			if(remarkJson != null) {
 				if(remarkJson.containsKey("confirm")) {
 					if (remarkJson.getString("confirm").contains("冷氣")) { // 冷氣
-						filePath = "./excelFile/2023冷氣-安裝確認書(新).xlsx";
+						filePath = "./excelFile/2023-12-05-冷氣-安裝確認書.xlsx";
 						outputName = "%s冷氣-安裝確認書.xlsx";
 					}
 				}
@@ -74,7 +74,25 @@ public class ExcelUtils {
 			row1.getCell(1).setCellValue(item.getReceiveName());	// 收貨人
 			row1.getCell(3).setCellValue(item.getCellphone());	// 電話
 			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
-			row1.getCell(7).setCellValue(item.getNumber());		// 客單編號
+
+			StringBuilder receiveNumber = new StringBuilder();
+			receiveNumber.append(item.getNumber());
+			String subNumber = "";
+			if(item.getCustomNumber()!=null && !item.getCustomNumber().isEmpty()) {
+				subNumber += item.getCustomNumber();
+			}
+			if(item.getSourceNumber()!=null && !item.getSourceNumber().isEmpty()) {
+				if(!subNumber.isEmpty()) {
+					subNumber += " / ";
+				}
+				subNumber += item.getSourceNumber();
+			}
+			if(!subNumber.isEmpty()) {
+				receiveNumber.append("\n");
+				receiveNumber.append(subNumber);
+			}
+//			System.out.println("receiveNumber  >>>"+receiveNumber.toString());
+			row1.getCell(7).setCellValue(receiveNumber.toString());		// 客單編號
 
 			// 匯出檔名
 			if(material != null) {

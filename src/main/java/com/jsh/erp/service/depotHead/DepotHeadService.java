@@ -171,6 +171,10 @@ public class DepotHeadService {
                     if(dh.getCustomNumber()!=null) {
                         dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
                     }
+                    //原始客編
+                    if(dh.getSourceNumber()!=null) {
+                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+                    }
 
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
@@ -880,6 +884,9 @@ public class DepotHeadService {
                     if(dh.getCustomNumber()!=null) {
                         dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
                     }
+                    if(dh.getSourceNumber()!=null) {
+                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+                    }
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
                         dh.setAccountName(accountStr);
@@ -1519,7 +1526,7 @@ public class DepotHeadService {
                 // 原始編號(必填)
                 String sourceNumber = ExcelUtils.getContent(mainData, i, 2);
                 if(sourceNumber == null || (sourceNumber != null && sourceNumber.isEmpty())) {
-                    importError.put(""+i, "原始編號未填寫");
+                    importError.put(""+i, "原始客編未填寫");
                     continue;
                 }
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
@@ -1531,7 +1538,7 @@ public class DepotHeadService {
                     return false;
                 }).findFirst();
                 if(tmpDepotHead.isPresent()) {
-                    importError.put(""+i, "此筆資料重覆匯入(客單編號:"+excelCustomNum+", 原始編號:"+sourceNumber+")");
+                    importError.put(""+i, "此筆資料重覆匯入(客單編號:"+excelCustomNum+", 原始客編:"+sourceNumber+")");
                     continue;
                 }
 
