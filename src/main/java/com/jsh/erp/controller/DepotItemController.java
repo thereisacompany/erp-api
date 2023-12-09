@@ -329,10 +329,10 @@ public class DepotItemController {
                 timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
                 timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
             }
-            if(beginDateTime != null) {
+            if(beginDateTime != null && !beginDateTime.isEmpty()) {
                 timeA = beginDateTime;
             }
-            if(endDateTime != null) {
+            if(endDateTime != null && !endDateTime.isEmpty()) {
                 timeB = endDateTime;
             }
 
