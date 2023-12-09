@@ -8,6 +8,10 @@ public class DepotItemVo4WithMaterial {
 
     private String MName;
 
+    private Long organId;
+
+    private String organName;
+
     private String MNumber;
 
     private String MModel;
@@ -69,6 +73,22 @@ public class DepotItemVo4WithMaterial {
 
     public void setMName(String MName) {
         this.MName = MName;
+    }
+
+    public void setOrganId(Long organId) {
+        this.organId = organId;
+    }
+
+    public Long getOrganId() {
+        return organId;
+    }
+
+    public String getOrganName() {
+        return organName;
+    }
+
+    public void setOrganName(String organName) {
+        this.organName = organName;
     }
 
     public String getMNumber() {

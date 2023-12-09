@@ -46,6 +46,7 @@ public interface DepotItemMapperEx {
 
     List<DepotItemVo4WithMaterial> findByAllMaterial(
             @Param("materialParam") String materialParam,
+            @Param("beginTime") String beginTime,
             @Param("endTime") String endTime,
             @Param("offset") Integer offset,
             @Param("rows") Integer rows
@@ -59,6 +60,7 @@ public interface DepotItemMapperEx {
 
     int findByAllCount(
             @Param("materialParam") String materialParam,
+            @Param("beginTime") String beginTime,
             @Param("endTime") String endTime);
 
     List<DepotItemVo4WithInfoEx> getListWithBugOrSale(

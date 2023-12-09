@@ -314,20 +314,33 @@ public class DepotItemController {
     public BaseResponseInfo findByAll(@RequestParam("currentPage") Integer currentPage,
                                       @RequestParam("pageSize") Integer pageSize,
                                       @RequestParam(value = "depotIds",required = false) String depotIds,
-                                      @RequestParam("monthTime") String monthTime,
+                                      @RequestParam(value = "monthTime", required = false) String monthTime,
+                                      @RequestParam(value = "beginDateTime", required = false) String beginDateTime,
+                                      @RequestParam(value = "endDateTime", required = false) String endDateTime,
                                       @RequestParam("materialParam") String materialParam,
                                       @RequestParam("mpList") String mpList,
                                       HttpServletRequest request)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<>();
         try {
-            String timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
-            String timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
+            String timeA = null;
+            String timeB = null;
+            if(monthTime != null) {
+                timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
+                timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
+            }
+            if(beginDateTime != null) {
+                timeA = beginDateTime;
+            }
+            if(endDateTime != null) {
+                timeB = endDateTime;
+            }
+
             List<Long> depotList = parseListByDepotIds(depotIds);
             List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
-                    timeB,(currentPage-1)*pageSize, pageSize);
+                    timeA, timeB,(currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
-            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeB);
+            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB);
             map.put("total", total);
             //存放数据json数组
             JSONArray dataArray = new JSONArray();
@@ -340,11 +353,11 @@ public class DepotItemController {
                     }
                     JSONObject item = new JSONObject();
                     Long mId = diEx.getMId();
+                    Long organId = diEx.getOrganId();
                     item.put("barCode", diEx.getBarCode());
-                    String[] mNumber = diEx.getMNumber().split("-");
-                    Long organId = Long.valueOf(mNumber[0]);
                     item.put("organId", organId);
-                    item.put("materialNumber", mNumber[1]);
+                    item.put("organName", diEx.getOrganName());
+                    item.put("materialNumber", diEx.getMNumber());
                     item.put("depotName", diEx.getDepotName());
                     item.put("counterName", diEx.getCounterName());
                     item.put("materialName", diEx.getMName());

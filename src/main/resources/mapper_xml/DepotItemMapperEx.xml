@@ -40,6 +40,8 @@
     <resultMap id="ResultByWithMaterial" type="com.jsh.erp.datasource.entities.DepotItemVo4WithMaterial">
         <result column="MId" jdbcType="VARCHAR" property="MId" />
         <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+        <result column="organ_id" jdbcType="BIGINT" property="organId" />
+        <result column="supplier" jdbcType="VARCHAR" property="organName" />
         <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="DepotId" jdbcType="BIGINT" property="depotId" />
         <result column="DepotName" jdbcType="VARCHAR" property="depotName" />
@@ -273,7 +275,7 @@
     </select>
 
     <select id="findByAllMaterial" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByWithMaterial">
-        select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber,
+        select m.id MId, me.bar_code, dh.organ_id, js.supplier, me.`number` MNumber,
         jd.id DepotId, jd.name DepotName, me.counter counterName,
         m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
@@ -284,10 +286,14 @@
         left join jsh_depot_head dh on di.header_id=dh.id and ifnull(dh.delete_flag,'0') !='1'
         left join jsh_unit u on m.unit_id=u.id and ifnull(u.delete_Flag,'0') !='1'
         LEFT JOIN jsh_depot jd ON di.depot_id = jd.id
+        LEFT JOIN jsh_supplier js ON dh.organ_id = js.id
         where 1=1 and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
             and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+        </if>
+        <if test="beginTime != null">
+            and dh.oper_time >= #{beginTime}
         </if>
         <if test="endTime != null">
             and dh.oper_time &lt;= #{endTime}
@@ -336,6 +342,9 @@
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
             and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+        </if>
+        <if test="beginTime != null">
+            and dh.oper_time >= #{beginTime}
         </if>
         <if test="endTime != null">
             and dh.oper_time &lt;= #{endTime}

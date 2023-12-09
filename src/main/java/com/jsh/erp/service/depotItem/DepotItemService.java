@@ -288,10 +288,10 @@ public class DepotItemService {
         return list;
     }
 
-    public List<DepotItemVo4WithMaterial> findByAllMaterial(String materialParam, String endTime, Integer offset, Integer rows)throws Exception {
+    public List<DepotItemVo4WithMaterial> findByAllMaterial(String materialParam, String beginTime, String endTime, Integer offset, Integer rows)throws Exception {
         List<DepotItemVo4WithMaterial> list =null;
         try{
-            list = depotItemMapperEx.findByAllMaterial(materialParam, endTime, offset, rows);
+            list = depotItemMapperEx.findByAllMaterial(materialParam, beginTime, endTime, offset, rows);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -308,10 +308,10 @@ public class DepotItemService {
         return list;
     }
 
-    public int findByAllCount(String materialParam, String endTime)throws Exception {
+    public int findByAllCount(String materialParam, String beginTime, String endTime)throws Exception {
         int result=0;
         try{
-            result = depotItemMapperEx.findByAllCount(materialParam, endTime);
+            result = depotItemMapperEx.findByAllCount(materialParam, beginTime, endTime);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
