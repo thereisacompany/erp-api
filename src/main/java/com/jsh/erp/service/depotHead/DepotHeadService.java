@@ -1007,7 +1007,7 @@ public class DepotHeadService {
         /**若有帶入客單編號及原始客編,檢查是否有重覆*/
         if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
                 && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
-            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber(), depotHead.getSourceNumber()) > 1;
+            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber().trim(), depotHead.getSourceNumber().trim()) > 1;
             if(isExist) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
@@ -1154,7 +1154,7 @@ public class DepotHeadService {
         /**若有帶入客單編號及原始客編,檢查是否有重覆*/
         if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
                 && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
-            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber(), depotHead.getSourceNumber()) > 1;
+            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber().trim(), depotHead.getSourceNumber().trim()) > 1;
             if(isExist) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
@@ -1507,7 +1507,7 @@ public class DepotHeadService {
                 // 確認書(必填)
                 String confirm = ExcelUtils.getContent(mainData, i, 0);
                 // 客單編號(必填)
-                String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
+                String excelCustomNum = ExcelUtils.getContent(mainData, i, 1).trim();
 //                String customNumber = excelCustomNum.split("-")[0];
 
                 if (confirm == null || (confirm != null && confirm.isEmpty())
@@ -1531,7 +1531,7 @@ public class DepotHeadService {
                 }
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
                     if(dh.getCustomNumber() != null && dh.getSourceNumber() != null) {
-                        if (dh.getCustomNumber().equals(excelCustomNum) && dh.getSourceNumber().equals(sourceNumber)) {
+                        if (dh.getCustomNumber().equals(excelCustomNum) && dh.getSourceNumber().trim().equals(sourceNumber)) {
                             return true;
                         }
                     }
