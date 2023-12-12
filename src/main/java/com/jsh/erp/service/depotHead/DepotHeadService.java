@@ -1005,10 +1005,17 @@ public class DepotHeadService {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
 
         /**若有帶入客單編號及原始客編,檢查是否有重覆*/
-        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
-                && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
-            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber().trim(), depotHead.getSourceNumber().trim()) > 1;
-            if(isExist) {
+        String customStr = "";
+        String sourceStr = "";
+        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()) {
+            customStr = depotHead.getCustomNumber().trim();
+        }
+        if (depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
+            sourceStr = depotHead.getSourceNumber().trim();
+        }
+        if(!customStr.isEmpty() || !sourceStr.isEmpty()) {
+            boolean isExist = depotHeadMapperEx.checkIsExist(null, customStr, sourceStr) > 0;
+            if (isExist) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
             }
@@ -1152,10 +1159,17 @@ public class DepotHeadService {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
 
         /**若有帶入客單編號及原始客編,檢查是否有重覆*/
-        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()
-                && depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
-            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getCustomNumber().trim(), depotHead.getSourceNumber().trim()) > 1;
-            if(isExist) {
+        String customStr = "";
+        String sourceStr = "";
+        if (depotHead.getCustomNumber()!=null && !depotHead.getCustomNumber().isEmpty()) {
+            customStr = depotHead.getCustomNumber().trim();
+        }
+        if (depotHead.getSourceNumber()!=null && !depotHead.getSourceNumber().isEmpty()) {
+            sourceStr = depotHead.getSourceNumber().trim();
+        }
+        if(!customStr.isEmpty() || !sourceStr.isEmpty()) {
+            boolean isExist = depotHeadMapperEx.checkIsExist(depotHead.getId(), customStr, sourceStr) > 0;
+            if (isExist) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG));
             }
@@ -1530,8 +1544,16 @@ public class DepotHeadService {
                     continue;
                 }
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
-                    if(dh.getCustomNumber() != null && dh.getSourceNumber() != null) {
-                        if (dh.getCustomNumber().equals(excelCustomNum) && dh.getSourceNumber().trim().equals(sourceNumber)) {
+                    String customStr = "";
+                    String sourceStr = "";
+                    if (dh.getCustomNumber()!=null && !dh.getCustomNumber().isEmpty()) {
+                        customStr = dh.getCustomNumber().trim();
+                    }
+                    if (dh.getSourceNumber()!=null && !dh.getSourceNumber().isEmpty()) {
+                        sourceStr = dh.getSourceNumber().trim();
+                    }
+                    if(!customStr.isEmpty() || !sourceStr.isEmpty()) {
+                        if (customStr.equals(excelCustomNum) || sourceStr.equals(sourceNumber)) {
                             return true;
                         }
                     }

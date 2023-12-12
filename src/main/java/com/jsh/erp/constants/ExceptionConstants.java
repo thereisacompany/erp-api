@@ -397,7 +397,7 @@ public class ExceptionConstants {
     public static final int DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE = 8500020;
     public static final String DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG = "抱歉，只有移倉中的單據可以移倉完成";
     public static final int DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE = 8000021;
-    public static final String DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG = "客單編號及原始客編重覆建立";
+    public static final String DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG = "客單編號/原始客編重覆建立";
     /**
      *  单据明细信息
      * type = 90

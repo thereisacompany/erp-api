@@ -1060,8 +1060,16 @@
     <select id="checkIsExist" resultType="java.lang.Integer">
         select count(1)
         from jsh_depot_head
-        where custom_number=#{customNumber}
-        and source_number=#{sourceNumber}
+        where 1= 1
+        <if test="id != null">
+            and id != ${id}
+        </if>
+        <if test="customNumber != null and !customNumber.isEmpty()">
+            and custom_number=#{customNumber}
+        </if>
+        <if test="sourceNumber != null and !sourceNumber.isEmpty()">
+            and source_number=#{sourceNumber}
+        </if>
         and ifnull(delete_flag,'0') !='1'
     </select>
 </mapper>
