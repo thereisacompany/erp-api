@@ -48,6 +48,7 @@ public interface DepotItemMapperEx {
             @Param("materialParam") String materialParam,
             @Param("beginTime") String beginTime,
             @Param("endTime") String endTime,
+            @Param("organId") Long organId,
             @Param("offset") Integer offset,
             @Param("rows") Integer rows
     );
@@ -61,7 +62,8 @@ public interface DepotItemMapperEx {
     int findByAllCount(
             @Param("materialParam") String materialParam,
             @Param("beginTime") String beginTime,
-            @Param("endTime") String endTime);
+            @Param("endTime") String endTime,
+            @Param("organId") Long organId);
 
     List<DepotItemVo4WithInfoEx> getListWithBugOrSale(
             @Param("materialParam") String materialParam,

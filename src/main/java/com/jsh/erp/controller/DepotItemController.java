@@ -317,6 +317,7 @@ public class DepotItemController {
                                       @RequestParam(value = "monthTime", required = false) String monthTime,
                                       @RequestParam(value = "beginDateTime", required = false) String beginDateTime,
                                       @RequestParam(value = "endDateTime", required = false) String endDateTime,
+                                      @RequestParam(value = "findOrganId", required = false) Long findOrganId,
                                       @RequestParam("materialParam") String materialParam,
                                       @RequestParam("mpList") String mpList,
                                       HttpServletRequest request)throws Exception {
@@ -338,9 +339,9 @@ public class DepotItemController {
 
             List<Long> depotList = parseListByDepotIds(depotIds);
             List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
-                    timeA, timeB,(currentPage-1)*pageSize, pageSize);
+                    timeA, timeB, findOrganId, (currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
-            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB);
+            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB, findOrganId);
             map.put("total", total);
             //存放数据json数组
             JSONArray dataArray = new JSONArray();
