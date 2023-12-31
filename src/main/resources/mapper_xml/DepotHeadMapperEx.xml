@@ -1064,12 +1064,30 @@
         <if test="id != null">
             and id != ${id}
         </if>
-        <if test="customNumber != null and !customNumber.isEmpty()">
-            and custom_number=#{customNumber}
-        </if>
-        <if test="sourceNumber != null and !sourceNumber.isEmpty()">
-            and source_number=#{sourceNumber}
-        </if>
+        <choose>
+            <when test="customNumber != null and !customNumber.isEmpty()
+            and sourceNumber != null and !sourceNumber.isEmpty()">
+                and (custom_number=#{customNumber} or source_number=#{sourceNumber})
+            </when>
+            <otherwise>
+                <if test="customNumber != null and !customNumber.isEmpty()">
+                    and custom_number=#{customNumber}
+                </if>
+                <if test="sourceNumber != null and !sourceNumber.isEmpty()">
+                    and source_number=#{sourceNumber}
+                </if>
+            </otherwise>
+        </choose>
+<!--        <if test="customNumber != null and !customNumber.isEmpty()-->
+<!--            and sourceNumber != null and !sourceNumber.isEmpty()">-->
+<!--            and (custom_number=#{customNumber} or source_number=#{sourceNumber})-->
+<!--        </if>-->
+<!--        <if test="customNumber != null and !customNumber.isEmpty()">-->
+<!--            and custom_number=#{customNumber}-->
+<!--        </if>-->
+<!--        <if test="sourceNumber != null and !sourceNumber.isEmpty()">-->
+<!--            and source_number=#{sourceNumber}-->
+<!--        </if>-->
         and ifnull(delete_flag,'0') !='1'
     </select>
 </mapper>
