@@ -343,6 +343,9 @@ public class DepotItemController {
             String[] mpArr = mpList.split(",");
             int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB, findOrganId);
             map.put("total", total);
+            int totalIn = 0;
+            int totalOut = 0;
+            int totalThis = 0;
             //存放数据json数组
             JSONArray dataArray = new JSONArray();
             if (null != dataList) {
@@ -377,8 +380,11 @@ public class DepotItemController {
                     BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);
                     item.put("prevSum", prevSum);
                     item.put("inSum", inSum);
+                    totalIn += inSum.intValue();
                     item.put("outSum", outSum);
+                    totalOut += outSum.intValue();
                     item.put("thisSum", thisSum);
+                    totalThis += thisSum.intValue();
                     //将小单位的库存换算为大单位的库存
                     item.put("bigUnitStock", materialService.getBigUnitStock(thisSum, diEx.getUnitId()));
                     item.put("unitPrice", diEx.getPurchaseDecimal());
@@ -386,6 +392,9 @@ public class DepotItemController {
                     dataArray.add(item);
                 }
             }
+            map.put("totalIn", totalIn);
+            map.put("totalOut", totalOut);
+            map.put("totalThis", totalThis);
             map.put("rows", dataArray);
             res.code = 200;
             res.data = map;
