@@ -613,7 +613,7 @@ public class DepotHeadController {
     }
 
     @PostMapping(value = "/importExcel")
-    @ApiOperation(value = "excel表格匯入出貨單")
+    @ApiOperation(value = "excel表格匯入配送單")
     public BaseResponseInfo importExcel(MultipartFile file,
                                         HttpServletRequest request, HttpServletResponse response) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();

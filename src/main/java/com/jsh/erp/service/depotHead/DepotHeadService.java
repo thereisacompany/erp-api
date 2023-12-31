@@ -409,7 +409,11 @@ public class DepotHeadService {
     public int insertDepotHead(JSONObject obj, HttpServletRequest request)throws Exception {
         DepotHead depotHead = JSONObject.parseObject(obj.toJSONString(), DepotHead.class);
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
+        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+            depotHead.setStatus(BusinessConstants.BILLS_STATUS_AUDIT);
+        } else {
+            depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
+        }
         int result=0;
         try{
             result=depotHeadMapper.insert(depotHead);
@@ -1081,7 +1085,11 @@ public class DepotHeadService {
         depotHead.setCreator(userInfo==null?null:userInfo.getId());
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if(StringUtil.isEmpty(depotHead.getStatus())) {
-            depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
+            if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+                depotHead.setStatus(BusinessConstants.BILLS_STATUS_AUDIT);
+            } else {
+                depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
+            }
         }
         depotHead.setPurchaseStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
         depotHead.setPayType(depotHead.getPayType()==null?"現付":depotHead.getPayType());
