@@ -1,6 +1,8 @@
 package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.Vehicle;
 import com.jsh.erp.service.vehicle.VehicleService;
 import com.jsh.erp.utils.BaseResponseInfo;
@@ -11,6 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,5 +55,20 @@ public class VehicleController {
         return res;
     }
 
+    @PutMapping(value = "/driver/bind")
+    @ApiOperation(value = "綁定車輛駕駛")
+    public Object bindDriver() {
+        JSONObject result = ExceptionConstants.standardSuccess();
+
+        return result;
+    }
+
+    @PutMapping(value = "/driver/unbind")
+    @ApiOperation(value = "解除綁定車輛駕駛")
+    public Object unbindDriver() {
+        JSONObject result = ExceptionConstants.standardSuccess();
+
+        return result;
+    }
 
 }

@@ -2,9 +2,11 @@ package com.jsh.erp.service.vehicle;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
+import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.*;
 import com.jsh.erp.datasource.mappers.VehicleMapper;
 import com.jsh.erp.datasource.mappers.VehicleMapperEx;
+import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.log.LogService;
 import org.slf4j.Logger;
@@ -34,6 +36,15 @@ public class VehicleService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int insertVehicle(JSONObject obj, HttpServletRequest request) {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
+
+        // TODO 檢查此駕駛是否已綁定過車輛
+        if(vehicle.getDriver() != null) {
+            if(vehicleMapper.isDriverExist(vehicle.getDriver(), null) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_CODE,
+                        String.format(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_MSG));
+            }
+        }
+
         int result=0;
         try{
             result=vehicleMapper.insertSelective(vehicle);
@@ -48,6 +59,14 @@ public class VehicleService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int updateVehicle(JSONObject obj, HttpServletRequest request)throws Exception {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
+
+        // TODO 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的
+        if(vehicle.getDriver() != null) {
+            if(vehicleMapper.isDriverExist(vehicle.getDriver(), vehicle.getId()) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_CODE,
+                        String.format(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_MSG));
+            }
+        }
 
         int result=0;
         try{

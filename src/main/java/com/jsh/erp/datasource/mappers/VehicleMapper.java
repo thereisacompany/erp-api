@@ -16,4 +16,6 @@ public interface VehicleMapper {
     int insertSelective(Vehicle vehicle);
 
     int updateByPrimaryKeySelective(Vehicle vehicle);
+
+    int isDriverExist(String driver, Long id);
 }
