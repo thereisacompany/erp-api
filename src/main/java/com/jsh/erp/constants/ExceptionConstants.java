@@ -501,8 +501,11 @@ public class ExceptionConstants {
      * 車輛與司機關係
      * type = 120
      */
-    public static final int DRIVER_HAD_VEHICLE_FAILED_CODE = 12000000;
-    public static final String DRIVER_HAD_VEHICLE_FAILED_MSG = "此駕駛已有綁定車輛";
+    public static final int VEHICLE_NO_EXIST_CODE = 12000000;
+    public static final String VEHICLE_NO_EXIST_MSG = "查無此車輛資料";
+    public static final int VEHICLE_HAD_DRIVER_FAILED_CODE = 12000001;
+    public static final String VEHICLE_HAD_DRIVER_FAILED_MSG = "此駕駛已有綁定車輛";
+
 
     //进销存统计，如果有权限的仓库数量太多则提示要选择仓库
     public static final int REPORT_TWO_MANY_DEPOT_FAILED_CODE = 510;

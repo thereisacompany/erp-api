@@ -40,8 +40,8 @@ public class VehicleService {
         // TODO 檢查此駕駛是否已綁定過車輛
         if(vehicle.getDriver() != null) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), null) > 0) {
-                throw new BusinessRunTimeException(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_CODE,
-                        String.format(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_MSG));
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
+                        String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
             }
         }
 
@@ -63,8 +63,8 @@ public class VehicleService {
         // TODO 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的
         if(vehicle.getDriver() != null) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), vehicle.getId()) > 0) {
-                throw new BusinessRunTimeException(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_CODE,
-                        String.format(ExceptionConstants.DRIVER_HAD_VEHICLE_FAILED_MSG));
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
+                        String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
             }
         }
 
@@ -95,6 +95,9 @@ public class VehicleService {
         Vehicle result=null;
         try{
             result = vehicleMapper.selectByPrimaryKey(id);
+            if(result.getDriverName() != null && !result.getDriverName().isEmpty()) {
+                result.setDriver(result.getDriverName());
+            }
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -107,6 +110,11 @@ public class VehicleService {
         List<Vehicle> list = null;
         try{
             list = vehicleMapper.selectByExample(example);
+            list.stream().forEach(vehicle -> {
+                if(vehicle.getDriverName() != null && !vehicle.getDriverName().isEmpty()) {
+                    vehicle.setDriver(vehicle.getDriverName());
+                }
+            });
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -120,6 +128,9 @@ public class VehicleService {
         try {
             List<Vehicle> list = vehicleMapperEx.selectByConditionVehicle(license, brand, driver, offset, rows);
             list.stream().forEach(vehicle -> {
+                if(vehicle.getDriverName() != null && !vehicle.getDriverName().isEmpty()) {
+                    vehicle.setDriver(vehicle.getDriverName());
+                }
                 resList.add(vehicle);
             });
         }catch(Exception e){
@@ -137,6 +148,34 @@ public class VehicleService {
             JshException.readFail(logger, e);
         }
         return result;
+    }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void updateVehicleDriver(Long id, String driver, HttpServletRequest request) {
+        Vehicle vehicle = vehicleMapper.selectByPrimaryKey(id);
+        if(vehicle == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_NO_EXIST_CODE,
+                    String.format(ExceptionConstants.VEHICLE_NO_EXIST_MSG));
+        }
+        String title ="車輛綁定";
+        if(driver != null) { // 綁定
+            if(vehicleMapper.isDriverExist(driver, id) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
+                        String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
+            }
+            vehicle.setDriver(driver);
+        } else {
+            title = "車輛解除綁定";
+            vehicle.setDriver("");
+        }
+
+        try{
+            vehicleMapper.updateByPrimaryKeySelective(vehicle);
+            logService.insertLog(title, new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT)
+                    .append(vehicle.getId()).toString(), request);
+        }catch(Exception e){
+            JshException.writeFail(logger, e);
+        }
     }
 
 }

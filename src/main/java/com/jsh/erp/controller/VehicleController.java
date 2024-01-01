@@ -12,10 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -55,19 +52,19 @@ public class VehicleController {
         return res;
     }
 
-    @PutMapping(value = "/driver/bind")
+    @PutMapping(value = "/driver/bind/{id}")
     @ApiOperation(value = "綁定車輛駕駛")
-    public Object bindDriver() {
+    public Object bindDriver(@PathVariable Long id, @RequestParam(value = "driver") String driver, HttpServletRequest request) {
         JSONObject result = ExceptionConstants.standardSuccess();
-
+        vehicleService.updateVehicleDriver(id, driver, request);
         return result;
     }
 
-    @PutMapping(value = "/driver/unbind")
+    @PutMapping(value = "/driver/unbind/{id}")
     @ApiOperation(value = "解除綁定車輛駕駛")
-    public Object unbindDriver() {
+    public Object unbindDriver(@PathVariable Long id, HttpServletRequest request) {
         JSONObject result = ExceptionConstants.standardSuccess();
-
+        vehicleService.updateVehicleDriver(id, null, request);
         return result;
     }
 

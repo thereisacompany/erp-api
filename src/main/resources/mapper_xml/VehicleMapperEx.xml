@@ -3,22 +3,23 @@
 <mapper namespace="com.jsh.erp.datasource.mappers.VehicleMapperEx">
 
     <select id="selectByConditionVehicle" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="com.jsh.erp.datasource.mappers.VehicleMapper.BaseResultMap">
-        select *
-        FROM jsh_vehicle
+        select jv.*, js.supplier as driver_name
+        FROM jsh_vehicle jv
+        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` = '司機'
         where 1=1
         <if test="license != null and license != ''">
             <bind name="bindLicense" value="'%'+license+'%'"/>
-            and license_plate_number like #{bindLicense}
+            and jv.license_plate_number like #{bindLicense}
         </if>
         <if test="brand != null and brand != ''">
             <bind name="bindBrand" value="'%'+brand+'%'"/>
-            and brand_model like #{bindBrand}
+            and jv.brand_model like #{bindBrand}
         </if>
         <if test="driver != null and driver != ''">
             <bind name="bindDriver" value="'%'+driver+'%'"/>
-            and driver like #{bindDriver}
+            and js.supplier like #{bindDriver}
         </if>
-        order by id desc
+        order by jv.id desc
         <if test="offset != null and rows != null">
             limit #{offset},#{rows}
         </if>
@@ -26,20 +27,21 @@
 
     <select id="countsByVehicle" resultType="java.lang.Long">
         SELECT
-        COUNT(id)
-        FROM jsh_vehicle
+        COUNT(jv.id)
+        FROM jsh_vehicle jv
+        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` = '司機'
         WHERE 1=1
         <if test="license != null and license != ''">
             <bind name="bindLicense" value="'%'+license+'%'"/>
-            and license_plate_number like #{bindLicense}
+            and jv.license_plate_number like #{bindLicense}
         </if>
         <if test="brand != null and brand != ''">
             <bind name="bindBrand" value="'%'+brand+'%'"/>
-            and brand_model like #{bindBrand}
+            and jv.brand_model like #{bindBrand}
         </if>
         <if test="driver != null and driver != ''">
             <bind name="bindDriver" value="'%'+driver+'%'"/>
-            and driver like #{bindDriver}
+            and js.supplier like #{bindDriver}
         </if>
     </select>
 </mapper>

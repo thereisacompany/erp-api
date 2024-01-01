@@ -21,7 +21,10 @@ public class Vehicle {
     
     @ApiModelProperty(value = "駕駛")
     private String driver;
-    
+
+    @ApiModelProperty(value = "駕駛名稱")
+    private String driverName;
+
     @ApiModelProperty(value = "車身顏色")
     private String color;
     
