@@ -2,23 +2,19 @@ package com.jsh.erp.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jsh.erp.constants.BusinessConstants;
-import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.Supplier;
-import com.jsh.erp.exception.BusinessRunTimeException;
+import com.jsh.erp.datasource.entities.SupplierType;
 import com.jsh.erp.service.supplier.SupplierService;
 import com.jsh.erp.service.systemConfig.SystemConfigService;
 import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.service.userBusiness.UserBusinessService;
-import com.jsh.erp.utils.*;
+import com.jsh.erp.utils.BaseResponseInfo;
+import com.jsh.erp.utils.ErpInfo;
+import com.jsh.erp.utils.ExportExecUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jxl.Sheet;
-import jxl.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +22,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -372,6 +366,27 @@ public class SupplierController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @GetMapping(value = "/type")
+    public BaseResponseInfo getType(HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+
+        try {
+            Map<String, Object> data = new HashMap<>();
+            List<SupplierType> dataList = supplierService.findByAllType();
+            if (null != dataList) {
+                data.put("typeList", dataList);
+            }
+            res.code = 200;
+            res.data = data;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取失敗";
+        }
+        return res;
     }
 
 }

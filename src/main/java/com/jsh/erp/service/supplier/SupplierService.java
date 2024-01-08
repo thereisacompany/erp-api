@@ -417,6 +417,16 @@ public class SupplierService {
         return list;
     }
 
+    public List<SupplierType> findByAllType() {
+        List<SupplierType> list = null;
+        try {
+            list = supplierMapperEx.getByAllType();
+        } catch (Exception e) {
+            JshException.readFail(logger, e);
+        }
+        return list;
+    }
+
     public void importVendor(MultipartFile file, HttpServletRequest request) throws Exception{
         String type = "供應商";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
