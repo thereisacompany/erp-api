@@ -1,7 +1,6 @@
 package com.jsh.erp.service.supplier;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.*;
@@ -99,10 +98,10 @@ public class SupplierService {
         return list;
     }
 
-    public List<Supplier> select(String supplier, String type, String phonenum, String telephone, int offset, int rows) throws Exception{
+    public List<Supplier> select(String supplier, String type, String phonenum, String telephone, String filter, int offset, int rows) throws Exception{
         List<Supplier> resList = new ArrayList<>();
         try{
-            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, offset, rows);
+            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, filter, offset, rows);
             for(Supplier s : list) {
                 Integer supplierId = s.getId().intValue();
                 String endTime = getNow3();
@@ -136,10 +135,10 @@ public class SupplierService {
         return resList;
     }
 
-    public Long countSupplier(String supplier, String type, String phonenum, String telephone) throws Exception{
+    public Long countSupplier(String supplier, String type, String phonenum, String telephone, String filter) throws Exception{
         Long result=null;
         try{
-            result=supplierMapperEx.countsBySupplier(supplier, type, phonenum, telephone);
+            result=supplierMapperEx.countsBySupplier(supplier, type, phonenum, telephone, filter);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -158,6 +157,16 @@ public class SupplierService {
             supplier.setType("客戶");
             supplierMapper.insertSelective(supplier);
         }
+        if(supplier.getType().contains("司機")) {
+            if(!obj.containsKey("loginName") || obj.getString("loginName").isEmpty()) {
+                throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_CODE,
+                        ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_MSG);
+            }
+
+            long count = supplierMapper.selectLastDriverId();
+            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), count);
+        }
+
         insertUserBusiness(supplier, request);
 
         logService.insertLog("商家",

@@ -16,6 +16,7 @@ public interface SupplierMapperEx {
             @Param("type") String type,
             @Param("phonenum") String phonenum,
             @Param("telephone") String telephone,
+            @Param("filter") String filter,
             @Param("offset") Integer offset,
             @Param("rows") Integer rows);
 
@@ -23,7 +24,8 @@ public interface SupplierMapperEx {
             @Param("supplier") String supplier,
             @Param("type") String type,
             @Param("phonenum") String phonenum,
-            @Param("telephone") String telephone);
+            @Param("telephone") String telephone,
+            @Param("filter") String filter);
 
     List<Supplier> findByAll(
             @Param("supplier") String supplier,

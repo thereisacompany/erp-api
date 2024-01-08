@@ -10,7 +10,14 @@
             and supplier like #{bindSupplier}
         </if>
         <if test="type != null and type !=''">
-            and type=#{type}
+            <choose>
+                <when test="filter != null and filter ==''">
+                    and type!=#{type}
+                </when>
+                <otherwise>
+                    and type = #{type}
+                </otherwise>
+            </choose>
         </if>
         <if test="phonenum != null and phonenum !=''">
             <bind name="bindPhoneNum" value="'%'+phonenum+'%'"/>
@@ -36,7 +43,14 @@
             and supplier like #{bindSupplier}
         </if>
         <if test="type != null and type !=''">
-            and type=#{type}
+            <choose>
+                <when test="filter != null and filter ==''">
+                    and type!=#{type}
+                </when>
+                <otherwise>
+                    and type = #{type}
+                </otherwise>
+            </choose>
         </if>
         <if test="phonenum != null and phonenum !=''">
             <bind name="bindPhoneNum" value="'%'+phonenum+'%'"/>

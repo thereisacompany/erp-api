@@ -37,8 +37,9 @@ public class SupplierComponent implements ICommonQuery {
         String type = StringUtil.getInfo(search, "type");
         String phonenum = StringUtil.getInfo(search, "phonenum");
         String telephone = StringUtil.getInfo(search, "telephone");
+        String filter = StringUtil.getInfo(search, "filter");
         String order = QueryUtils.order(map);
-        return supplierService.select(supplier, type, phonenum, telephone, QueryUtils.offset(map), QueryUtils.rows(map));
+        return supplierService.select(supplier, type, phonenum, telephone, filter,QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
     @Override
@@ -48,7 +49,8 @@ public class SupplierComponent implements ICommonQuery {
         String type = StringUtil.getInfo(search, "type");
         String phonenum = StringUtil.getInfo(search, "phonenum");
         String telephone = StringUtil.getInfo(search, "telephone");
-        return supplierService.countSupplier(supplier, type, phonenum, telephone);
+        String filter = StringUtil.getInfo(search, "filter");
+        return supplierService.countSupplier(supplier, type, phonenum, telephone, filter);
     }
 
     @Override
