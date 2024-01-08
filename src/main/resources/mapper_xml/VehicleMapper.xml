@@ -249,7 +249,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="isDriverExist" parameterType="java.lang.String">
+    <select id="isDriverExist" resultType="java.lang.Integer">
         select count(1) from jsh_vehicle where driver = #{driver}
         <if test="id != null">
             and id not in (#{id})

@@ -9,6 +9,7 @@ import com.jsh.erp.datasource.mappers.VehicleMapperEx;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.log.LogService;
+import com.jsh.erp.service.supplier.SupplierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,17 +32,30 @@ public class VehicleService {
     private VehicleMapperEx vehicleMapperEx;
 
     @Resource
+    private SupplierService supplierService;
+
+    @Resource
     private LogService logService;
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int insertVehicle(JSONObject obj, HttpServletRequest request) {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
 
-        // TODO 檢查此駕駛是否已綁定過車輛
+        // 檢查此駕駛是否已綁定過車輛
         if(vehicle.getDriver() != null) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), null) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
-                        String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
+                        ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG);
+            }
+
+            try {
+                if (supplierService.findById(Long.parseLong(vehicle.getDriver())).isEmpty()) {
+                    throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                            ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
+                }
+            } catch (Exception e) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                        ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
             }
         }
 
@@ -60,11 +74,20 @@ public class VehicleService {
     public int updateVehicle(JSONObject obj, HttpServletRequest request)throws Exception {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
 
-        // TODO 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的
-        if(vehicle.getDriver() != null) {
+        // 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的
+        if(vehicle.getDriver() != null && !vehicle.getDriver().isEmpty()) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), vehicle.getId()) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
-                        String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
+                        ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG);
+            }
+            try {
+                if (supplierService.findById(Long.parseLong(vehicle.getDriver())).isEmpty()) {
+                    throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                            ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
+                }
+            } catch (Exception e) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                        ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
             }
         }
 
@@ -95,8 +118,10 @@ public class VehicleService {
         Vehicle result=null;
         try{
             result = vehicleMapper.selectByPrimaryKey(id);
-            if(result.getDriverName() != null && !result.getDriverName().isEmpty()) {
-                result.setDriver(result.getDriverName());
+
+            Supplier supplier = supplierService.getSupplier(Long.parseLong(result.getDriver()));
+            if(supplier.getSupplier()!=null) {
+                result.setDriverName(supplier.getSupplier());
             }
         }catch(Exception e){
             JshException.readFail(logger, e);
@@ -111,8 +136,14 @@ public class VehicleService {
         try{
             list = vehicleMapper.selectByExample(example);
             list.stream().forEach(vehicle -> {
-                if(vehicle.getDriverName() != null && !vehicle.getDriverName().isEmpty()) {
-                    vehicle.setDriver(vehicle.getDriverName());
+                try {
+                    Supplier supplier = supplierService.getSupplier(Long.parseLong(vehicle.getDriver()));
+                    if(supplier.getSupplier()!=null) {
+                        vehicle.setDriverName(supplier.getSupplier());
+                    }
+                } catch (Exception e) {
+                    vehicle.setDriverName("");
+//                    throw new RuntimeException(e);
                 }
             });
         }catch(Exception e){
@@ -128,8 +159,14 @@ public class VehicleService {
         try {
             List<Vehicle> list = vehicleMapperEx.selectByConditionVehicle(license, brand, driver, offset, rows);
             list.stream().forEach(vehicle -> {
-                if(vehicle.getDriverName() != null && !vehicle.getDriverName().isEmpty()) {
-                    vehicle.setDriver(vehicle.getDriverName());
+                try {
+                    Supplier supplier = supplierService.getSupplier(Long.parseLong(vehicle.getDriver()));
+                    if(supplier.getSupplier()!=null) {
+                        vehicle.setDriverName(supplier.getSupplier());
+                    }
+                } catch (Exception e) {
+                    vehicle.setDriverName("");
+//                    throw new RuntimeException(e);
                 }
                 resList.add(vehicle);
             });
@@ -162,6 +199,15 @@ public class VehicleService {
             if(vehicleMapper.isDriverExist(driver, id) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
                         String.format(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG));
+            }
+            try {
+                if (supplierService.findById(Long.parseLong(vehicle.getDriver())).isEmpty()) {
+                    throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                            ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
+                }
+            } catch (Exception e) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
+                        ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
             }
             vehicle.setDriver(driver);
         } else {
