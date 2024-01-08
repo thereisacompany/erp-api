@@ -132,7 +132,7 @@
       all_need_get, all_need_pay, fax, 
       telephone, emergency_phone, address, license_plate, tax_num,
       bank_name, account_number, tax_rate, 
-      sort, tenant_id, delete_flag
+      sort, delete_flag
       )
     values (#{id,jdbcType=BIGINT}, #{supplier,jdbcType=VARCHAR}, #{supplierall,jdbcType=VARCHAR},
       #{taxid,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR},
@@ -143,7 +143,7 @@
       #{telephone,jdbcType=VARCHAR}, #{emergencyPhone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
       #{licensePlate,jdbcType=VARCHAR}, #{taxNum,jdbcType=VARCHAR},
       #{bankName,jdbcType=VARCHAR}, #{accountNumber,jdbcType=VARCHAR}, #{taxRate,jdbcType=DECIMAL}, 
-      #{sort,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, #{deleteFlag,jdbcType=VARCHAR}
+      #{sort,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Supplier">
@@ -321,6 +321,13 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertCarUser">
+    insert into jsh_caruser (id, username, login_name, password, Status, supplier_id)
+    values (null, #{username}, #{loginName}, 'e10adc3949ba59abbe56e057f20f883e', 0, #{supplierId})
+  </insert>
+  <select id="selectLastDriverId" resultType="java.lang.Long">
+    select id from jsh_supplier where type = '司機' order by id desc limit 1
+  </select>
   <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultType="java.lang.Long">
     select count(*) from jsh_supplier
     <if test="_parameter != null">

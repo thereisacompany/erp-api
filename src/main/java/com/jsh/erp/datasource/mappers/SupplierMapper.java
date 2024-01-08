@@ -16,6 +16,10 @@ public interface SupplierMapper {
 
     int insertSelective(Supplier record);
 
+    int insertCarUser(String username, String loginName, Long supplierId);
+
+    long selectLastDriverId();
+
     List<Supplier> selectByExample(SupplierExample example);
 
     Supplier selectByPrimaryKey(Long id);

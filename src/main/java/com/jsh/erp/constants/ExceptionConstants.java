@@ -228,6 +228,9 @@ public class ExceptionConstants {
     //修改供应商信息失败
     public static final int SUPPLIER_EDIT_FAILED_CODE = 7000002;
     public static final String SUPPLIER_EDIT_FAILED_MSG = "修改供应商信息失败";
+    //新增司機失敗-未帶入帳號
+    public static final int SUPPLIER_DRIVER_ADD_FAILED_CODE = 7000003;
+    public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機失敗-未帶入帳號";
     /**
      * 商品类别信息
      * type = 75
