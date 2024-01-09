@@ -12,7 +12,7 @@
         <if test="type != null and type !=''">
             <choose>
                 <when test="filter != null and filter =='1'">
-                    and type!=#{type}
+                    and type!='客戶'
                 </when>
                 <otherwise>
                     and type = #{type}
