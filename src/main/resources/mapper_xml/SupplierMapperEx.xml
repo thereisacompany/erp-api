@@ -9,16 +9,16 @@
             <bind name="bindSupplier" value="'%'+supplier+'%'"/>
             and supplier like #{bindSupplier}
         </if>
-        <if test="type != null and type !=''">
-            <choose>
-                <when test="filter != null and filter =='1'">
-                    and type!='客戶'
-                </when>
-                <otherwise>
+        <choose>
+            <when test="filter != null and filter != ''">
+                and type!='客戶'
+            </when>
+            <otherwise>
+                <if test="type != null and type !=''">
                     and type = #{type}
-                </otherwise>
-            </choose>
-        </if>
+                </if>
+            </otherwise>
+        </choose>
         <if test="phonenum != null and phonenum !=''">
             <bind name="bindPhoneNum" value="'%'+phonenum+'%'"/>
             and phone_num like #{bindPhoneNum}
@@ -42,16 +42,16 @@
             <bind name="bindSupplier" value="'%'+supplier+'%'"/>
             and supplier like #{bindSupplier}
         </if>
-        <if test="type != null and type !=''">
-            <choose>
-                <when test="filter != null and filter ==''">
-                    and type!=#{type}
-                </when>
-                <otherwise>
+        <choose>
+            <when test="filter != null and filter !=''">
+                and type!='客戶'
+            </when>
+            <otherwise>
+                <if test="type != null and type !=''">
                     and type = #{type}
-                </otherwise>
-            </choose>
-        </if>
+                </if>
+            </otherwise>
+        </choose>
         <if test="phonenum != null and phonenum !=''">
             <bind name="bindPhoneNum" value="'%'+phonenum+'%'"/>
             and phone_num like #{bindPhoneNum}

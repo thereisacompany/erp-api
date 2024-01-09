@@ -114,6 +114,9 @@ public class SupplierService {
     public List<Supplier> select(String supplier, String type, String phonenum, String telephone, String filter, int offset, int rows) throws Exception{
         List<Supplier> resList = new ArrayList<>();
         try{
+            if(filter!= null && !filter.equals("1")) {
+                filter = null;
+            }
             List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, filter, offset, rows);
             for(Supplier s : list) {
                 Integer supplierId = s.getId().intValue();
@@ -153,6 +156,9 @@ public class SupplierService {
     public Long countSupplier(String supplier, String type, String phonenum, String telephone, String filter) throws Exception{
         Long result=null;
         try{
+            if(filter!= null && !filter.equals("1")) {
+                filter = null;
+            }
             result=supplierMapperEx.countsBySupplier(supplier, type, phonenum, telephone, filter);
         }catch(Exception e){
             JshException.readFail(logger, e);
