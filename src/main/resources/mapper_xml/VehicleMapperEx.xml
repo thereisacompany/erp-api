@@ -16,9 +16,12 @@
             and jv.brand_model like #{bindBrand}
         </if>
         <if test="driver != null and driver != ''">
-            <bind name="bindDriver" value="'%'+driver+'%'"/>
-            and js.supplier like #{bindDriver}
+            and jv.driver = #{driver}
         </if>
+<!--        <if test="driver != null and driver != ''">-->
+<!--            <bind name="bindDriver" value="'%'+driver+'%'"/>-->
+<!--            and js.supplier like #{bindDriver}-->
+<!--        </if>-->
         order by jv.id desc
         <if test="offset != null and rows != null">
             limit #{offset},#{rows}
@@ -40,8 +43,11 @@
             and jv.brand_model like #{bindBrand}
         </if>
         <if test="driver != null and driver != ''">
-            <bind name="bindDriver" value="'%'+driver+'%'"/>
-            and js.supplier like #{bindDriver}
+            and jv.driver = #{driver}
         </if>
+<!--        <if test="driver != null and driver != ''">-->
+<!--            <bind name="bindDriver" value="'%'+driver+'%'"/>-->
+<!--            and js.supplier like #{bindDriver}-->
+<!--        </if>-->
     </select>
 </mapper>
