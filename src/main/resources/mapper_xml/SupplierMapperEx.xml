@@ -11,7 +11,7 @@
         </if>
         <if test="type != null and type !=''">
             <choose>
-                <when test="filter != null and filter ==''">
+                <when test="filter != null and filter =='1'">
                     and type!=#{type}
                 </when>
                 <otherwise>

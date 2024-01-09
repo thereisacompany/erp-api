@@ -20,6 +20,8 @@ public interface SupplierMapper {
 
     long selectLastDriverId();
 
+    String selectCarUser(Long supplierId);
+
     List<Supplier> selectByExample(SupplierExample example);
 
     Supplier selectByPrimaryKey(Long id);

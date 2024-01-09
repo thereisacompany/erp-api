@@ -67,6 +67,9 @@ public class SupplierService {
         Supplier result=null;
         try{
             result=supplierMapper.selectByPrimaryKey(id);
+            if(result.getType().contains("司機")) {
+                result.setLoginName(supplierMapper.selectCarUser(result.getId()));
+            }
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -80,6 +83,11 @@ public class SupplierService {
             SupplierExample example = new SupplierExample();
             example.createCriteria().andIdIn(idList);
             list = supplierMapper.selectByExample(example);
+            list.parallelStream().forEach(supplier -> {
+                if(supplier.getType().contains("司機")) {
+                    supplier.setLoginName(supplierMapper.selectCarUser(supplier.getId()));
+                }
+            });
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -92,6 +100,11 @@ public class SupplierService {
         List<Supplier> list=null;
         try{
             list=supplierMapper.selectByExample(example);
+            list.parallelStream().forEach(supplier -> {
+                if(supplier.getType().contains("司機")) {
+                    supplier.setLoginName(supplierMapper.selectCarUser(supplier.getId()));
+                }
+            });
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -117,15 +130,17 @@ public class SupplierService {
                 }
                 sum = sum.add(depotHeadService.findTotalPay(supplierId, endTime, supType))
                         .subtract(accountHeadService.findTotalPay(supplierId, endTime, supType));
-                if(("客户").equals(s.getType())) {
+                if(("客户").equals(supType)) {
                     String showId = String.format("%03d", s.getId());
                     s.setSupplier(showId + " " + s.getSupplier());
 
                     sum = sum.add(beginNeedGet);
                     s.setAllNeedGet(sum);
-                } else if(("供应商").equals(s.getType())) {
+                } else if(("供应商").equals(supType)) {
                     sum = sum.add(beginNeedPay);
                     s.setAllNeedPay(sum);
+                } else if(supType.contains("司機")) {
+                    s.setLoginName(supplierMapper.selectCarUser(s.getId()));
                 }
                 resList.add(s);
             }

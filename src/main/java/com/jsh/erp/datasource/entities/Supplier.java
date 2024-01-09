@@ -59,6 +59,8 @@ public class Supplier {
 
     private String deleteFlag;
 
+    private String loginName;
+
     public Long getId() {
         return id;
     }
@@ -270,5 +272,13 @@ public class Supplier {
 
     public void setDeleteFlag(String deleteFlag) {
         this.deleteFlag = deleteFlag == null ? null : deleteFlag.trim();
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 }
