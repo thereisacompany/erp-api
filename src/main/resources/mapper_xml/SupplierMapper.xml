@@ -332,6 +332,9 @@
   <select id="selectCarUser" resultType="java.lang.String">
     select login_name from jsh_caruser where supplier_id = #{supplierId}
   </select>
+  <select id="isDriverLoginNameExist" resultType="java.lang.Integer">
+    SELECT count(1) from jsh_caruser where login_name = #{loginName};
+  </select>
 
   <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultType="java.lang.Long">
     select count(*) from jsh_supplier

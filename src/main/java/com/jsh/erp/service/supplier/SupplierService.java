@@ -183,6 +183,10 @@ public class SupplierService {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_CODE,
                         ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_MSG);
             }
+            if(supplierMapper.isDriverLoginNameExist(obj.getString("loginName")) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE,
+                        ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG);
+            }
 
             long count = supplierMapper.selectLastDriverId();
             supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), count);

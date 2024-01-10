@@ -231,6 +231,8 @@ public class ExceptionConstants {
     //新增司機失敗-未帶入帳號
     public static final int SUPPLIER_DRIVER_ADD_FAILED_CODE = 7000003;
     public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機失敗-未帶入帳號";
+    public static final int SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE = 7000004;
+    public static final String SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG = "新增司機失敗-登入帳號已存在";
     /**
      * 商品类别信息
      * type = 75
