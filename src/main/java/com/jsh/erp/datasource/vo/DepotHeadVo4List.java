@@ -21,6 +21,8 @@ public class DepotHeadVo4List extends DepotHead{
     private Long SubId;
     private String counterName;
 
+    private int dStatus;
+
     private String allocationProjectName;
 
     private String materialsList;
@@ -135,6 +137,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setCounterName(String counterName) {
         this.counterName = counterName;
+    }
+
+    public int getDStatus() {
+        return dStatus;
+    }
+
+    public void setDStatus(int status) {
+        this.dStatus = status;
     }
 
     public String getAllocationProjectName() {
