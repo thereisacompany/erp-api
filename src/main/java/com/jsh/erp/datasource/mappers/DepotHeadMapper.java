@@ -18,6 +18,9 @@ public interface DepotHeadMapper {
 
     List<DepotHead> selectByExample(DepotHeadExample example);
 
+    List<Object> selectDetailByHeaderId(@Param("headerId") Long headerId,
+                                        @Param("itemId") Long itemId);
+
     DepotHead selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") DepotHead record, @Param("example") DepotHeadExample example);

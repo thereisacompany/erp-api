@@ -996,6 +996,13 @@ public class DepotHeadService {
         return depotHeadMapper.selectByExample(example);
     }
 
+    public JSONObject getDeliveryDetail(Long headerId, Long itemId) {
+
+        depotHeadMapper.selectDetailByHeaderId(headerId, null);
+
+        return null;
+    }
+
     /**
      * 新增单据主表及单据子表信息
      * @param beanJson

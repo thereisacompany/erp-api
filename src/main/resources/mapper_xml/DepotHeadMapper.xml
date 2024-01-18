@@ -132,6 +132,24 @@
     from jsh_depot_head
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectDetailByHeaderId" resultType="java.lang.Object">
+    SELECT jdd.status, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number
+    FROM jsh_depot_detail jdd
+    LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
+    LEFT JOIN jsh_vehicle jv ON jv.supplier_id = js.id
+    WHERE jdd.header_id = ${headerId}
+    <if test="itemId != null">
+      AND jdd.item_id = ${itemId}
+    </if>
+  </select>
+
+  <select id="selectDetailRecord">
+    SELECT status, date
+    FROM jsh_depot_record
+    WHERE detail_id = ${detailId};
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from jsh_depot_head
     where id = #{id,jdbcType=BIGINT}

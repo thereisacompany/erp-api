@@ -625,6 +625,29 @@ public class DepotHeadController {
         return res;
     }
 
+    @GetMapping(value = "/getDeliveryData")
+    @ApiOperation(value = "取得配送單狀態")
+    public BaseResponseInfo getDeliveryData(@RequestParam("number") String number, HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+        DepotHeadVo4List dhl = new DepotHeadVo4List();
+        try {
+            String[] numbers = new String[] {number};
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+            if(list.size() >= 1) {
+                dhl = list.get(0);
+                if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
 
+                }
+            }
+            res.code = 200;
+            res.data = dhl;
+        } catch(Exception e){
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取資料失敗";
+        }
+        return res;
+
+    }
 
 }
