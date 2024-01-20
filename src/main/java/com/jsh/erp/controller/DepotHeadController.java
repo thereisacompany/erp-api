@@ -629,18 +629,20 @@ public class DepotHeadController {
     @ApiOperation(value = "取得配送單狀態")
     public BaseResponseInfo getDeliveryData(@RequestParam("number") String number, HttpServletRequest request) {
         BaseResponseInfo res = new BaseResponseInfo();
-        DepotHeadVo4List dhl = new DepotHeadVo4List();
+        DepotHeadDelivery dhd = new DepotHeadDelivery();
         try {
             String[] numbers = new String[] {number};
+
             List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
             if(list.size() >= 1) {
-                dhl = list.get(0);
+                DepotHeadVo4List dhl = list.get(0);
                 if(dhl.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-
+                    dhd = depotHeadService.getDeliveryDetail(dhl);
                 }
             }
+
             res.code = 200;
-            res.data = dhl;
+            res.data = dhd;
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;

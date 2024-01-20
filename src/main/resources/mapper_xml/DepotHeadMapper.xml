@@ -46,6 +46,18 @@
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
   </resultMap>
+  <resultMap id="DetailResultMap" type="com.jsh.erp.datasource.vo.DepotHeadDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="supplier" jdbcType="VARCHAR" property="supplier" />
+    <result column="assign_date" jdbcType="VARCHAR" property="assignDate" />
+    <result column="assign_user" jdbcType="VARCHAR" property="assignUser" />
+    <result column="license_plate_number" jdbcType="VARCHAR" property="licensePlateNumber" />
+  </resultMap>
+  <resultMap id="StatusResultMap" type="com.jsh.erp.datasource.vo.DeliveryStatus">
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -133,8 +145,8 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="selectDetailByHeaderId" resultType="java.lang.Object">
-    SELECT jdd.status, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number
+  <select id="selectDetailByHeaderId" resultMap="DetailResultMap">
+    SELECT jdd.id, jdd.status, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number
     FROM jsh_depot_detail jdd
     LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
     LEFT JOIN jsh_vehicle jv ON jv.supplier_id = js.id
@@ -144,7 +156,7 @@
     </if>
   </select>
 
-  <select id="selectDetailRecord">
+  <select id="selectDetailRecord" resultMap="StatusResultMap">
     SELECT status, date
     FROM jsh_depot_record
     WHERE detail_id = ${detailId};

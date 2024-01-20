@@ -48,6 +48,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -996,11 +997,26 @@ public class DepotHeadService {
         return depotHeadMapper.selectByExample(example);
     }
 
-    public JSONObject getDeliveryDetail(Long headerId, Long itemId) {
+    public DepotHeadDelivery getDeliveryDetail(DepotHeadVo4List dhl) {
+        DepotHeadDelivery dhd = new DepotHeadDelivery();
+        dhd.setNumber(dhl.getNumber());
+        dhd.setCustomNumber(dhl.getCustomNumber());
+        dhd.setSourceNumber(dhl.getSourceNumber());
+        dhd.setCustomName(dhl.getOrganId()+" "+dhl.getOrganName());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dhd.setOrderDate(sdf.format(dhl.getCreateTime()));
+        JSONObject remark = JSONObject.parseObject(dhl.getRemark());
+        dhd.setMemo(remark.getString("memo"));
 
-        depotHeadMapper.selectDetailByHeaderId(headerId, null);
-
-        return null;
+        DepotHeadDetail detail = depotHeadMapper.selectDetailByHeaderId(dhl.getId(), null);
+        if(detail != null) {
+            dhd.setTakeDate(detail.getAssignDate());
+            dhd.setDriverName(detail.getSupplier());
+            dhd.setCarNumber(detail.getLicensePlateNumber());
+            List<DeliveryStatus> statusList = depotHeadMapper.selectDetailRecord(detail.getId());
+            dhd.setDeliveryStatusList(statusList);
+        }
+        return dhd;
     }
 
     /**

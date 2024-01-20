@@ -6,5 +6,5 @@ import lombok.Data;
 public class DeliveryStatus {
 
     private int status;
-    private String datetime;
+    private String date;
 }
