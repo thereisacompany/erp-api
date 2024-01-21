@@ -661,4 +661,12 @@ public class DepotHeadController {
         return result;
     }
 
+    @PutMapping(value = "/delivery/unAssign")
+    @ApiOperation(value = "重新指派(司機取消)")
+    public Object deliveryUnAssign(@RequestParam("headerId") Long headerId, HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.unAssignDelivery(headerId, request);
+        return result;
+    }
+
 }

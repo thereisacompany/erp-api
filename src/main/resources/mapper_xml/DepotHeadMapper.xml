@@ -186,11 +186,11 @@
   <update id="updateDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
     update jsh_depot_detail
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
-      </if>
       <if test="record.driverId != null">
         driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
       </if>
       <if test="record.assignDate != null">
         assign_date = #{record.assignDate,jdbcType=TIMESTAMP},
@@ -199,6 +199,7 @@
         assign_user = #{record.assignUser,jdbcType=VARCHAR}
       </if>
     </set>
+    where id = #{record.id,jdbcType=BIGINT}
   </update>
   <update id="updateDetailRecord" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
     update jsh_deport_record
