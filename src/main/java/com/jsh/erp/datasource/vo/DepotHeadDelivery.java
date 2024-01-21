@@ -16,6 +16,7 @@ public class DepotHeadDelivery {
     private String driverName;
     private String carNumber;
     private String memo;
+    private String status;
     private List<DeliveryStatus> deliveryStatusList;
 
 
