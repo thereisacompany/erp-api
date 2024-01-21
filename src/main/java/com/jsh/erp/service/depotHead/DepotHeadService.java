@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.*;
-import com.jsh.erp.datasource.mappers.DepotHeadMapper;
-import com.jsh.erp.datasource.mappers.DepotHeadMapperEx;
-import com.jsh.erp.datasource.mappers.DepotItemMapperEx;
-import com.jsh.erp.datasource.mappers.MaterialMapperEx;
+import com.jsh.erp.datasource.mappers.*;
 import com.jsh.erp.datasource.vo.*;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
@@ -110,6 +107,8 @@ public class DepotHeadService {
     private DepotItemMapperEx depotItemMapperEx;
     @Resource
     private MaterialMapperEx materialMapperEx;
+    @Resource
+    private VehicleMapper vehicleMapper;
     @Resource
     private LogService logService;
 
@@ -997,6 +996,11 @@ public class DepotHeadService {
         return depotHeadMapper.selectByExample(example);
     }
 
+    /**
+     * 依單號取得配送狀態
+     * @param dhl
+     * @return
+     */
     public DepotHeadDelivery getDeliveryDetail(DepotHeadVo4List dhl) {
         DepotHeadDelivery dhd = new DepotHeadDelivery();
         dhd.setNumber(dhl.getNumber());
@@ -1008,7 +1012,7 @@ public class DepotHeadService {
         JSONObject remark = JSONObject.parseObject(dhl.getRemark());
         dhd.setMemo(remark.getString("memo"));
 
-        DepotHeadDetail detail = depotHeadMapper.selectDetailByHeaderId(dhl.getId(), null);
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(dhl.getId(), null);
         if(detail != null) {
             dhd.setTakeDate(detail.getAssignDate());
             dhd.setDriverName(detail.getSupplier());
@@ -1017,6 +1021,62 @@ public class DepotHeadService {
             dhd.setDeliveryStatusList(statusList);
         }
         return dhd;
+    }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void assignDelivery(Long headerId, Integer driverId, String assignDate, String assignUser, HttpServletRequest request) throws Exception {
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        } else {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+            }
+        }
+
+        // 檢查是否已有指派過司機
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+        if(detail != null && detail.getDriverId() > 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG));
+        }
+
+        // 檢查此司機是否已有綁定車輛
+        if(vehicleMapper.isDriverBind(driverId) == 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_CODE,
+                    String.format(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_MSG));
+        }
+
+        if (detail != null) {
+            detail.setDriverId(driverId);
+            detail.setAssignDate(assignDate);
+            detail.setAssignUser(assignUser);
+            depotHeadMapper.updateDetail(detail);
+
+            logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+        } else {
+            // insert jsh_depot_detail
+            detail = new DepotDetail();
+            detail.setHeaderId(headerId);
+            detail.setStatus("0");
+            detail.setDriverId(driverId);
+            detail.setAssignDate(assignDate);
+            detail.setAssignUser(assignUser);
+            depotHeadMapper.insertDetail(detail);
+
+            // insert jsh_depot_record
+            detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+            DepotRecord record = new DepotRecord();
+            record.setDetailId(detail.getId());
+            record.setStatus("0");
+            record.setDate(LocalDateTime.now().format(formatterChangeDate));
+            depotHeadMapper.insertDetailRecord(record);
+
+            logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+        }
     }
 
     /**

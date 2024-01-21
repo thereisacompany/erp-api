@@ -403,6 +403,10 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_MSG = "抱歉，只有移倉中的單據可以移倉完成";
     public static final int DEPOT_HEAD_CUSTOM_SOURCE_EXIST_CODE = 8000021;
     public static final String DEPOT_HEAD_CUSTOM_SOURCE_EXIST_MSG = "客單編號/原始客編重覆建立";
+    public static final int DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE = 8000022;
+    public static final String DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG = "查無此配送單資料";
+    public static final int DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE = 8000023;
+    public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據可以派發司機";
     /**
      *  单据明细信息
      * type = 90
@@ -512,6 +516,15 @@ public class ExceptionConstants {
     public static final String VEHICLE_HAD_DRIVER_FAILED_MSG = "此駕駛已有綁定車輛";
     public static final int VEHICLE_DRIVER_NO_EXIST_CODE = 12000002;
     public static final String VEHICLE_DRIVER_NO_EXIST_MSG = "查無此司機資料";
+    public static final int VEHICLE_NO_BIND_DRIVER_CODE = 12000003;
+    public static final String VEHICLE_NO_BIND_DRIVER_MSG = "此司機未綁定車輛";
+    /**
+     * 配送單派發司機
+     * type = 130
+     */
+    public static final int DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_CODE = 13000000;
+    public static final String DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG = "此配送單已派發過司機，請先操作重新指派功能";
+
 
     //进销存统计，如果有权限的仓库数量太多则提示要选择仓库
     public static final int REPORT_TWO_MANY_DEPOT_FAILED_CODE = 510;

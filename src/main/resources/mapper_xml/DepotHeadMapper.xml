@@ -46,6 +46,16 @@
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
   </resultMap>
+  <resultMap id="DepotDetailResultMap" type="com.jsh.erp.datasource.entities.DepotDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="header_id" jdbcType="BIGINT" property="headerId" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="driver_id" jdbcType="INTEGER" property="driverId" />
+    <result column="assign_date" jdbcType="TIMESTAMP" property="assignDate" />
+    <result column="assign_user" jdbcType="VARCHAR" property="assignUser" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+  </resultMap>
   <resultMap id="DetailResultMap" type="com.jsh.erp.datasource.vo.DepotHeadDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="status" jdbcType="VARCHAR" property="status" />
@@ -145,7 +155,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="selectDetailByHeaderId" resultMap="DetailResultMap">
+  <select id="selectHeaderDetailByHeaderId" resultMap="DetailResultMap">
     SELECT jdd.id, jdd.status, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number
     FROM jsh_depot_detail jdd
     LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
@@ -155,12 +165,52 @@
       AND jdd.item_id = ${itemId}
     </if>
   </select>
-
+  <select id="selectDetailByHeaderId" resultMap="DepotDetailResultMap">
+    SELECT id,header_id,item_id,status,driver_id,assign_date,assign_user,file_path
+    FROM jsh_depot_detail WHERE header_id = ${headerId} and status >= 0;
+  </select>
   <select id="selectDetailRecord" resultMap="StatusResultMap">
     SELECT status, date
     FROM jsh_depot_record
     WHERE detail_id = ${detailId};
   </select>
+  <insert id="insertDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
+    insert into jsh_depot_detail (id, header_id, item_id, status, driver_id, assign_date, assign_user, file_path)
+    values (#{id,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR},
+    #{driverId,jdbcType=INTEGER}, #{assignDate,jdbcType=TIMESTAMP}, #{assignUser,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertDetailRecord" parameterType="com.jsh.erp.datasource.entities.DepotRecord">
+    insert into jsh_depot_record (id, detail_id, status, date)
+    values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
+    update jsh_depot_detail
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.driverId != null">
+        driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.assignDate != null">
+        assign_date = #{record.assignDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.assignUser != null">
+        assign_user = #{record.assignUser,jdbcType=VARCHAR}
+      </if>
+    </set>
+  </update>
+  <update id="updateDetailRecord" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
+    update jsh_deport_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.date != null">
+        date = #{record.date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+  </update>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from jsh_depot_head

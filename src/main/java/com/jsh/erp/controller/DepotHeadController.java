@@ -649,7 +649,16 @@ public class DepotHeadController {
             res.data = "獲取資料失敗";
         }
         return res;
+    }
 
+    @PutMapping(value = "/delivery/assign")
+    @ApiOperation(value = "司機派發")
+    public Object deliveryAssign(@RequestParam("headerId") Long headerId, @RequestParam("driverId") Integer id,
+                                 @RequestParam("assignDate") String date, @RequestParam("assignUser") String user,
+                                 HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.assignDelivery(headerId, id, date, user, request);
+        return result;
     }
 
 }

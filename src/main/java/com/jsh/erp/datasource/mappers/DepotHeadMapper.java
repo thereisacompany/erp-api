@@ -1,9 +1,11 @@
 package com.jsh.erp.datasource.mappers;
 
+import com.jsh.erp.datasource.entities.DepotDetail;
 import com.jsh.erp.datasource.entities.DepotHead;
 import com.jsh.erp.datasource.entities.DepotHeadExample;
 import java.util.List;
 
+import com.jsh.erp.datasource.entities.DepotRecord;
 import com.jsh.erp.datasource.vo.DeliveryStatus;
 import com.jsh.erp.datasource.vo.DepotHeadDetail;
 import org.apache.ibatis.annotations.Param;
@@ -21,9 +23,15 @@ public interface DepotHeadMapper {
 
     List<DepotHead> selectByExample(DepotHeadExample example);
 
-    DepotHeadDetail selectDetailByHeaderId(@Param("headerId") Long headerId,
+    DepotHeadDetail selectHeaderDetailByHeaderId(@Param("headerId") Long headerId,
                                                  @Param("itemId") Long itemId);
     List<DeliveryStatus> selectDetailRecord(@Param("detailId") Long detailId);
+
+    DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
+    int insertDetail(DepotDetail record);
+    int insertDetailRecord(DepotRecord record);
+    int updateDetail(@Param("record") DepotDetail record);
+//    int updateDetailRecord(@Param("record") DepotRecord record);
 
     DepotHead selectByPrimaryKey(Long id);
 

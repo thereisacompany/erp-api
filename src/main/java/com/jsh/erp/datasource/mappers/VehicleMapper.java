@@ -2,6 +2,7 @@ package com.jsh.erp.datasource.mappers;
 
 import com.jsh.erp.datasource.entities.Vehicle;
 import com.jsh.erp.datasource.entities.VehicleExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface VehicleMapper {
     int updateByPrimaryKeySelective(Vehicle vehicle);
 
     int isDriverExist(String driver, Long id);
+
+    int isDriverBind(@Param("supplierId") Integer supplierId);
 }
