@@ -10,4 +10,5 @@ public class DepotHeadDetail {
     private String assignDate;
     private String assignUser;
     private String licensePlateNumber;
+    private String filePath;
 }

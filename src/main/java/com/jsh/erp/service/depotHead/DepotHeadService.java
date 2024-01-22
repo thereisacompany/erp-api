@@ -1018,6 +1018,7 @@ public class DepotHeadService {
             dhd.setTakeDate(detail.getAssignDate());
             dhd.setDriverName(detail.getSupplier());
             dhd.setCarNumber(detail.getLicensePlateNumber());
+            dhd.setFilePath(detail.getFilePath());
             dhd.setStatus(detail.getStatus());
 
             List<DeliveryStatus> statusList = depotHeadMapper.selectDetailRecord(detail.getId());
@@ -1039,6 +1040,11 @@ public class DepotHeadService {
         return dhd;
     }
 
+    /**
+     * 取得配送狀態
+     * @param headerId
+     * @return
+     */
     public List<DeliveryStatus> getDeliveryStatus(Long headerId) {
         List<DeliveryStatus> list = new ArrayList<>();
         // 是否有此配送單
@@ -1059,8 +1065,26 @@ public class DepotHeadService {
                     }
                 });
             }
-        } else {
+        }
+        return list;
+    }
 
+    /**
+     * 取得司機回報
+     * @param headerId
+     * @return
+     */
+    public List<DepotReport> getDeliveryReport(Long headerId) {
+        List<DepotReport> list = new ArrayList<>();
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        }
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(headerId, null);
+        if (detail != null) {
+            list = depotHeadMapper.selectDetailReport(detail.getId());
         }
         return list;
     }

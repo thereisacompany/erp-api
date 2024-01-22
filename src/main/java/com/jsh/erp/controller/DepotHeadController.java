@@ -668,6 +668,23 @@ public class DepotHeadController {
         return res;
     }
 
+    @GetMapping(value = "/getDeliveryReport")
+    @ApiOperation(value = "取得司機回報")
+    public BaseResponseInfo getDeliveryReport(@RequestParam("headerId") Long headerId, HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+
+        try {
+            res.code = 200;
+            res.data = depotHeadService.getDeliveryReport(headerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取資料失敗";
+        }
+
+        return res;
+    }
+
     @PutMapping(value = "/delivery/assign")
     @ApiOperation(value = "司機派發")
     public Object deliveryAssign(@RequestParam("headerId") Long headerId, @RequestParam("driverId") Integer id,
