@@ -1016,6 +1016,7 @@ public class DepotHeadService {
         DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(dhl.getId(), null);
         if(detail != null) {
             dhd.setTakeDate(detail.getAssignDate());
+            dhd.setDriverId(detail.getSupplierId());
             dhd.setDriverName(detail.getSupplier());
             dhd.setCarNumber(detail.getLicensePlateNumber());
             dhd.setFilePath(detail.getFilePath());

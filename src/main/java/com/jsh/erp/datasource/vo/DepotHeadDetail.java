@@ -6,6 +6,7 @@ import lombok.Data;
 public class DepotHeadDetail {
     private Long id;
     private String status;
+    private Long supplierId;
     private String supplier;
     private String assignDate;
     private String assignUser;

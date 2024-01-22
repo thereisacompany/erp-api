@@ -13,6 +13,7 @@ public class DepotHeadDelivery {
     private String customName;
     private String orderDate;
     private String takeDate;
+    private Long driverId;
     private String driverName;
     private String carNumber;
     private String memo;
