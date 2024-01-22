@@ -526,6 +526,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG = "此配送單已派發過司機，請先操作重新指派功能";
     public static final int DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE = 13000001;
     public static final String DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG = "此配送單未派發過司機，請先進行派發司機功能";
+    public static final int DEPOT_HEAD_NOT_DRIVER_RESPONSE_CODE = 13000002;
+    public static final String DEPOT_HEAD_NOT_DRIVER_RESPONSE_MSG = "查無此司機回覆資料";
 
 
     //进销存统计，如果有权限的仓库数量太多则提示要选择仓库

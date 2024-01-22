@@ -685,6 +685,14 @@ public class DepotHeadController {
         return res;
     }
 
+    @PutMapping(value = "/feedBackReport/{id}")
+    @ApiOperation(value = "客服回覆")
+    public Object feedBackReport(@PathVariable("id") Long id, @RequestParam("feedBack") String feedBack, HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.feedBackReport(id, feedBack, request);
+        return result;
+    }
+
     @PutMapping(value = "/delivery/assign")
     @ApiOperation(value = "司機派發")
     public Object deliveryAssign(@RequestParam("headerId") Long headerId, @RequestParam("driverId") Integer id,

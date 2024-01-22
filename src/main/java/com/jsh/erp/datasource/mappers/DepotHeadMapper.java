@@ -27,10 +27,12 @@ public interface DepotHeadMapper {
 
     DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
     List<DepotReport> selectDetailReport(@Param("detailId") Long detailId);
+    DepotReport selectDetailReportByPrimaryKey(@Param("id") Long id);
     int insertDetail(DepotDetail record);
     int insertDetailRecord(DepotRecord record);
     int updateDetail(@Param("record") DepotDetail record);
 //    int updateDetailRecord(@Param("record") DepotRecord record);
+    int updateDetailReport(@Param("report") DepotReport report);
 
 
     DepotHead selectByPrimaryKey(Long id);

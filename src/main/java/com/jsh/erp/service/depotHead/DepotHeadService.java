@@ -1090,6 +1090,22 @@ public class DepotHeadService {
         return list;
     }
 
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void feedBackReport(Long id, String feedBack, HttpServletRequest request) throws Exception{
+        // 是否有此report
+        DepotReport depotReport = depotHeadMapper.selectDetailReportByPrimaryKey(id);
+        if(depotReport == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NOT_DRIVER_RESPONSE_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_NOT_DRIVER_RESPONSE_MSG));
+        }
+        try {
+            depotReport.setFeedback(feedBack);
+            depotHeadMapper.updateDetailReport(depotReport);
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
+    }
+
     /**
      * 派發司機
      * @param headerId
@@ -1126,32 +1142,36 @@ public class DepotHeadService {
                     String.format(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_MSG));
         }
 
-        if (detail != null) {
-            detail.setDriverId(driverId);
-            detail.setAssignDate(assignDate);
-            detail.setAssignUser(assignUser);
-            depotHeadMapper.updateDetail(detail);
+        try {
+            if (detail != null) {
+                detail.setDriverId(driverId);
+                detail.setAssignDate(assignDate);
+                detail.setAssignUser(assignUser);
+                depotHeadMapper.updateDetail(detail);
 
-            logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
-        } else {
-            // insert jsh_depot_detail
-            detail = new DepotDetail();
-            detail.setHeaderId(headerId);
-            detail.setStatus("1");
-            detail.setDriverId(driverId);
-            detail.setAssignDate(assignDate);
-            detail.setAssignUser(assignUser);
-            depotHeadMapper.insertDetail(detail);
+                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+            } else {
+                // insert jsh_depot_detail
+                detail = new DepotDetail();
+                detail.setHeaderId(headerId);
+                detail.setStatus("1");
+                detail.setDriverId(driverId);
+                detail.setAssignDate(assignDate);
+                detail.setAssignUser(assignUser);
+                depotHeadMapper.insertDetail(detail);
 
-            // insert jsh_depot_record
-            detail = depotHeadMapper.selectDetailByHeaderId(headerId);
-            DepotRecord record = new DepotRecord();
-            record.setDetailId(detail.getId());
-            record.setStatus("1");
-            record.setDate(LocalDateTime.now().format(formatterChange));
-            depotHeadMapper.insertDetailRecord(record);
+                // insert jsh_depot_record
+                detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+                DepotRecord record = new DepotRecord();
+                record.setDetailId(detail.getId());
+                record.setStatus("1");
+                record.setDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetailRecord(record);
 
-            logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+            }
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
         }
     }
 
@@ -1175,18 +1195,22 @@ public class DepotHeadService {
                     String.format(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG));
         }
 
-        detail.setStatus("0");
-        detail.setDriverId(0);
-        depotHeadMapper.updateDetail(detail);
-        // insert jsh_depot_record
-        detail = depotHeadMapper.selectDetailByHeaderId(headerId);
-        DepotRecord record = new DepotRecord();
-        record.setDetailId(detail.getId());
-        record.setStatus("0");
-        record.setDate(LocalDateTime.now().format(formatterChange));
-        depotHeadMapper.insertDetailRecord(record);
+        try {
+            detail.setStatus("0");
+            detail.setDriverId(0);
+            depotHeadMapper.updateDetail(detail);
+            // insert jsh_depot_record
+            detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+            DepotRecord record = new DepotRecord();
+            record.setDetailId(detail.getId());
+            record.setStatus("0");
+            record.setDate(LocalDateTime.now().format(formatterChange));
+            depotHeadMapper.insertDetailRecord(record);
 
-        logService.insertLog("重新派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+            logService.insertLog("重新派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
     }
 
     /**
