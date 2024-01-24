@@ -1019,6 +1019,11 @@ public class DepotHeadService {
             dhd.setDriverId(detail.getSupplierId());
             dhd.setDriverName(detail.getSupplier());
             dhd.setCarNumber(detail.getLicensePlateNumber());
+            if(detail.getAssignUser() != null) {
+                dhd.setAssignUser(Long.parseLong(detail.getAssignUser()));
+            } else {
+                dhd.setAssignUser(null);
+            }
             dhd.setFilePath(detail.getFilePath());
             dhd.setStatus(detail.getStatus());
 

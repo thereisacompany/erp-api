@@ -16,6 +16,7 @@ public class DepotHeadDelivery {
     private Long driverId;
     private String driverName;
     private String carNumber;
+    private Long assignUser;
     private String memo;
     private String filePath;
     private String status;
