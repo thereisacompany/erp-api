@@ -232,7 +232,7 @@
 <!--    </set>-->
 <!--  </update>-->
   <update id="updateDetailReport" parameterType="com.jsh.erp.datasource.entities.DepotReport">
-    update jsh_deport_report
+    update jsh_depot_report
     <set>
       feedback = #{report.feedback,jdbcType=VARCHAR}
     </set>

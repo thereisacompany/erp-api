@@ -5,8 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
-import com.jsh.erp.datasource.entities.DepotHead;
-import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
+import com.jsh.erp.datasource.entities.*;
 import com.jsh.erp.datasource.vo.*;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotHead.DepotHeadService;
@@ -687,25 +686,24 @@ public class DepotHeadController {
 
     @PutMapping(value = "/feedBackReport/{id}")
     @ApiOperation(value = "客服回覆")
-    public Object feedBackReport(@PathVariable("id") Long id, @RequestParam("feedBack") String feedBack, HttpServletRequest request) throws Exception {
+    public Object feedBackReport(@PathVariable("id") Long id, @RequestBody DepotReportVo4Body body, HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        depotHeadService.feedBackReport(id, feedBack, request);
+        depotHeadService.feedBackReport(id, body.getFeedback(), request);
         return result;
     }
 
     @PutMapping(value = "/delivery/assign")
     @ApiOperation(value = "司機派發")
-    public Object deliveryAssign(@RequestParam("headerId") Long headerId, @RequestParam("driverId") Integer id,
-                                 @RequestParam("assignDate") String date, @RequestParam("assignUser") String user,
+    public Object deliveryAssign(@RequestBody DepotDetailVo4Body body,
                                  HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        depotHeadService.assignDelivery(headerId, id, date, user, request);
+        depotHeadService.assignDelivery(body.getHeaderId(), body.getDriverId(), body.getAssignDate(), body.getAssignUser(), request);
         return result;
     }
 
-    @PutMapping(value = "/delivery/unAssign")
+    @PutMapping(value = "/delivery/unAssign/{headerId}")
     @ApiOperation(value = "重新指派(司機取消)")
-    public Object deliveryUnAssign(@RequestParam("headerId") Long headerId, HttpServletRequest request) throws Exception {
+    public Object deliveryUnAssign(@PathVariable("headerId") Long headerId, HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
         depotHeadService.unAssignDelivery(headerId, request);
         return result;

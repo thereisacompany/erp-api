@@ -1195,7 +1195,7 @@ public class DepotHeadService {
 
         // 檢查是否已有指派過司機
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
-        if(detail != null && detail.getDriverId() == 0) {
+        if(detail == null || detail != null && detail.getDriverId() == 0) {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE,
                     String.format(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG));
         }
