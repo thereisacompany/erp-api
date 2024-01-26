@@ -1031,8 +1031,9 @@ public class DepotHeadService {
             if(statusList.size() > 0) {
                 List<DeliveryStatus> list = new ArrayList<>();
                 AtomicInteger nowStatus = new AtomicInteger(statusList.get(0).getStatus());
+                list.add(statusList.get(0));
                 statusList.stream().forEach(record -> {
-                    if (record.getStatus() <= nowStatus.get()) {
+                    if (record.getStatus() < nowStatus.get()) {
                         nowStatus.set(record.getStatus());
                         list.add(record);
                     }
@@ -1149,10 +1150,18 @@ public class DepotHeadService {
 
         try {
             if (detail != null) {
+                detail.setStatus("1");
                 detail.setDriverId(driverId);
                 detail.setAssignDate(assignDate);
                 detail.setAssignUser(assignUser);
                 depotHeadMapper.updateDetail(detail);
+
+                // insert jsh_depot_record
+                DepotRecord record = new DepotRecord();
+                record.setDetailId(detail.getId());
+                record.setStatus("1");
+                record.setDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetailRecord(record);
 
                 logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
             } else {
