@@ -233,6 +233,11 @@ public class ExceptionConstants {
     public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機失敗-未帶入帳號";
     public static final int SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE = 7000004;
     public static final String SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG = "新增司機失敗-登入帳號已存在";
+    public static final int SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_CODE = 7000005;
+    public static final String SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_MSG = "修改司機失敗-登入帳號已存在";
+    public static final int SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE = 7000006;
+    public static final String SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG = "司機登入密碼設定長度有誤(6-12碼)";
+
     /**
      * 商品类别信息
      * type = 75

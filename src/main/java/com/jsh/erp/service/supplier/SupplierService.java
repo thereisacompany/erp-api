@@ -19,6 +19,7 @@ import com.jsh.erp.service.userBusiness.UserBusinessService;
 import com.jsh.erp.utils.BaseResponseInfo;
 import com.jsh.erp.utils.ExcelUtils;
 import com.jsh.erp.utils.StringUtil;
+import com.jsh.erp.utils.Tools;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.slf4j.Logger;
@@ -183,13 +184,21 @@ public class SupplierService {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_CODE,
                         ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_MSG);
             }
-            if(supplierMapper.isDriverLoginNameExist(obj.getString("loginName")) > 0) {
+            if(supplierMapper.isDriverLoginNameExist(obj.getString("loginName"), null) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE,
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG);
             }
 
             long count = supplierMapper.selectLastDriverId();
-            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), count);
+            String passwd = "123456";
+            if(obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
+                passwd = obj.getString("loginPassword");
+            }
+            if(passwd.length() < 6 && passwd.length() > 12) {
+                throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
+                        ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
+            }
+            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.getMD5(passwd), count);
         }
 
         insertUserBusiness(supplier, request);
@@ -239,6 +248,34 @@ public class SupplierService {
         }
         int result=0;
         try{
+            if(supplier.getType().contains("司機")) {
+                Long carUserId = supplierMapper.selectCarUserId(supplier.getId());
+                if(carUserId > 0L) { // 此司機已有建立過登入帳號
+//                    String loginName = null;
+//                    if (obj.containsKey("loginName") || !obj.getString("loginName").isEmpty()) {
+//                        loginName = obj.getString("loginName");
+//                    }
+//                    if(loginName != null) {
+//                        if (supplierMapper.isDriverLoginNameExist(loginName, supplier.getId()) > 0) {
+//                            throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_CODE,
+//                                    ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_MSG);
+//                        }
+//                    }
+                    String passwd = null;
+                    if (obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
+                        passwd = obj.getString("loginPassword");
+                    }
+                    if(passwd != null) {
+                        if (passwd.length() < 6 && passwd.length() > 12) {
+                            throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
+                                    ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
+                        }
+                    }
+                    if(passwd != null) { //loginName != null ||
+                        supplierMapper.updateCarUser(null, passwd==null? null : Tools.getMD5(passwd), carUserId);
+                    }
+                }
+            }
             result=supplierMapper.updateByPrimaryKeySelective(supplier);
             logService.insertLog("商家",
                     new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(supplier.getSupplier()).toString(), request);

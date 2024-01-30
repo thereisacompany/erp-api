@@ -724,6 +724,31 @@ public class Tools {
         return valSb.toString();
     }
 
+    public static String getMD5(String str) {
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(str.getBytes("UTF-8"));
+            //Hash計算, 產生128位的長整數
+            byte[] bytes = messageDigest.digest();
+            StringBuffer sb = new StringBuffer(bytes.length * 2);
+            for(Byte b : bytes){
+                //右移四位, 取字節中前四位轉換
+                sb.append(hexDigits[(b >> 4) & 0x0f]);
+                //取字節中後四位轉換
+                sb.append(hexDigits[b & 0x0f]);
+            }
+            //輸出 602965cf9dd0e80ca28269257a6aba87
+            System.out.println(sb.toString());
+
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
 //	/**
 //	 * 过滤html文件中的图片文件
 //	 * @param content
@@ -756,5 +781,6 @@ public class Tools {
         for (int i = 0; i < 100; i++) {
             System.out.print(getRandomChar() + "  ||    ");
         }
+
     }
 }

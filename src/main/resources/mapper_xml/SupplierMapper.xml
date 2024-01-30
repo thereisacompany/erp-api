@@ -324,16 +324,37 @@
 
   <insert id="insertCarUser">
     insert into jsh_caruser (id, username, login_name, password, Status, supplier_id)
-    values (null, #{username}, #{loginName}, 'e10adc3949ba59abbe56e057f20f883e', 0, #{supplierId})
+    values (null, #{username}, #{loginName}, #{loginPassword}, 0, #{supplierId})
   </insert>
+  <update id="updateCarUser">
+    update jsh_caruser
+    <set>
+      <if test="loginName != null and !loginName.isEmpty()">
+        login_name = #{loginName,jdbcType=VARCHAR}
+      </if>
+      <if test="loginPassword != null and !loginPassword.isEmpty()">
+        password = #{loginPassword,jdbcType=VARCHAR}
+      </if>
+    </set>
+    <where>
+      id = #{id,jdbcType=BIGINT}
+    </where>
+  </update>
   <select id="selectLastDriverId" resultType="java.lang.Long">
     select id from jsh_supplier where type like '%司機' order by id desc limit 1
   </select>
   <select id="selectCarUser" resultType="java.lang.String">
     select login_name from jsh_caruser where supplier_id = #{supplierId}
   </select>
+  <select id="selectCarUserId" resultType="java.lang.Long">
+    select id from jsh_caruser where supplier_id = #{supplierId}
+  </select>
   <select id="isDriverLoginNameExist" resultType="java.lang.Integer">
-    SELECT count(1) from jsh_caruser where login_name = #{loginName};
+    SELECT count(1) from jsh_caruser
+    WHERE login_name = #{loginName}
+    <if test="supplierId != null">
+      AND supplier_id != #{supplierId}
+    </if>
   </select>
 
   <select id="countByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultType="java.lang.Long">

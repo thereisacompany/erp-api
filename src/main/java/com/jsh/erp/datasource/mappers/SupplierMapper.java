@@ -16,13 +16,16 @@ public interface SupplierMapper {
 
     int insertSelective(Supplier record);
 
-    int insertCarUser(String username, String loginName, Long supplierId);
+    int insertCarUser(String username, String loginName, String loginPassword, Long supplierId);
+    int updateCarUser(String loginName, String loginPassword, Long id);
 
     long selectLastDriverId();
 
-    int isDriverLoginNameExist(String loginName);
+    int isDriverLoginNameExist(String loginName, Long supplierId);
 
     String selectCarUser(Long supplierId);
+
+    long selectCarUserId(Long supplierId);
 
     List<Supplier> selectByExample(SupplierExample example);
 
