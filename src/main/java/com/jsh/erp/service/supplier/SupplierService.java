@@ -16,6 +16,7 @@ import com.jsh.erp.service.log.LogService;
 import com.jsh.erp.service.systemConfig.SystemConfigService;
 import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.service.userBusiness.UserBusinessService;
+import com.jsh.erp.service.vehicle.VehicleService;
 import com.jsh.erp.utils.BaseResponseInfo;
 import com.jsh.erp.utils.ExcelUtils;
 import com.jsh.erp.utils.StringUtil;
@@ -63,6 +64,8 @@ public class SupplierService {
     private SystemConfigService systemConfigService;
     @Resource
     private UserBusinessService userBusinessService;
+    @Resource
+    private VehicleService vehicleService;
 
     public Supplier getSupplier(long id)throws Exception {
         Supplier result=null;
@@ -119,6 +122,7 @@ public class SupplierService {
                 filter = null;
             }
             List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, filter, offset, rows);
+            List<Vehicle> vList = vehicleService.getVehicle();
             for(Supplier s : list) {
                 Integer supplierId = s.getId().intValue();
                 String endTime = getNow3();
@@ -145,6 +149,13 @@ public class SupplierService {
                     s.setAllNeedPay(sum);
                 } else if(supType.contains("司機")) {
                     s.setLoginName(supplierMapper.selectCarUser(s.getId()));
+                    Optional<Vehicle> obj = vList.parallelStream()
+                            .filter(vehicle -> vehicle.getDriver().equals(s.getId().toString())).findFirst();
+                    if(obj.isPresent()) {
+                        s.setLicensePlate(obj.get().getLicensePlateNumber());
+                    } else {
+                        s.setLicensePlate("");
+                    }
                 }
                 resList.add(s);
             }

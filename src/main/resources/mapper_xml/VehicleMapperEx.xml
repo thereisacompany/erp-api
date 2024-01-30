@@ -5,7 +5,7 @@
     <select id="selectByConditionVehicle" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="com.jsh.erp.datasource.mappers.VehicleMapper.BaseResultMap">
         select jv.*, js.supplier as driver_name
         FROM jsh_vehicle jv
-        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` = '司機'
+        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` like '%司機'
         where 1=1
         <if test="license != null and license != ''">
             <bind name="bindLicense" value="'%'+license+'%'"/>
@@ -32,7 +32,7 @@
         SELECT
         COUNT(jv.id)
         FROM jsh_vehicle jv
-        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` = '司機'
+        LEFT JOIN jsh_supplier js ON jv.driver = js.id and js.`type` like '%司機'
         WHERE 1=1
         <if test="license != null and license != ''">
             <bind name="bindLicense" value="'%'+license+'%'"/>
