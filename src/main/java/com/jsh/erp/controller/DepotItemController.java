@@ -30,6 +30,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
@@ -326,15 +328,22 @@ public class DepotItemController {
         try {
             String timeA = null;
             String timeB = null;
+
             if(monthTime != null) {
                 timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
                 timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
             }
+            String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
             if(beginDateTime != null && !beginDateTime.isEmpty()) {
                 timeA = beginDateTime;
+            } else {
+                timeA = Tools.firstDayOfMonth(now)
+                        + BusinessConstants.DAY_FIRST_TIME;
             }
             if(endDateTime != null && !endDateTime.isEmpty()) {
                 timeB = endDateTime;
+            } else {
+                timeB = Tools.lastDayOfMonth(now) + BusinessConstants.DAY_LAST_TIME;
             }
 
             List<Long> depotList = parseListByDepotIds(depotIds);
@@ -373,6 +382,8 @@ public class DepotItemController {
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
+                    System.out.println("timeA >>>"+timeA);
+                    System.out.println("timeB >>>"+timeB);
                     BigDecimal prevSum = depotItemService.getStockByParamWithDepot(depotList, diEx.getDepotId(), mId,null, timeA, organId);
                     Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, diEx.getDepotId(), mId, timeA, timeB, organId);
                     BigDecimal inSum = intervalMap.get("inSum");
@@ -462,11 +473,16 @@ public class DepotItemController {
             depotList = StringUtil.strToLongList(depotIds);
         } else {
             //未选择仓库时默认为当前用户有权限的仓库
-            JSONArray depotArr = depotService.findDepotByCurrentUser();
-            for(Object obj: depotArr) {
-                JSONObject object = JSONObject.parseObject(obj.toString());
-                depotList.add(object.getLong("id"));
-            }
+//            JSONArray depotArr = depotService.findDepotByCurrentUser();
+//            for(Object obj: depotArr) {
+//                JSONObject object = JSONObject.parseObject(obj.toString());
+//                depotList.add(object.getLong("id"));
+//            }
+            depotList.add(1L);
+            depotList.add(2L);
+            depotList.add(3L);
+            depotList.add(4L);
+
             //如果有权限的仓库数量太多则提示要选择仓库
             if(depotList.size()>20) {
                 throw new BusinessRunTimeException(ExceptionConstants.REPORT_TWO_MANY_DEPOT_FAILED_CODE,
