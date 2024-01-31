@@ -1744,7 +1744,7 @@ public class DepotHeadService {
 //            List<DepotCounter> depotCountList = depotCounterService.getAllList();
 //            List<Material> materialList = materialService.getMaterial();
             List<MaterialVo4Unit> materialList =  materialMapperEx.selectByConditionMaterial(null, null, null, null, null,
-                    null, null, null, null, null, null, null,1,10000);
+                    null, null, null, null, null, null, null,0,10000);
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
@@ -1857,7 +1857,7 @@ public class DepotHeadService {
                     continue;
                 } else {
                     Optional<MaterialVo4Unit> tempM =
-                            materialList.parallelStream().filter(m -> m.getNumber().equals(mNumber)).findFirst();
+                            materialList.stream().filter(m -> m.getNumber().contains(mNumber)).findFirst();
                     if (tempM.isPresent()) {
                         materialVo4Unit = tempM.get();
                     } else {
