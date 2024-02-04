@@ -64,6 +64,9 @@ public interface DepotHeadMapperEx {
     List<MaterialsListVo> findMaterialsListMapByHeaderIdList(
             @Param("idList") List<Long> idList);
 
+    List<MaterialPickupsListVo> findMaterialPickupsListMapByHeaderIdList(
+            @Param("idList") List<Long> idList);
+
     List<MaterialCountVo> getMaterialCountListByHeaderIdList(
             @Param("idList") List<Long> idList);
 

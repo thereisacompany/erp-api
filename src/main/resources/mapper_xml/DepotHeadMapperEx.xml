@@ -311,6 +311,22 @@
         and ifnull(jsh_depot_item.delete_flag,'0') !='1'
     </select>
 
+    <select id="findMaterialPickupsListMapByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialPickupsListVo">
+        select jsh_depot_item.header_id,
+        jsh_material_pickup.name,
+        jsh_material_pickup.amount
+        from jsh_depot_item
+        left join jsh_material_pickup on jsh_depot_item.material_id = jsh_material_pickup.id and ifnull(jsh_material_pickup.delete_Flag,'0') !='1'
+        where 1=1
+        <if test="idList.size()>0">
+            and jsh_depot_item.header_id in
+            <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        and ifnull(jsh_depot_item.delete_flag,'0') !='1'
+    </select>
+
     <select id="getMaterialCountListByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialCountVo">
         select header_id, sum(oper_number) materialCount from jsh_depot_item
         where 1=1

@@ -154,9 +154,15 @@ public class DepotHeadService {
                  materialParam, keyword, organId, organArray, MNumber, creator, depotId, counterId, depotArray, accountId, remark, offset, rows);
             if (null != list) {
                 List<Long> idList = new ArrayList<>();
+                List<Long> pickupList = new ArrayList<>();
                 List<String> numberList = new ArrayList<>();
                 for (DepotHeadVo4List dh : list) {
-                    idList.add(dh.getId());
+                    if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                            || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                        pickupList.add(dh.getId());
+                    } else {
+                        idList.add(dh.getId());
+                    }
                     numberList.add(dh.getNumber());
                 }
                 //通过批量查询去构造map
@@ -164,6 +170,7 @@ public class DepotHeadService {
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
+                Map<String, MaterialPickupsListVo> pickupListMap = findMaterialsPickupListMapByHeaderIdList(pickupList);
 //                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId()+""+dh.getSubId()+""+dh.getMNumber();
@@ -225,9 +232,16 @@ public class DepotHeadService {
                     }
                     //商品信息简述
                     if(materialsListMap!=null) {
-                        MaterialsListVo vo = materialsListMap.get(mKey);
-                        dh.setMaterialsList(vo.getMaterialsList());
-                        dh.setMaterialCount(vo.getMaterialCount());
+                        if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                                || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                            MaterialPickupsListVo vo = pickupListMap.get(String.valueOf(dh.getId()));
+                            dh.setMaterialsList(vo.getName());
+                            dh.setMaterialCount(vo.getAmount());
+                        } else {
+                            MaterialsListVo vo = materialsListMap.get(mKey);
+                            dh.setMaterialsList(vo.getMaterialsList());
+                            dh.setMaterialCount(vo.getMaterialCount());
+                        }
                     }
                     //商品总数量
 //                    if(materialCountListMap!=null) {
@@ -640,6 +654,18 @@ public class DepotHeadService {
             materialsListMap.put(key, materialsListVo);
         }
         return materialsListMap;
+    }
+
+    private Map<String, MaterialPickupsListVo> findMaterialsPickupListMapByHeaderIdList(List<Long> idList) {
+        Map<String, MaterialPickupsListVo> materialPickupsListVoMap = new HashMap<>();
+        if(idList.isEmpty()) {
+            return materialPickupsListVoMap;
+        }
+        List<MaterialPickupsListVo> list = depotHeadMapperEx.findMaterialPickupsListMapByHeaderIdList(idList);
+        for(MaterialPickupsListVo materialPickupsListVo : list) {
+            materialPickupsListVoMap.put(String.valueOf(materialPickupsListVo.getHeaderId()), materialPickupsListVo);
+        }
+        return materialPickupsListVoMap;
     }
 
     public Map<Long,BigDecimal> getMaterialCountListMapByHeaderIdList(List<Long> idList)throws Exception {
