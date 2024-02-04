@@ -231,13 +231,15 @@ public class DepotHeadService {
                         dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     }
                     //商品信息简述
-                    if(materialsListMap!=null) {
-                        if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
-                                || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                    if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                            || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                        if(!pickupListMap.isEmpty()) {
                             MaterialPickupsListVo vo = pickupListMap.get(String.valueOf(dh.getId()));
                             dh.setMaterialsList(vo.getName());
                             dh.setMaterialCount(vo.getAmount());
-                        } else {
+                        }
+                    } else {
+                        if (!materialsListMap.isEmpty()) {
                             MaterialsListVo vo = materialsListMap.get(mKey);
                             dh.setMaterialsList(vo.getMaterialsList());
                             dh.setMaterialCount(vo.getMaterialCount());
@@ -902,15 +904,22 @@ public class DepotHeadService {
             List<DepotHeadVo4List> list = depotHeadMapperEx.getDetailByNumber(number);
             if (null != list) {
                 List<Long> idList = new ArrayList<>();
+                List<Long> pickupList = new ArrayList<>();
                 List<String> numberList = new ArrayList<>();
                 for (DepotHeadVo4List dh : list) {
-                    idList.add(dh.getId());
+                    if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                            || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                        pickupList.add(dh.getId());
+                    } else {
+                        idList.add(dh.getId());
+                    }
                     numberList.add(dh.getNumber());
                 }
                 //通过批量查询去构造map
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
+                Map<String, MaterialPickupsListVo> pickupListMap = findMaterialsPickupListMapByHeaderIdList(pickupList);
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getCustomNumber()!=null) {
                         dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
@@ -951,13 +960,25 @@ public class DepotHeadService {
                     }
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
-                    if(materialsListMap!=null) {
-                        MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
-                        dh.setMaterialsList(vo.getMaterialsList());
-                        dh.setCategoryId(vo.getCategoryId());
-                        dh.setMaterialNumber(vo.getMaterialNumber());
-                        dh.setMaterialCount(vo.getMaterialCount());
-                        dh.setDepotList(vo.getDepotList());
+                    if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                            || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                        if(!pickupListMap.isEmpty()) {
+                            MaterialPickupsListVo vo = pickupListMap.get(String.valueOf(dh.getId()));
+                            dh.setMaterialsList(vo.getName());
+                            dh.setCategoryId(0L);
+                            dh.setMaterialNumber("");
+                            dh.setMaterialCount(vo.getAmount());
+                            dh.setDepotList("");
+                        }
+                    } else {
+                        if (!materialsListMap.isEmpty()) {
+                            MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
+                            dh.setMaterialsList(vo.getMaterialsList());
+                            dh.setCategoryId(vo.getCategoryId());
+                            dh.setMaterialNumber(vo.getMaterialNumber());
+                            dh.setMaterialCount(vo.getMaterialCount());
+                            dh.setDepotList(vo.getDepotList());
+                        }
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
                     resList.add(dh);
