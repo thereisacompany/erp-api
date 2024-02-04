@@ -94,6 +94,8 @@ public class DepotHead {
 
     private String deleteFlag;
 
+    private Integer isPickup;
+
     public Long getId() {
         return id;
     }

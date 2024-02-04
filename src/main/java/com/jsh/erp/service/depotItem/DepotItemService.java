@@ -401,12 +401,12 @@ public class DepotItemService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void saveDetails(String rows, Long headerId, String actionType, HttpServletRequest request, User userInfo) throws Exception{
-        //查询单据主表信息
+    public void saveDetails(String rows, boolean isPickup, Long headerId, String actionType, HttpServletRequest request, User userInfo) throws Exception{
+        //查詢單據主表信息
         DepotHead depotHead =depotHeadMapper.selectByPrimaryKey(headerId);
-        //删除序列号和回收序列号
+        //刪除序列號和回收序列號
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
-        //删除单据的明细
+        //刪除單據的明細
         deleteDepotItemHeadId(headerId, Boolean.FALSE);
         JSONArray rowArr = JSONArray.parseArray(rows);
         if (null != rowArr && rowArr.size()>0) {
@@ -419,7 +419,7 @@ public class DepotItemService {
                 depotItem.setMaterialId(materialExtend.getMaterialId());
                 depotItem.setMaterialExtendId(materialExtend.getId());
                 depotItem.setMaterialUnit(rowObj.getString("unit"));
-                Material material= materialService.getMaterial(depotItem.getMaterialId());
+
 //                if (BusinessConstants.ENABLE_SERIAL_NUMBER_ENABLED.equals(material.getEnableSerialNumber()) ||
 //                        BusinessConstants.ENABLE_BATCH_NUMBER_ENABLED.equals(material.getEnableBatchNumber())) {
 //                    //组装拆卸单不能选择批号或序列号商品
@@ -603,20 +603,22 @@ public class DepotItemService {
                 if (StringUtil.isExist(rowObj.get("remark"))) {
                     depotItem.setRemark(rowObj.getString("remark"));
                 }
-                //出庫时判断库存是否充足
+                //出庫時(及非自取時)判斷庫存是否充足
                 if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())){
-                    BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(),null,null,
-                            depotHead.getOrganId());
+                    if(!isPickup) {
+                        BigDecimal stock = getStockByParam(depotItem.getDepotId(), depotItem.getMaterialId(), null, null,
+                                depotHead.getOrganId());
 //                    if(StringUtil.isNotEmpty(depotItem.getSku())) {
 //                        //对于sku商品要换个方式计算库存
 //                        stock = getSkuStockByParam(depotItem.getDepotId(),depotItem.getMaterialExtendId(),null,null);
 //                    }
-                    BigDecimal thisBasicNumber = depotItem.getBasicNumber()==null?BigDecimal.ZERO:depotItem.getBasicNumber();
-                    if(!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber)<0){
-                        throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
-                                String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
-                    }
-                    // 出庫时处理序列号
+                        Material material= materialService.getMaterial(depotItem.getMaterialId());
+                        BigDecimal thisBasicNumber = depotItem.getBasicNumber() == null ? BigDecimal.ZERO : depotItem.getBasicNumber();
+                        if (!systemConfigService.getMinusStockFlag() && stock.compareTo(thisBasicNumber) < 0) {
+                            throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_CODE,
+                                    String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, material.getName()));
+                        }
+                        // 出庫时处理序列号
 //                    if(!BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
 //                        //判断商品是否开启序列号，开启的售出序列号，未开启的跳过
 //                        if(BusinessConstants.ENABLE_SERIAL_NUMBER_ENABLED.equals(material.getEnableSerialNumber())) {
@@ -625,13 +627,16 @@ public class DepotItemService {
 //                            serialNumberService.checkAndUpdateSerialNumber(depotItem, depotHead.getNumber(), userInfo, StringUtil.toNull(depotItem.getSnList()));
 //                        }
 //                    }
+                    }
                 }
 
                 this.insertDepotItemWithObj(depotItem);
-                //更新当前库存
-                updateCurrentStock(depotItem);
-                //更新商品的价格
-                updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj, userInfo);
+                if(!isPickup) {
+                    //更新當前庫存
+                    updateCurrentStock(depotItem);
+                    //更新商品的價格
+                    updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj, userInfo);
+                }
             }
             //如果关联单据号非空则更新订单的状态,单据类型：采购入庫单或销售出庫单或盘点复盘单
 //            if(BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType())
