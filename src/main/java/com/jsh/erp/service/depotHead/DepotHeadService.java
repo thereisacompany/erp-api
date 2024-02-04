@@ -1987,17 +1987,21 @@ public class DepotHeadService {
 
                 JSONArray ary = new JSONArray();
                 JSONObject obj = new JSONObject();
-//                MaterialExtend materialExtend = materialExtendService.getInfoByNumber(organAndNumber[1]);
-//                if (materialExtend != null) {
-                    Long materialId = materialVo4Unit.getId();
-                    obj.put("materialId", materialId);
-                    obj.put("barCode", materialVo4Unit.getmBarCode());
-                    if (materialVo4Unit.getCommodityUnit() == null) {
-                        obj.put("unit", "null");
-                    } else {
-                        obj.put("unit", materialVo4Unit.getCommodityUnit());
-                    }
-//                }
+
+                Long materialId = materialVo4Unit.getId();
+
+                if(isPickup > 1) {
+                    materialId = materialMapperEx.insertMaterialPickup(materialName, Integer.parseInt(amount));
+                }
+                obj.put("materialId", materialId);
+
+                obj.put("barCode", materialVo4Unit.getmBarCode());
+                if (materialVo4Unit.getCommodityUnit() == null) {
+                    obj.put("unit", "null");
+                } else {
+                    obj.put("unit", materialVo4Unit.getCommodityUnit());
+                }
+
 //                String finalDepotName = depotName;
 //                Optional<Depot> depot = depotList.stream().filter(d -> d.getName().contains(finalDepotName)).findFirst();
 //                if (depot.isPresent()) {

@@ -150,4 +150,6 @@ public interface MaterialMapperEx {
             @Param("otherField3") String otherField3,
             @Param("unit") String unit,
             @Param("unitId") Long unitId);
+
+    long insertMaterialPickup(@Param("name") String name, @Param("amount") int amount);
 }

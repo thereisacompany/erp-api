@@ -790,4 +790,12 @@
             and m.id != #{id}
         </if>
     </select>
+
+    <insert id="insertMaterialPickup"  keyProperty="id" keyColumn="id">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into jsh_material_pickup (id, name, amount, enabled, delete_flag)
+        values (NULL, #{name}, ${amount}, 1, '0')
+    </insert>
 </mapper>
