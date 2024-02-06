@@ -50,6 +50,8 @@ public class DepotItemService {
     @Resource
     private MaterialExtendService materialExtendService;
     @Resource
+    private MaterialMapperEx materialMapperEx;
+    @Resource
     private SerialNumberMapperEx serialNumberMapperEx;
     @Resource
     private DepotHeadService depotHeadService;
@@ -403,7 +405,7 @@ public class DepotItemService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void saveDetails(String rows, boolean isPickup, Long headerId, String actionType, HttpServletRequest request, User userInfo) throws Exception{
         //查詢單據主表信息
-        DepotHead depotHead =depotHeadMapper.selectByPrimaryKey(headerId);
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
         //刪除序列號和回收序列號
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
         //刪除單據的明細
@@ -417,7 +419,23 @@ public class DepotItemService {
 
                 MaterialExtend materialExtend = new MaterialExtend();
                 if(isPickup){
-                    depotItem.setMaterialId(rowObj.getLong("materialId"));
+                    if(!rowObj.containsKey("materialName") && !rowObj.containsKey("materialId")) {
+                        throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_CODE,
+                                ExceptionConstants.DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_MSG);
+                    }
+                    int n = 0;
+                    if (StringUtil.isExist(rowObj.get("operNumber"))) {
+                        n = rowObj.getBigDecimal("operNumber").intValue();
+                    }
+
+                    Long materialId = rowObj.getLong("materialId");
+                    if(materialId == null) {
+                        String name = rowObj.getString("materialName");
+                        materialMapperEx.insertMaterialPickup(name, n);
+                        materialId = materialMapperEx.selectMaterialPickupId();
+                    }
+
+                    depotItem.setMaterialId(materialId);
                 }else {
                     String barCode = rowObj.getString("barCode");
                     materialExtend = materialExtendService.getInfoByBarCode(barCode);

@@ -34,11 +34,11 @@ public class DepotHeadComponent implements ICommonQuery {
         String search = map.get(Constants.SEARCH);
         String type = StringUtil.getInfo(search, "type");
         String subType = StringUtil.getInfo(search, "subType");
-        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            if(subType==null || (subType != null && subType.isEmpty())) {
-                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
-            }
-        }
+//        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+//            if(subType==null || (subType != null && subType.isEmpty())) {
+//                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+//            }
+//        }
         String roleType = StringUtil.getInfo(search, "roleType");
         String hasDebt = StringUtil.getInfo(search, "hasDebt");
         String status = StringUtil.getInfo(search, "status");
@@ -65,11 +65,11 @@ public class DepotHeadComponent implements ICommonQuery {
         String search = map.get(Constants.SEARCH);
         String type = StringUtil.getInfo(search, "type");
         String subType = StringUtil.getInfo(search, "subType");
-        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            if(subType==null || (subType != null && subType.isEmpty())) {
-                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
-            }
-        }
+//        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+//            if(subType==null || (subType != null && subType.isEmpty())) {
+//                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+//            }
+//        }
         String roleType = StringUtil.getInfo(search, "roleType");
         String hasDebt = StringUtil.getInfo(search, "hasDebt");
         String status = StringUtil.getInfo(search, "status");

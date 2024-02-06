@@ -798,4 +798,8 @@
         insert into jsh_material_pickup (id, name, amount, enabled, delete_flag)
         values (NULL, #{name}, ${amount}, 1, '0')
     </insert>
+
+    <select id="selectMaterialPickupId" resultType="java.lang.Long">
+        select max(id) from jsh_material_pickup
+    </select>
 </mapper>

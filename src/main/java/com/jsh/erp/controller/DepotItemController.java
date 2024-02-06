@@ -199,21 +199,22 @@ public class DepotItemController {
                     item.put("model", diEx.getMModel());
                     item.put("color", diEx.getMColor());
                     item.put("materialOther", getOtherInfo(mpArr, diEx));
-                    BigDecimal stock;
+                    BigDecimal stock = BigDecimal.ZERO;
                     Unit unitInfo = materialService.findUnit(diEx.getMaterialId()); //查询计量单位信息
                     String materialUnit = diEx.getMaterialUnit();
                     if(StringUtil.isNotEmpty(diEx.getSku())){
                         stock = depotItemService.getSkuStockByParam(diEx.getDepotId(),diEx.getMaterialExtendId(),null,null);
                     } else {
                         Long organId = null;
-                        DepotHead depotHead = depotHeadService.getDepotHead(diEx.getDepotId());
-                        if(depotHead != null) {
-                            organId = depotHead.getOrganId();
-                        }
-
-                        stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
-                        if (StringUtil.isNotEmpty(unitInfo.getName())) {
-                            stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
+                        if(diEx.getDepotId() != null) {
+                            DepotHead depotHead = depotHeadService.getDepotHead(diEx.getDepotId());
+                            if (depotHead != null) {
+                                organId = depotHead.getOrganId();
+                            }
+                            stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
+                            if (StringUtil.isNotEmpty(unitInfo.getName())) {
+                                stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
+                            }
                         }
                     }
                     item.put("stock", stock);

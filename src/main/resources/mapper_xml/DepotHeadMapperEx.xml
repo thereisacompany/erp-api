@@ -67,7 +67,7 @@
     </resultMap>
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
-        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
+        select dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
         me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName,
         IFNULL(jdd.status,0) DStatus
         from jsh_depot_head dh
@@ -77,15 +77,43 @@
         left join jsh_account a on dh.account_id=a.id and ifnull(a.delete_Flag,'0') !='1'
         left join jsh_material m on di.material_id = m.id and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_extend me on di.material_extend_id = me.id and ifnull(me.delete_flag,'0') !='1'
+        left join jsh_material_pickup jmp ON di.material_id = jmp.id and ifnull(jmp.delete_flag,'0') !='1'
         left join jsh_depot jd on di.depot_id = jd.id
         left join jsh_depot_detail jdd on dh.id = jdd.header_id
         where 1=1
         <if test="type != null">
             and dh.type=#{type}
         </if>
-        <if test="subType != null">
-            and dh.sub_type=#{subType}
-        </if>
+        <choose>
+            <when test="subType != null">
+                <if test="subType == '配送單'">
+                    and dh.sub_type=#{subType}
+                    <if test="depotArray != null and depotArray !=''">
+                        and di.depot_id in (
+                        <foreach collection="depotArray" item="depotId" separator=",">
+                            #{depotId}
+                        </foreach>
+                        )
+                    </if>
+                </if>
+                <if test="subType != '配送單'">
+                    and (dh.sub_type !="移倉"
+                    and dh.sub_type=#{subType}
+                </if>
+            </when>
+            <otherwise>
+                and (dh.sub_type !="移倉"
+                <if test="depotArray != null and depotArray !=''">
+                    and di.depot_id in (
+                    <foreach collection="depotArray" item="depotId" separator=",">
+                        #{depotId}
+                    </foreach>
+                    )
+                </if>
+                OR dh.sub_type not in ("移倉","配送單"))
+            </otherwise>
+        </choose>
+
         <if test="statusArray != null and statusArray !=''">
             and dh.status in (
             <foreach collection="statusArray" item="status" separator=",">
@@ -148,13 +176,6 @@
         <if test="depotId != null">
             and di.depot_id=#{depotId}
         </if>
-        <if test="depotArray != null and depotArray !=''">
-            and di.depot_id in (
-            <foreach collection="depotArray" item="depotId" separator=",">
-                #{depotId}
-            </foreach>
-            )
-        </if>
         <if test="creatorArray != null">
             and dh.creator in (
             <foreach collection="creatorArray" item="creator" separator=",">
@@ -188,7 +209,7 @@
     <select id="countsByDepotHead" resultType="java.lang.Long">
         SELECT
         COUNT(1) from
-        (select distinct dh.* FROM jsh_depot_head dh
+        (select dh.* FROM jsh_depot_head dh
         left join jsh_depot_item di on dh.Id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
         left join jsh_material m on di.material_id = m.Id and ifnull(m.delete_Flag,'0') !='1'
@@ -197,9 +218,36 @@
         <if test="type != null">
             and dh.type=#{type}
         </if>
-        <if test="subType != null">
-            and dh.sub_type=#{subType}
-        </if>
+        <choose>
+            <when test="subType != null">
+                <if test="subType == '配送單'">
+                    and dh.sub_type=#{subType}
+                    <if test="depotArray != null and depotArray !=''">
+                        and di.depot_id in (
+                        <foreach collection="depotArray" item="depotId" separator=",">
+                            #{depotId}
+                        </foreach>
+                        )
+                    </if>
+                </if>
+                <if test="subType != '配送單'">
+                    and (dh.sub_type !="移倉"
+                    and dh.sub_type=#{subType}
+                </if>
+            </when>
+            <otherwise>
+                and (dh.sub_type !="移倉"
+                <if test="depotArray != null and depotArray !=''">
+                    and di.depot_id in (
+                    <foreach collection="depotArray" item="depotId" separator=",">
+                        #{depotId}
+                    </foreach>
+                    )
+                </if>
+                OR dh.sub_type not in ("移倉","配送單"))
+            </otherwise>
+        </choose>
+
         <if test="statusArray != null and statusArray !=''">
             and dh.status in (
             <foreach collection="statusArray" item="status" separator=",">
@@ -257,13 +305,6 @@
         </if>
         <if test="depotId != null">
             and di.depot_id=#{depotId}
-        </if>
-        <if test="depotArray != null and depotArray !=''">
-            and di.depot_id in (
-            <foreach collection="depotArray" item="depotId" separator=",">
-                #{depotId}
-            </foreach>
-            )
         </if>
         <if test="creatorArray != null">
             and dh.creator in (

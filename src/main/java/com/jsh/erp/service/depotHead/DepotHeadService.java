@@ -150,6 +150,7 @@ public class DepotHeadService {
             Map<Long,String> accountMap = accountService.getAccountMap();
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
+
             List<DepotHeadVo4List> list = depotHeadMapperEx.selectByConditionDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
                  materialParam, keyword, organId, organArray, MNumber, creator, depotId, counterId, depotArray, accountId, remark, offset, rows);
             if (null != list) {
@@ -256,7 +257,11 @@ public class DepotHeadService {
                         dh.setDiscountLastMoney(null);
                     }
                     String showId = String.format("%03d", dh.getOrganId());
-                    dh.setOrganName(showId + " " + dh.getOrganName());
+                    if(showId != null && dh.getOrganName()!=null) {
+                        dh.setOrganName(showId + " " + dh.getOrganName());
+                    } else {
+                        dh.setOrganName("");
+                    }
 
                     if(dh.getCounterName() == null) {
                         dh.setCounterName("");
@@ -1416,7 +1421,7 @@ public class DepotHeadService {
             JshException.writeFail(logger, e);
         }
         /**入庫和出庫处理预付款信息*/
-        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
+//        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
 //            if(depotHead.getOrganId()!=null) {
 //                BigDecimal currentAdvanceIn = supplierService.getSupplier(depotHead.getOrganId()).getAdvanceIn();
 //                if(currentAdvanceIn.compareTo(depotHead.getTotalPrice())>=0) {
@@ -1426,7 +1431,7 @@ public class DepotHeadService {
 //                            String.format(ExceptionConstants.DEPOT_HEAD_MEMBER_PAY_LACK_MSG));
 //                }
 //            }
-        }
+//        }
         //根据单据编号查询单据id
         DepotHeadExample dhExample = new DepotHeadExample();
         dhExample.createCriteria().andNumberEqualTo(depotHead.getNumber()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
@@ -1490,7 +1495,7 @@ public class DepotHeadService {
         if(StringUtil.isNotEmpty(depotHead.getAccountIdList())){
             depotHead.setAccountIdList(depotHead.getAccountIdList().replace("[", "").replace("]", "").replaceAll("\"", ""));
         }
-        if(StringUtil.isNotEmpty(depotHead.getAccountMoneyList())) {
+//        if(StringUtil.isNotEmpty(depotHead.getAccountMoneyList())) {
             //校验多账户的结算金额
 //            String accountMoneyList = depotHead.getAccountMoneyList().replace("[", "").replace("]", "").replaceAll("\"", "");
 //            BigDecimal sum = StringUtil.getArrSum(accountMoneyList.split(","));
@@ -1500,9 +1505,9 @@ public class DepotHeadService {
 //                        String.format(ExceptionConstants.DEPOT_HEAD_MANY_ACCOUNT_FAILED_MSG));
 //            }
 //            depotHead.setAccountMoneyList(accountMoneyList);
-        }
+//        }
         //校验累计扣除订金是否超出订单中的金额
-        if(depotHead.getDeposit()!=null && StringUtil.isNotEmpty(depotHead.getLinkNumber())) {
+//        if(depotHead.getDeposit()!=null && StringUtil.isNotEmpty(depotHead.getLinkNumber())) {
 //            BigDecimal finishDeposit = depotHeadMapperEx.getFinishDepositByNumberExceptCurrent(depotHead.getLinkNumber(), depotHead.getNumber());
 //            //订单中的订金金额
 //            BigDecimal changeAmount = getDepotHead(depotHead.getLinkNumber()).getChangeAmount();
@@ -1513,7 +1518,7 @@ public class DepotHeadService {
 //                            String.format(ExceptionConstants.DEPOT_HEAD_DEPOSIT_OVER_PRE_MSG));
 //                }
 //            }
-        }
+//        }
         // 若為出庫配送庫，需額外處理remark
         if(depotHead.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
             DepotHead oldDepotHead = depotHeadMapper.selectByPrimaryKey(depotHead.getId());
@@ -1541,7 +1546,7 @@ public class DepotHeadService {
             JshException.writeFail(logger, e);
         }
         /**入庫和出庫处理预付款信息*/
-        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
+//        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())){
 //            if(depotHead.getOrganId()!=null){
 //                BigDecimal currentAdvanceIn = supplierService.getSupplier(depotHead.getOrganId()).getAdvanceIn();
 //                if(currentAdvanceIn.compareTo(depotHead.getTotalPrice())>=0) {
@@ -1551,7 +1556,7 @@ public class DepotHeadService {
 //                            String.format(ExceptionConstants.DEPOT_HEAD_MEMBER_PAY_LACK_MSG));
 //                }
 //            }
-        }
+//        }
         /** 是否為門市取貨或取回件 */
         boolean isPickup = Boolean.FALSE;
         if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
@@ -2049,7 +2054,8 @@ public class DepotHeadService {
                 Long materialId = materialVo4Unit.getId();
 
                 if(isPickup > 1) {
-                    materialId = materialMapperEx.insertMaterialPickup(materialName, Integer.parseInt(amount));
+                    materialMapperEx.insertMaterialPickup(materialName, Integer.parseInt(amount));
+                    materialId = materialMapperEx.selectMaterialPickupId();
                 }
                 obj.put("materialId", materialId);
 

@@ -412,6 +412,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG = "查無此配送單資料";
     public static final int DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE = 8000023;
     public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據可以派發司機";
+    public static final int DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_CODE = 8000024;
+    public static final String DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_MSG = "當為自取類別時，必需自行帶入商品名稱";
     /**
      *  单据明细信息
      * type = 90
