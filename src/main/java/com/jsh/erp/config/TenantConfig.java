@@ -58,7 +58,7 @@ public class TenantConfig {
                             || "jsh_user_business".equals(tableName) || "jsh_function".equals(tableName)
                             || "jsh_platform_config".equals(tableName) || "jsh_tenant".equals(tableName)
                             || "jsh_depot_detail".equals(tableName) || "jsh_depot_record".equals(tableName)
-                            || "jsh_depot_report".equals(tableName)) {
+                            || "jsh_depot_report".equals(tableName) || "jsh_material_pickup".equals(tableName)) {
                         res = true;
                     } else {
                         res = false;
