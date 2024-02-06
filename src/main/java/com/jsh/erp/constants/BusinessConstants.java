@@ -42,8 +42,8 @@ public class BusinessConstants {
     public static final String DEPOTHEAD_TYPE_OUT = "出庫";
     public static final String DEPOTHEAD_SUBTYPE_OUT = "配送單";
     public static final String DEPOTHEAD_TYPE_OTHER = "其它";
-    public static final String DEPOTHEAD_SUBTYPE_PICKUP = "配送單-門市自取";
-    public static final String DEPOTHEAD_SUBTYPE_PICKUP1 = "配送單-取回件";
+    public static final String DEPOTHEAD_SUBTYPE_PICKUP = "門市自取";
+    public static final String DEPOTHEAD_SUBTYPE_PICKUP1 = "取回件";
     /**
      * 付款类型 payType //现付/预付款
      * */
@@ -105,6 +105,8 @@ public class BusinessConstants {
     public static final String SUB_TYPE_REPLAY = "盘点复盘";
     public static final String SUB_TYPE_ASSEMBLE = "组装单";
     public static final String SUB_TYPE_DISASSEMBLE = "拆卸单";
+    public static final String SUB_TYPE_PICKUP = "門市自取";
+    public static final String SUB_TYPE_PICKUP1 = "取回件";
     /**
      * 批量插入sql时最大的数据条数
      * */

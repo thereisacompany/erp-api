@@ -1826,7 +1826,10 @@ public class DepotHeadService {
                 // 確認書(必填)
                 String confirm = ExcelUtils.getContent(mainData, i, 0);
                 // 客單編號(必填)
-                String excelCustomNum = ExcelUtils.getContent(mainData, i, 1).trim();
+                String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
+                if(!excelCustomNum.isEmpty()) {
+                    excelCustomNum = excelCustomNum.trim();
+                }
 //                String customNumber = excelCustomNum.split("-")[0];
 
                 if (confirm == null || (confirm != null && confirm.isEmpty())
@@ -1848,6 +1851,7 @@ public class DepotHeadService {
                     importError.put(""+i, "原始客編未填寫");
                     continue;
                 }
+                String finalExcelCustomNum = excelCustomNum;
                 Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
                     String customStr = "";
                     String sourceStr = "";
@@ -1858,7 +1862,7 @@ public class DepotHeadService {
                         sourceStr = dh.getSourceNumber().trim();
                     }
                     if(!customStr.isEmpty() || !sourceStr.isEmpty()) {
-                        if (customStr.equals(excelCustomNum) || sourceStr.equals(sourceNumber)) {
+                        if (customStr.equals(finalExcelCustomNum) || sourceStr.equals(sourceNumber)) {
                             return true;
                         }
                     }
@@ -1909,7 +1913,7 @@ public class DepotHeadService {
                 beanJson.put("isPickup", isPickup);
 
                 Optional<Depot> tmpDepot = depotList.stream().filter(d -> d.getName().contains(depotName)).findFirst();
-                Depot depot = null;
+                Depot depot = new Depot();
                 if (tmpDepot.isPresent()) {
                     depot = tmpDepot.get();
                 } else {
@@ -1927,7 +1931,7 @@ public class DepotHeadService {
 
                 // 品號 (必填)
                 String mNumber = ExcelUtils.getContent(mainData, i, 8);
-                MaterialVo4Unit materialVo4Unit=null;
+                MaterialVo4Unit materialVo4Unit=new MaterialVo4Unit();
                 if(mNumber ==null || (mNumber != null && mNumber.isEmpty())){
                     // TODO 記錄
                     if(isPickup==1) {
@@ -1990,9 +1994,16 @@ public class DepotHeadService {
                     String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
                     beanJson.put("operTime", operTime);
                 } catch(DateTimeParseException e) {
-                    // TODO 記錄
-                    importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
-                    continue;
+                    try{
+                        LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
+                        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                        beanJson.put("operTime", operTime);
+                    } catch (DateTimeParseException e1) {
+                        // TODO 記錄
+                        importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                        continue;
+                    }
                 }
 
                 JSONObject json = new JSONObject();
@@ -2099,6 +2110,7 @@ public class DepotHeadService {
             }
             logger.info((String) info.data);
         } catch (BusinessRunTimeException brte) {
+            brte.printStackTrace();
             info.code = brte.getCode();
             info.data = brte.getData().get("message");
         } catch (Exception e) {
@@ -2122,16 +2134,25 @@ public class DepotHeadService {
 //        String datetimeStr = "10/10/23 17:10:10";
 //        String dateStr = "12/4/23";
 
-        String issueDate = "2023/11/6";
+        String dateStr = "2023/11/6";
 
-        LocalDate date = LocalDate.parse(issueDate, formatterDate);
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        System.out.println(time);
+        try {
+            LocalDate date = LocalDate.parse(dateStr, formatterDate);
+        } catch (Exception e){
+            try {
+                LocalDate date1 = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("M/d/yy"));
+                System.out.println(">>>"+date1);
+            } catch (Exception e1) {
+
+            }
+        }
+//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//        System.out.println(time);
 //        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
 //        System.out.println("operTime>>"+operTime);
 
-        String number = String.format("S%s", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-        System.out.println(">>>"+number);
+//        String number = String.format("S%s", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+//        System.out.println(">>>"+number);
 
 //        System.out.println(">>>"+LocalDateTime.parse(datetimeStr, formatter).format(formatterChange));
 //        System.out.println(LocalDate.parse(dateStr));
