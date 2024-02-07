@@ -1310,7 +1310,7 @@ public class DepotHeadService {
             }
         }
 
-        /** 是否為門市取貨或取回件 */
+        /** 是否為門市取貨或門市取貨派送 */
         int isPickup = 1;
         if(depotHead.getIsPickup() != null) {
             isPickup = depotHead.getIsPickup();
@@ -1561,7 +1561,7 @@ public class DepotHeadService {
 //                }
 //            }
 //        }
-        /** 是否為門市取貨或取回件 */
+        /** 是否為門市取貨或門市取貨派送 */
         boolean isPickup = Boolean.FALSE;
         if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
                 || depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
@@ -1912,11 +1912,11 @@ public class DepotHeadService {
                     importError.put(""+i, "出貨倉別未填寫");
                     continue;
                 }
-                // TODO 門市取貨、取回件 不需填品號，亦不需扣庫存
+                // TODO 門市取貨、門市取貨派送 不需填品號，亦不需扣庫存
                 int isPickup = 1;
-                if(depotName.contains("門市取貨")) {
+                if(depotName.contains(BusinessConstants.SUB_TYPE_PICKUP)) {
                     isPickup = 2;
-                } else if (depotName.contains("取回件")) {
+                } else if (depotName.contains(BusinessConstants.SUB_TYPE_PICKUP1)) {
                     isPickup = 3;
                 }
                 beanJson.put("isPickup", isPickup);
