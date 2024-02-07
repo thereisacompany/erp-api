@@ -97,7 +97,7 @@
                     </if>
                 </if>
                 <if test="subType != '配送單'">
-                    and (dh.sub_type !="移倉"
+                    and dh.sub_type !="移倉"
                     and dh.sub_type=#{subType}
                 </if>
             </when>
@@ -231,7 +231,7 @@
                     </if>
                 </if>
                 <if test="subType != '配送單'">
-                    and (dh.sub_type !="移倉"
+                    and dh.sub_type !="移倉"
                     and dh.sub_type=#{subType}
                 </if>
             </when>
