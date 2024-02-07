@@ -1914,9 +1914,9 @@ public class DepotHeadService {
                 }
                 // TODO 門市取貨、門市取貨派送 不需填品號，亦不需扣庫存
                 int isPickup = 1;
-                if(depotName.contains(BusinessConstants.SUB_TYPE_PICKUP)) {
+                if(depotName.equals(BusinessConstants.SUB_TYPE_PICKUP)) {
                     isPickup = 2;
-                } else if (depotName.contains(BusinessConstants.SUB_TYPE_PICKUP1)) {
+                } else if (depotName.equals(BusinessConstants.SUB_TYPE_PICKUP1)) {
                     isPickup = 3;
                 }
                 beanJson.put("isPickup", isPickup);
