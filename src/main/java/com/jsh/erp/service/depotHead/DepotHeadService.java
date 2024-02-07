@@ -431,7 +431,9 @@ public class DepotHeadService {
     public int insertDepotHead(JSONObject obj, HttpServletRequest request)throws Exception {
         DepotHead depotHead = JSONObject.parseObject(obj.toJSONString(), DepotHead.class);
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                || depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                || depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
             depotHead.setStatus(BusinessConstants.BILLS_STATUS_AUDIT);
         } else {
             depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
@@ -1380,7 +1382,9 @@ public class DepotHeadService {
         depotHead.setCreator(userInfo==null?null:userInfo.getId());
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if(StringUtil.isEmpty(depotHead.getStatus())) {
-            if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+            if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                    || depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                    || depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
                 depotHead.setStatus(BusinessConstants.BILLS_STATUS_AUDIT);
             } else {
                 depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
