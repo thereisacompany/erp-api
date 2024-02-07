@@ -802,4 +802,8 @@
     <select id="selectMaterialPickupId" resultType="java.lang.Long">
         select max(id) from jsh_material_pickup
     </select>
+
+    <select id="selectMaterialPickupName" resultType="java.lang.String">
+        select name from jsh_material_pickup where id = #{id}
+    </select>
 </mapper>

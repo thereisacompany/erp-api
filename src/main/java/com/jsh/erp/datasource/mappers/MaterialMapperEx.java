@@ -154,4 +154,6 @@ public interface MaterialMapperEx {
     long insertMaterialPickup(@Param("name") String name, @Param("amount") int amount);
 
     long selectMaterialPickupId();
+
+    String selectMaterialPickupName(@Param("id") Long id);
 }

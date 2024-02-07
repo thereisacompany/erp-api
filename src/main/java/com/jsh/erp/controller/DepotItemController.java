@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.*;
+import com.jsh.erp.datasource.mappers.MaterialMapperEx;
 import com.jsh.erp.datasource.vo.DepotItemStockWarningCount;
 import com.jsh.erp.datasource.vo.DepotItemVoBatchNumberList;
 import com.jsh.erp.exception.BusinessRunTimeException;
@@ -54,6 +55,8 @@ public class DepotItemController {
 
     @Resource
     private MaterialService materialService;
+    @Resource
+    private MaterialMapperEx materialMapperEx;
 
     @Resource
     private UnitService unitService;
@@ -192,6 +195,12 @@ public class DepotItemController {
                     item.put("id", diEx.getId());
                     item.put("materialExtendId", diEx.getMaterialExtendId() == null ? "" : diEx.getMaterialExtendId());
                     item.put("barCode", diEx.getBarCode());
+
+                    if(diEx.getMName() == null) {
+                        if (diEx.getMaterialId() != null) {
+                            item.put("materialName", materialMapperEx.selectMaterialPickupName(diEx.getMaterialId()));
+                        }
+                    }
                     item.put("name", diEx.getMName());
                     item.put("MNumber", diEx.getMNumber());
                     item.put("categoryName", diEx.getCategoryName());
