@@ -1,7 +1,10 @@
 package com.jsh.erp.datasource.entities;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class Supplier {
     private Long id;
 
@@ -52,6 +55,16 @@ public class Supplier {
     private String accountNumber;
 
     private BigDecimal taxRate;
+
+    private String groupInsuranceStart;
+    private String groupInsuranceEnd;
+    private String laborHealthInsuranceStart;
+    private String laborHealthInsuranceEnd;
+    private String onboarding;
+    private String resign;
+    private String idNumber;
+    private String birthday;
+    private String license;
 
     private String sort;
 

@@ -24,6 +24,15 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="license_plate" jdbcType="VARCHAR" property="licensePlate" />
     <result column="tax_num" jdbcType="VARCHAR" property="taxNum" />
+    <result column="group_insurance_start" jdbcType="TIMESTAMP" property="groupInsuranceStart" />
+    <result column="group_insurance_end" jdbcType="TIMESTAMP" property="groupInsuranceEnd" />
+    <result column="labor_health_insurance_start" jdbcType="TIMESTAMP" property="laborHealthInsuranceStart" />
+    <result column="labor_health_insurance_end" jdbcType="TIMESTAMP" property="laborHealthInsuranceEnd" />
+    <result column="onboarding" jdbcType="TIMESTAMP" property="onboarding" />
+    <result column="resign" jdbcType="TIMESTAMP" property="resign" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="license" jdbcType="VARCHAR" property="license" />
     <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
     <result column="account_number" jdbcType="VARCHAR" property="accountNumber" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
@@ -92,7 +101,9 @@
   <sql id="Base_Column_List">
     id, supplier, supplierall, taxid, contacts, phone_num, email, description, isystem, type, enabled, advance_in,
     begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, emergency_phone, address, license_plate,
-    tax_num, bank_name, account_number, tax_rate, sort, tenant_id, delete_flag
+    tax_num, bank_name, account_number, tax_rate, group_insurance_start, group_insurance_end,
+    labor_health_insurance_start, labor_health_insurance_end, onboarding, resign, id_number,
+    birthday, license, sort, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultMap="BaseResultMap">
     select
@@ -224,6 +235,33 @@
       <if test="taxRate != null">
         tax_rate,
       </if>
+      <if test="groupInsuranceStart != null">
+        group_insurance_start,
+      </if>
+      <if test="groupInsuranceEnd != null">
+        group_insurance_end,
+      </if>
+      <if test="laborHealthInsuranceStart != null">
+        labor_health_insurance_start,
+      </if>
+      <if test="laborHealthInsuranceEnd != null">
+        labor_health_insurance_end,
+      </if>
+      <if test="onboarding != null">
+        onboarding,
+      </if>
+      <if test="resign != null">
+        resign,
+      </if>
+      <if test="idNumber != null">
+        id_number,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="license != null">
+        license,
+      </if>
       <if test="sort != null">
         sort,
       </if>
@@ -309,6 +347,33 @@
       </if>
       <if test="taxRate != null">
         #{taxRate,jdbcType=DECIMAL},
+      </if>
+      <if test="groupInsuranceStart != null">
+        #{groupInsuranceStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupInsuranceEnd != null">
+        #{groupInsuranceEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="laborHealthInsuranceStart != null">
+        #{laborHealthInsuranceStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="laborHealthInsuranceEnd != null">
+        #{laborHealthInsuranceEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="onboarding != null">
+        #{onboarding,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resign != null">
+        #{resign,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idNumber != null">
+        #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="license != null">
+        #{license,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
         #{sort,jdbcType=VARCHAR},
@@ -563,6 +628,33 @@
       </if>
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DECIMAL},
+      </if>
+      <if test="groupInsuranceStart != null">
+        group_insurance_start = #{groupInsuranceStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupInsuranceEnd != null">
+        group_insurance_end = #{groupInsuranceEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="laborHealthInsuranceStart != null">
+        labor_health_insurance_start = #{laborHealthInsuranceStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="laborHealthInsuranceEnd != null">
+        labor_health_insurance_end = #{laborHealthInsuranceEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="onboarding != null">
+        onboarding = #{onboarding,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resign != null">
+        resign = #{resign,jdbcType=TIMESTAMP},
+      </if>
+      <if test="idNumber != null">
+        id_number #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="license != null">
+        license #{license,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
         sort = #{sort,jdbcType=VARCHAR},
