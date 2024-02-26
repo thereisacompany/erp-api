@@ -153,6 +153,17 @@ public class VehicleService {
         return list;
     }
 
+    public List<Vehicle> getLicenseNumber() {
+        List<Vehicle> list = null;
+        try {
+            list = vehicleMapper.selectVehicleLicenseNumber();
+
+        } catch (Exception e) {
+            JshException.readFail(logger, e);
+        }
+        return list;
+    }
+
     public List<Vehicle> select(String license, String brand, String driver, int offset, int rows) {
         List<Vehicle> resList= new ArrayList<>();
 

@@ -82,6 +82,10 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="selectVehicleLicenseNumber" resultMap="BaseResultMap">
+        select license_plate_number, driver from jsh_vehicle order by license_plate_number asc
+    </select>
+
     <insert id="insertSelective" parameterType="com.jsh.erp.datasource.entities.Vehicle">
         insert into jsh_vehicle
         <trim prefix="(" suffix=")" suffixOverrides=",">
