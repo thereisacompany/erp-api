@@ -5,6 +5,9 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="license_plate_number" jdbcType="VARCHAR" property="licensePlateNumber" />
         <result column="brand_model" jdbcType="VARCHAR" property="brandModel" />
+        <result column="take_over" jdbcType="DATE" property="takeOver" />
+        <result column="loan_due" jdbcType="DATE" property="loanDue" />
+        <result column="contract_expired" jdbcType="DATE" property="contractExpired" />
         <result column="driver" jdbcType="VARCHAR" property="driver" />
         <result column="color" jdbcType="VARCHAR" property="color" />
         <result column="mileage" jdbcType="INTEGER" property="mileage" />
@@ -12,6 +15,10 @@
         <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
         <result column="test_date" jdbcType="DATE" property="testDate" />
         <result column="insurance_date" jdbcType="DATE" property="insuranceDate" />
+        <result column="insurance_date_end" jdbcType="DATE" property="insuranceDateEnd" />
+        <result column="renewal_date" jdbcType="DATE" property="renewalDate" />
+        <result column="license_valid" jdbcType="DATE" property="licenseValid" />
+        <result column="cargo_insurance_due" jdbcType="DATE" property="cargoInsuranceDue" />
         <result column="emissions" jdbcType="INTEGER" property="emissions" />
         <result column="price" jdbcType="INTEGER" property="price" />
         <result column="status" jdbcType="TINYINT" property="status" />
@@ -51,8 +58,9 @@
     </sql>
 
     <sql id="Base_Column_List">
-        id, license_plate_number, brand_model, driver, color, mileage, engine_number, manufacture, test_date,
-        insurance_date, emissions, price, status, ownership, tenant_id
+        id, license_plate_number, brand_model, take_over, loan_due, contract_expired, driver, color, mileage,
+        engine_number, manufacture, test_date, insurance_date, insurance_date_end, renewal_date,
+        license_valid, cargo_insurance_due, emissions, price, status, ownership, tenant_id
     </sql>
 
     <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="BaseResultMap">
@@ -89,6 +97,15 @@
             <if test="driver != null">
                 driver,
             </if>
+            <if test="takeOver != null and !takeOver.isEmpty()">
+                take_over,
+            </if>
+            <if test="loanDue != null and !loanDue !=.isEmpty()">
+                loan_due,
+            </if>
+            <if test="contractExpired != null and !contractExpired.isEmpty()">
+                contract_expired,
+            </if>
             <if test="color != null">
                 color,
             </if>
@@ -106,6 +123,18 @@
             </if>
             <if test="insuranceDate != null and !insuranceDate.isEmpty()">
                 insurance_date,
+            </if>
+            <if test="insuranceDateEnd != null and !insuranceDateEnd.isEmpty()">
+                insurance_date_end,
+            </if>
+            <if test="renewalDate != null and !renewalDate.isEmpty()">
+                renewal_date,
+            </if>
+            <if test="licenseValid != null and !licenseValid.isEmpty()">
+                license_valid,
+            </if>
+            <if test="cargoInsuranceDue != null and !cargoInsuranceDue.isEmpty()">
+                cargo_insurance_due,
             </if>
             <if test="emissions != null">
                 emissions,
@@ -133,6 +162,15 @@
             <if test="brandModel != null">
                 #{brandModel,jdbcType=VARCHAR},
             </if>
+            <if test="takeOver != null and !takeOver.isEmpty()">
+                #{takeOver,jdbcType=DATE},
+            </if>
+            <if test="loanDue != null and !loanDue !=.isEmpty()">
+                #{loanDue,jdbcType=DATE},
+            </if>
+            <if test="contractExpired != null and !contractExpired.isEmpty()">
+                #{contractExpired,jdbcType=DATE},
+            </if>
             <if test="driver != null">
                 #{driver,jdbcType=VARCHAR},
             </if>
@@ -153,6 +191,18 @@
             </if>
             <if test="insuranceDate != null and !insuranceDate.isEmpty()">
                 #{insuranceDate,jdbcType=DATE},
+            </if>
+            <if test="insuranceDateEnd != null and !insuranceDateEnd.isEmpty()">
+                #{insuranceDateEnd,jdbcType=DATE},
+            </if>
+            <if test="renewalDate != null and !renewalDate.isEmpty()">
+                #{renewalDate,jdbcType=DATE},
+            </if>
+            <if test="licenseValid != null and !licenseValid.isEmpty()">
+                #{licenseValid,jdbcType=DATE},
+            </if>
+            <if test="cargoInsuranceDue != null and !cargoInsuranceDue.isEmpty()">
+                #{cargoInsuranceDue,jdbcType=DATE},
             </if>
             <if test="emissions != null">
                 #{emissions,jdbcType=INTEGER},
@@ -187,6 +237,36 @@
             </if>
             <if test="brandModel != null">
                 brand_model = #{brandModel,jdbcType=VARCHAR},
+            </if>
+            <if test="takeOver != null">
+                <choose>
+                    <when test="takeOver.isEmpty()">
+                        take_over = null,
+                    </when>
+                    <otherwise>
+                        take_over = #{takeOver,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="loanDue != null">
+                <choose>
+                    <when test="loanDue.isEmpty()">
+                        loan_due = null,
+                    </when>
+                    <otherwise>
+                        loan_due = #{loanDue,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="contractExpired != null">
+                <choose>
+                    <when test="contractExpired.isEmpty()">
+                        contract_expired = null,
+                    </when>
+                    <otherwise>
+                        contract_expired = #{contractExpired,jdbcType=DATE},
+                    </otherwise>
+                </choose>
             </if>
             <if test="driver != null">
                 driver = #{driver,jdbcType=VARCHAR},
@@ -227,6 +307,46 @@
                     </when>
                     <otherwise>
                         insurance_date = #{insuranceDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="insuranceDateEnd != null">
+                <choose>
+                    <when test="insuranceDateEnd.isEmpty()">
+                        insurance_date_end = null,
+                    </when>
+                    <otherwise>
+                        insurance_date_end = #{insuranceDateEnd,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="renewalDate != null">
+                <choose>
+                    <when test="renewalDate.isEmpty()">
+                        renewal_date = null,
+                    </when>
+                    <otherwise>
+                        renewal_date = #{renewalDate,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="licenseValid != null">
+                <choose>
+                    <when test="licenseValid.isEmpty()">
+                        license_valid = null,
+                    </when>
+                    <otherwise>
+                        license_valid = #{licenseValid,jdbcType=DATE},
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="cargoInsuranceDue != null">
+                <choose>
+                    <when test="cargoInsuranceDue.isEmpty()">
+                        cargo_insurance_due = null,
+                    </when>
+                    <otherwise>
+                        cargo_insurance_due = #{cargoInsuranceDue,jdbcType=DATE},
                     </otherwise>
                 </choose>
             </if>
