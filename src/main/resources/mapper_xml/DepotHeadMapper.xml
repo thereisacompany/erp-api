@@ -167,7 +167,7 @@
     SELECT jdd.id, jdd.status, js.id supplierId, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number, jdd.file_path
     FROM jsh_depot_detail jdd
     LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
-    LEFT JOIN jsh_vehicle jv ON jv.supplier_id = js.id
+    LEFT JOIN jsh_vehicle jv ON jv.driver = js.id
     WHERE jdd.header_id = ${headerId}
     <if test="itemId != null">
       AND jdd.item_id = ${itemId}

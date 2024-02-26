@@ -257,6 +257,6 @@
     </select>
 
     <select id="isDriverBind" resultType="java.lang.Integer">
-        select count(1) from jsh_vehicle where supplier_id = ${supplierId}
+        select count(1) from jsh_vehicle where driver = ${supplierId}
     </select>
 </mapper>
