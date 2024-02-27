@@ -273,7 +273,7 @@ public class SupplierService {
 //                        }
 //                    }
                     String passwd = null;
-                    if (obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
+                    if (obj.containsKey("loginPassword")) {
                         passwd = obj.getString("loginPassword");
                     }
                     if(passwd != null) {
@@ -281,8 +281,6 @@ public class SupplierService {
                             throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
                                     ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
                         }
-                    }
-                    if(passwd != null) { //loginName != null ||
                         supplierMapper.updateCarUser(null, passwd==null? null : Tools.getMD5(passwd), carUserId);
                     }
                 }
