@@ -290,7 +290,8 @@
         where 1=1 and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
-            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+            and (me.bar_code like #{bindKey} or me.number like #{bindKey}
+            or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="beginTime != null">
             and dh.oper_time >= #{beginTime}
@@ -344,7 +345,8 @@
         where 1=1 and me.default_flag=1
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
-            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+            and (me.bar_code like #{bindKey} or me.number like #{bindKey}
+            or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="beginTime != null">
             and dh.oper_time >= #{beginTime}
