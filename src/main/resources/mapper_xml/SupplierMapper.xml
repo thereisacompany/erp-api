@@ -648,13 +648,13 @@
         resign = #{resign,jdbcType=TIMESTAMP},
       </if>
       <if test="idNumber != null">
-        id_number #{idNumber,jdbcType=VARCHAR},
+        id_number = #{idNumber,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null">
         birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
       <if test="license != null">
-        license #{license,jdbcType=VARCHAR},
+        license = #{license,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
         sort = #{sort,jdbcType=VARCHAR},
