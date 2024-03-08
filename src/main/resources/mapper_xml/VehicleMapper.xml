@@ -104,7 +104,7 @@
             <if test="takeOver != null and !takeOver.isEmpty()">
                 take_over,
             </if>
-            <if test="loanDue != null and !loanDue !=.isEmpty()">
+            <if test="loanDue != null and !loanDue.isEmpty()">
                 loan_due,
             </if>
             <if test="contractExpired != null and !contractExpired.isEmpty()">
@@ -169,7 +169,7 @@
             <if test="takeOver != null and !takeOver.isEmpty()">
                 #{takeOver,jdbcType=DATE},
             </if>
-            <if test="loanDue != null and !loanDue !=.isEmpty()">
+            <if test="loanDue != null and !loanDue.isEmpty()">
                 #{loanDue,jdbcType=DATE},
             </if>
             <if test="contractExpired != null and !contractExpired.isEmpty()">

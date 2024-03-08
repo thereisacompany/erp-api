@@ -235,28 +235,28 @@
       <if test="taxRate != null">
         tax_rate,
       </if>
-      <if test="groupInsuranceStart != null">
+      <if test="groupInsuranceStart != null and !groupInsuranceStart.isEmpty()">
         group_insurance_start,
       </if>
-      <if test="groupInsuranceEnd != null">
+      <if test="groupInsuranceEnd != null and !groupInsuranceEnd.isEmpty()">
         group_insurance_end,
       </if>
-      <if test="laborHealthInsuranceStart != null">
+      <if test="laborHealthInsuranceStart != null and !laborHealthInsuranceStart.isEmpty()">
         labor_health_insurance_start,
       </if>
-      <if test="laborHealthInsuranceEnd != null">
+      <if test="laborHealthInsuranceEnd != null and !laborHealthInsuranceEnd.isEmpty()">
         labor_health_insurance_end,
       </if>
-      <if test="onboarding != null">
+      <if test="onboarding != null and !onboarding.isEmpty()">
         onboarding,
       </if>
-      <if test="resign != null">
+      <if test="resign != null and !resign.isEmpty()">
         resign,
       </if>
       <if test="idNumber != null">
         id_number,
       </if>
-      <if test="birthday != null">
+      <if test="birthday != null and !birthday.isEmpty()">
         birthday,
       </if>
       <if test="license != null">
@@ -348,28 +348,28 @@
       <if test="taxRate != null">
         #{taxRate,jdbcType=DECIMAL},
       </if>
-      <if test="groupInsuranceStart != null">
+      <if test="groupInsuranceStart != null and !groupInsuranceStart.isEmpty()">
         #{groupInsuranceStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="groupInsuranceEnd != null">
+      <if test="groupInsuranceEnd != null and !groupInsuranceEnd.isEmpty()">
         #{groupInsuranceEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="laborHealthInsuranceStart != null">
+      <if test="laborHealthInsuranceStart != null and !laborHealthInsuranceStart.isEmpty()">
         #{laborHealthInsuranceStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="laborHealthInsuranceEnd != null">
+      <if test="laborHealthInsuranceEnd != null and !laborHealthInsuranceEnd.isEmpty()">
         #{laborHealthInsuranceEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="onboarding != null">
+      <if test="onboarding != null and !onboarding.isEmpty()">
         #{onboarding,jdbcType=TIMESTAMP},
       </if>
-      <if test="resign != null">
+      <if test="resign != null and !resign.isEmpty()">
         #{resign,jdbcType=TIMESTAMP},
       </if>
       <if test="idNumber != null">
         #{idNumber,jdbcType=VARCHAR},
       </if>
-      <if test="birthday != null">
+      <if test="birthday != null and !birthday.isEmpty()">
         #{birthday,jdbcType=TIMESTAMP},
       </if>
       <if test="license != null">
@@ -629,28 +629,28 @@
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DECIMAL},
       </if>
-      <if test="groupInsuranceStart != null">
+      <if test="groupInsuranceStart != null and !groupInsuranceStart.isEmpty()">
         group_insurance_start = #{groupInsuranceStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="groupInsuranceEnd != null">
+      <if test="groupInsuranceEnd != null and !groupInsuranceEnd.isEmpty()">
         group_insurance_end = #{groupInsuranceEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="laborHealthInsuranceStart != null">
+      <if test="laborHealthInsuranceStart != null and !laborHealthInsuranceStart.isEmpty()">
         labor_health_insurance_start = #{laborHealthInsuranceStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="laborHealthInsuranceEnd != null">
+      <if test="laborHealthInsuranceEnd != null and !laborHealthInsuranceEnd.isEmpty()">
         labor_health_insurance_end = #{laborHealthInsuranceEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="onboarding != null">
+      <if test="onboarding != null and !onboarding.isEmpty()">
         onboarding = #{onboarding,jdbcType=TIMESTAMP},
       </if>
-      <if test="resign != null">
+      <if test="resign != null and !resign.isEmpty()">
         resign = #{resign,jdbcType=TIMESTAMP},
       </if>
       <if test="idNumber != null">
         id_number = #{idNumber,jdbcType=VARCHAR},
       </if>
-      <if test="birthday != null">
+      <if test="birthday != null and !birthday.isEmpty()">
         birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
       <if test="license != null">
