@@ -65,7 +65,7 @@ public class Supplier {
     private String idNumber;
     private String birthday;
     private String license;
-
+    private Integer sex;
     private String sort;
 
     private Long tenantId;

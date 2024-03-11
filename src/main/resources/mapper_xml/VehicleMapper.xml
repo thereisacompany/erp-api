@@ -166,6 +166,9 @@
             <if test="brandModel != null">
                 #{brandModel,jdbcType=VARCHAR},
             </if>
+            <if test="driver != null">
+                #{driver,jdbcType=VARCHAR},
+            </if>
             <if test="takeOver != null and !takeOver.isEmpty()">
                 #{takeOver,jdbcType=DATE},
             </if>
@@ -174,9 +177,6 @@
             </if>
             <if test="contractExpired != null and !contractExpired.isEmpty()">
                 #{contractExpired,jdbcType=DATE},
-            </if>
-            <if test="driver != null">
-                #{driver,jdbcType=VARCHAR},
             </if>
             <if test="color != null">
                 #{color,jdbcType=VARCHAR},

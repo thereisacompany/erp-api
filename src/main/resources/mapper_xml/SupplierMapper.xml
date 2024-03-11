@@ -103,7 +103,7 @@
     begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, emergency_phone, address, license_plate,
     tax_num, bank_name, account_number, tax_rate, group_insurance_start, group_insurance_end,
     labor_health_insurance_start, labor_health_insurance_end, onboarding, resign, id_number,
-    birthday, license, sort, tenant_id, delete_flag
+    birthday, license, sex, sort, tenant_id, delete_flag
   </sql>
   <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.SupplierExample" resultMap="BaseResultMap">
     select
@@ -262,6 +262,9 @@
       <if test="license != null">
         license,
       </if>
+      <if test="sex != null">
+        sex,
+      </if>
       <if test="sort != null">
         sort,
       </if>
@@ -374,6 +377,9 @@
       </if>
       <if test="license != null">
         #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
       </if>
       <if test="sort != null">
         #{sort,jdbcType=VARCHAR},
@@ -655,6 +661,9 @@
       </if>
       <if test="license != null">
         license = #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
       </if>
       <if test="sort != null">
         sort = #{sort,jdbcType=VARCHAR},
