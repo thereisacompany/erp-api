@@ -14,6 +14,8 @@ public interface VehicleMapper {
 
     Vehicle selectByPrimaryKey(Long id);
 
+    Vehicle selectByLicensePlateNumber(String licensePlateNumber);
+
     List<Vehicle> selectVehicleLicenseNumber();
 
     int insertSelective(Vehicle vehicle);

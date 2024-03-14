@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.*;
-import com.jsh.erp.datasource.mappers.AccountHeadMapperEx;
-import com.jsh.erp.datasource.mappers.DepotHeadMapperEx;
-import com.jsh.erp.datasource.mappers.SupplierMapper;
-import com.jsh.erp.datasource.mappers.SupplierMapperEx;
+import com.jsh.erp.datasource.mappers.*;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.accountHead.AccountHeadService;
@@ -66,6 +63,8 @@ public class SupplierService {
     private UserBusinessService userBusinessService;
     @Resource
     private VehicleService vehicleService;
+    @Resource
+    private VehicleMapper vehicleMapper;
 
     public Supplier getSupplier(long id)throws Exception {
         Supplier result=null;
@@ -200,7 +199,7 @@ public class SupplierService {
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG);
             }
 
-            long count = supplierMapper.selectLastDriverId();
+            long driverId = supplierMapper.selectLastDriverId();
             String passwd = "123456";
             if(obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
                 passwd = obj.getString("loginPassword");
@@ -209,7 +208,14 @@ public class SupplierService {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
             }
-            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.getMD5(passwd), count);
+            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.getMD5(passwd), driverId);
+
+            // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
+            if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
+                Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
+                vehicle.setDriver(String.valueOf(driverId));
+                vehicleMapper.updateByPrimaryKeySelective(vehicle);
+            }
         }
 
         insertUserBusiness(supplier, request);
@@ -286,6 +292,14 @@ public class SupplierService {
                 }
             }
             result=supplierMapper.updateByPrimaryKeySelective(supplier);
+
+            // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
+            if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
+                Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
+                vehicle.setDriver(String.valueOf(supplier.getId()));
+                vehicleMapper.updateByPrimaryKeySelective(vehicle);
+            }
+
             logService.insertLog("商家",
                     new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(supplier.getSupplier()).toString(), request);
         }catch(Exception e){

@@ -82,6 +82,13 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="selectByLicensePlateNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jsh_vehicle
+        where license_plate_number = #{licensePlateNumber,jdbcType=VARCHAR}
+    </select>
+
     <select id="selectVehicleLicenseNumber" resultMap="BaseResultMap">
         select license_plate_number, driver from jsh_vehicle order by license_plate_number asc
     </select>
