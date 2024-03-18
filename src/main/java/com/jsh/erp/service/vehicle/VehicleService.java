@@ -41,6 +41,14 @@ public class VehicleService {
     public int insertVehicle(JSONObject obj, HttpServletRequest request) {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
 
+        if(vehicle.getLicensePlateNumber() != null && !vehicle.getLicensePlateNumber().isEmpty()) {
+            Vehicle existVehiclePlateNumber = vehicleMapper.selectByLicensePlateNumber(vehicle.getLicensePlateNumber());
+            if(existVehiclePlateNumber != null) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_LICENSE_PLATE_NUMBER_EXIST_CODE,
+                        ExceptionConstants.VEHICLE_LICENSE_PLATE_NUMBER_EXIST_MSG);
+            }
+        }
+
         // 檢查此駕駛是否已綁定過車輛
         if(vehicle.getDriver() != null) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), null) > 0) {
@@ -74,7 +82,7 @@ public class VehicleService {
     public int updateVehicle(JSONObject obj, HttpServletRequest request)throws Exception {
         Vehicle vehicle = JSONObject.parseObject(obj.toJSONString(), Vehicle.class);
 
-        // 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的
+        // 檢查此駕駛是否已綁定過車輛(並排除是設定在自已身上的)
         if(vehicle.getDriver() != null && !vehicle.getDriver().isEmpty()) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), vehicle.getId()) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
@@ -88,6 +96,13 @@ public class VehicleService {
             } catch (Exception e) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_CODE,
                         ExceptionConstants.VEHICLE_DRIVER_NO_EXIST_MSG);
+            }
+        }
+
+        if(vehicle.getLicensePlateNumber() != null && !vehicle.getLicensePlateNumber().isEmpty()) {
+            if(vehicleMapper.isDriverLicensePlateNumberExist(vehicle.getLicensePlateNumber(), vehicle.getId()) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_LICENSE_PLATE_NUMBER_EXIST_CODE,
+                        ExceptionConstants.VEHICLE_LICENSE_PLATE_NUMBER_EXIST_MSG);
             }
         }
 

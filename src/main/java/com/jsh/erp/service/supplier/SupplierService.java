@@ -195,7 +195,19 @@ public class SupplierService {
 //                        ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_MSG);
 //            }
 
-            insertCarUser(obj, supplier, null);
+            Long driverId = supplierMapper.selectLastDriverId();
+            insertCarUser(obj, supplier, driverId);
+
+            // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
+            if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
+                if(vehicleMapper.isDriverLicensePlateNumberBind(supplier.getLicensePlate(), null) > 0) {
+                    throw new BusinessRunTimeException(ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_CODE,
+                            ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG);
+                }
+                Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
+                vehicle.setDriver(String.valueOf(driverId));
+                vehicleMapper.updateByPrimaryKeySelective(vehicle);
+            }
         }
 
         insertUserBusiness(supplier, request);
@@ -205,6 +217,7 @@ public class SupplierService {
         return result;
     }
 
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     private void insertCarUser(JSONObject obj, Supplier supplier, Long driverId) {
         if(obj.containsKey("loginName") && !obj.getString("loginName").isEmpty()) {
             if (supplierMapper.isDriverLoginNameExist(obj.getString("loginName"), null) > 0) {
@@ -212,9 +225,6 @@ public class SupplierService {
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG);
             }
 
-            if(driverId == null) {
-                driverId = supplierMapper.selectLastDriverId();
-            }
             String passwd = "";
             if (obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
                 passwd = obj.getString("loginPassword");
@@ -224,13 +234,6 @@ public class SupplierService {
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
             }
             supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.getMD5(passwd), driverId);
-
-            // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
-            if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
-                Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
-                vehicle.setDriver(String.valueOf(driverId));
-                vehicleMapper.updateByPrimaryKeySelective(vehicle);
-            }
         }
     }
 
@@ -272,33 +275,38 @@ public class SupplierService {
         if(supplier.getBeginNeedGet() == null) {
             supplier.setBeginNeedGet(BigDecimal.ZERO);
         }
+
+        if(supplier.getType().contains("司機")) {
+            Long carUserId = supplierMapper.selectCarUserId(supplier.getId());
+            if(carUserId > 0L) { // 此司機已有建立過登入帳號
+                String passwd = null;
+                if (obj.containsKey("loginPassword")) {
+                    passwd = obj.getString("loginPassword");
+                }
+                if(passwd != null) {
+                    if (passwd.length() < 6 && passwd.length() > 12) {
+                        throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
+                                ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
+                    }
+                    supplierMapper.updateCarUser(null, passwd==null? null : Tools.getMD5(passwd), carUserId);
+                }
+            } else {
+                insertCarUser(obj, supplier, supplier.getId());
+            }
+            // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
+            if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
+                Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
+                if(vehicleMapper.isDriverLicensePlateNumberBind(supplier.getLicensePlate(), null) > 0) {
+                    throw new BusinessRunTimeException(ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_CODE,
+                            ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG);
+                }
+                vehicle.setDriver(String.valueOf(supplier.getId()));
+                vehicleMapper.updateByPrimaryKeySelective(vehicle);
+            }
+        }
+
         int result=0;
         try{
-            if(supplier.getType().contains("司機")) {
-                Long carUserId = supplierMapper.selectCarUserId(supplier.getId());
-                if(carUserId > 0L) { // 此司機已有建立過登入帳號
-                    String passwd = null;
-                    if (obj.containsKey("loginPassword")) {
-                        passwd = obj.getString("loginPassword");
-                    }
-                    if(passwd != null) {
-                        if (passwd.length() < 6 && passwd.length() > 12) {
-                            throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
-                                    ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
-                        }
-                        supplierMapper.updateCarUser(null, passwd==null? null : Tools.getMD5(passwd), carUserId);
-                    }
-
-                    // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
-                    if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
-                        Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
-                        vehicle.setDriver(String.valueOf(supplier.getId()));
-                        vehicleMapper.updateByPrimaryKeySelective(vehicle);
-                    }
-                } else {
-                    insertCarUser(obj, supplier, supplier.getId());
-                }
-            }
             result=supplierMapper.updateByPrimaryKeySelective(supplier);
 
             logService.insertLog("商家",

@@ -15,6 +15,7 @@ public interface VehicleMapper {
     Vehicle selectByPrimaryKey(Long id);
 
     Vehicle selectByLicensePlateNumber(String licensePlateNumber);
+    int isDriverLicensePlateNumberExist(String licensePlateNumber, Long id);
 
     List<Vehicle> selectVehicleLicenseNumber();
 
@@ -25,4 +26,6 @@ public interface VehicleMapper {
     int isDriverExist(String driver, Long id);
 
     int isDriverBind(@Param("supplierId") Integer supplierId);
+
+    int isDriverLicensePlateNumberBind(String licensePlateNumber, Long id);
 }
