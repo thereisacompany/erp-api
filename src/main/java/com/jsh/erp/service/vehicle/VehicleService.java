@@ -50,7 +50,7 @@ public class VehicleService {
         }
 
         // 檢查此駕駛是否已綁定過車輛
-        if(vehicle.getDriver() != null) {
+        if(vehicle.getDriver() != null && !vehicle.getDriver().isEmpty()) {
             if(vehicleMapper.isDriverExist(vehicle.getDriver(), null) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_CODE,
                         ExceptionConstants.VEHICLE_HAD_DRIVER_FAILED_MSG);
