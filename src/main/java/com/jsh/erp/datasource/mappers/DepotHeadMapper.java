@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.jsh.erp.datasource.vo.DeliveryStatus;
 import com.jsh.erp.datasource.vo.DepotHeadDetail;
+import com.jsh.erp.datasource.vo.DriverDelivery;
 import org.apache.ibatis.annotations.Param;
 
 public interface DepotHeadMapper {
@@ -44,4 +45,13 @@ public interface DepotHeadMapper {
     int updateByPrimaryKeySelective(DepotHead record);
 
     int updateByPrimaryKey(DepotHead record);
+
+    List<DriverDelivery> findAllDriver(@Param("driverName") String driverName,
+                                       @Param("licensePlateNumber") String licensePlateNumber,
+                                       @Param("keyword") String keyword,
+                                       @Param("offset") Integer offset,
+                                       @Param("rows") Integer rows);
+    int countAllDriver(@Param("driverName") String driverName,
+                       @Param("licensePlateNumber") String licensePlateNumber,
+                       @Param("keyword") String keyword);
 }

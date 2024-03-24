@@ -1150,6 +1150,14 @@ public class DepotHeadService {
         return list;
     }
 
+    public List<DriverDelivery> getDriverDelivery(String driverName, String licensePlateNumber, String keyword,
+                                                  Integer offset, Integer pageSize, HttpServletRequest request) {
+        return depotHeadMapper.findAllDriver(driverName, licensePlateNumber, keyword, offset, pageSize);
+    }
+    public int countDriverDelivery(String driverName, String licensePlateNumber, String keyword) {
+        return depotHeadMapper.countAllDriver(driverName, licensePlateNumber, keyword);
+    }
+
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void feedBackReport(Long id, String feedBack, HttpServletRequest request) throws Exception{
         // 是否有此report

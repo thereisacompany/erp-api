@@ -711,4 +711,42 @@ public class DepotHeadController {
         return result;
     }
 
+    @GetMapping(value = "/driver/findByAll")
+    @ApiOperation(value = "司機配送統計")
+    public BaseResponseInfo findByAllDriver(@ApiParam(value = "司機名稱(帶入空或全部，查詢全部)", required = true)
+                                                @RequestParam("driverName") String driverName,
+                                            @ApiParam(value = "車牌號號(帶入空或全部，查詢全部)", required = true)
+                                            @RequestParam("licensePlateNumber") String licensePlateNumber,
+                                            @ApiParam(value = "關鍵字")
+                                                @RequestParam(required = false, value = "keyword") String keyword,
+                                            @RequestParam("currentPage") Integer currentPage,
+                                            @RequestParam("pageSize") Integer pageSize,
+                                            HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+        Map<String, Object> objectMap = new HashMap<>();
+        try {
+            if(currentPage < 1) {
+                currentPage = 1;
+            }
+            if(pageSize < 1) {
+                pageSize = null;
+            }
+            Integer offset = 0;
+            if(pageSize != null) {
+                offset = (currentPage - 1) * pageSize;
+            }
+
+            res.code = 200;
+            objectMap.put("total", depotHeadService.countDriverDelivery(driverName, licensePlateNumber, keyword));
+            objectMap.put("rows", depotHeadService.getDriverDelivery(driverName, licensePlateNumber, keyword, offset, pageSize, request));
+            res.data = objectMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取資料失敗";
+        }
+
+        return res;
+    }
+
 }
