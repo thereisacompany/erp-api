@@ -749,4 +749,15 @@ public class DepotHeadController {
         return res;
     }
 
+    @GetMapping("/driver/findByStatus")
+    @ApiOperation(value = "")
+    public BaseResponseInfo findByStatus(@RequestParam("currentPage") Integer currentPage,
+                                         @RequestParam("pageSize") Integer pageSize,
+                                         HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+        Map<String, Object> objectMap = new HashMap<>();
+
+        return res;
+    }
+
 }
