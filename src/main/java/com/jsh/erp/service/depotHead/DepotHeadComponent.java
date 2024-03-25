@@ -58,9 +58,11 @@ public class DepotHeadComponent implements ICommonQuery {
         String remark = StringUtil.getInfo(search, "remark");
         Long dStatus = StringUtil.parseStrLong(StringUtil.getInfo(search, "dStatus"));
         Long driverId =  StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
+        String beginDateTime = StringUtil.getInfo(search, "beginDateTime");
+        String endDateTime = StringUtil.getInfo(search, "endDateTime");
         return depotHeadService.select(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark,
-                dStatus, driverId, QueryUtils.offset(map), QueryUtils.rows(map));
+                dStatus, driverId, beginDateTime, endDateTime, QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
     @Override
@@ -89,9 +91,11 @@ public class DepotHeadComponent implements ICommonQuery {
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         Long dStatus = StringUtil.parseStrLong(StringUtil.getInfo(search, "dStatus"));
         Long driverId =  StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
+        String beginDateTime = StringUtil.getInfo(search, "beginDateTime");
+        String endDateTime = StringUtil.getInfo(search, "endDateTime");
         String remark = StringUtil.getInfo(search, "remark");
         return depotHeadService.countDepotHead(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
-                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark, dStatus, driverId);
+                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
     }
 
     @Override

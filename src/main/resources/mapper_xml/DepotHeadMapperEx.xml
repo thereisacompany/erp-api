@@ -206,6 +206,12 @@
         <if test="driverId != null and driverId !=0">
             and jdd.driver_id = ${driverId}
         </if>
+        <if test="beginDateTime != null">
+            and jdd.assign_date >= #{beginDateTime}
+        </if>
+        <if test="endDateTime != null">
+            and jdd.assign_date &lt;= #{endDateTime}
+        </if>
         and ifnull(dh.delete_flag,'0') !='1'
         order by dh.id desc
         <if test="offset != null and rows != null">
@@ -339,6 +345,12 @@
         </if>
         <if test="driverId != null and driverId !=0">
             and jdd.driver_id = ${driverId}
+        </if>
+        <if test="beginDateTime != null">
+            and jdd.assign_date >= #{beginDateTime}
+        </if>
+        <if test="endDateTime != null">
+            and jdd.assign_date &lt;= #{endDateTime}
         </if>
         and ifnull(dh.delete_Flag,'0') !='1') tb
     </select>
