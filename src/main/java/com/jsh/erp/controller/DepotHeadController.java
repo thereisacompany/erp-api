@@ -717,6 +717,8 @@ public class DepotHeadController {
                                                 @RequestParam("driverName") String driverName,
                                             @ApiParam(value = "車牌號號(帶入空或全部，查詢全部)", required = true)
                                             @RequestParam("licensePlateNumber") String licensePlateNumber,
+                                            @RequestParam(value = "beginDateTime", required = false) String beginDateTime,
+                                            @RequestParam(value = "endDateTime", required = false) String endDateTime,
                                             @ApiParam(value = "關鍵字")
                                                 @RequestParam(required = false, value = "keyword") String keyword,
                                             @RequestParam("currentPage") Integer currentPage,
@@ -737,8 +739,8 @@ public class DepotHeadController {
             }
 
             res.code = 200;
-            objectMap.put("total", depotHeadService.countDriverDelivery(driverName, licensePlateNumber, keyword));
-            objectMap.put("rows", depotHeadService.getDriverDelivery(driverName, licensePlateNumber, keyword, offset, pageSize, request));
+            objectMap.put("total", depotHeadService.countDriverDelivery(driverName, licensePlateNumber, beginDateTime, endDateTime, keyword));
+            objectMap.put("rows", depotHeadService.getDriverDelivery(driverName, licensePlateNumber, beginDateTime, endDateTime, keyword, offset, pageSize, request));
             res.data = objectMap;
         } catch (Exception e) {
             e.printStackTrace();

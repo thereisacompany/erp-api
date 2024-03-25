@@ -48,10 +48,14 @@ public interface DepotHeadMapper {
 
     List<DriverDelivery> findAllDriver(@Param("driverName") String driverName,
                                        @Param("licensePlateNumber") String licensePlateNumber,
+                                       @Param("beginTime") String beginTime,
+                                       @Param("endTime") String endTime,
                                        @Param("keyword") String keyword,
                                        @Param("offset") Integer offset,
                                        @Param("rows") Integer rows);
-    int countAllDriver(@Param("driverName") String driverName,
+    Long countAllDriver(@Param("driverName") String driverName,
                        @Param("licensePlateNumber") String licensePlateNumber,
+                        @Param("beginTime") String beginTime,
+                        @Param("endTime") String endTime,
                        @Param("keyword") String keyword);
 }

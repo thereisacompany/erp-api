@@ -146,7 +146,7 @@ public class DepotHeadService {
             String [] creatorArray = getCreatorArray(roleType);
             String [] statusArray = StringUtil.isNotEmpty(status) ? status.split(",") : null;
             String [] purchaseStatusArray = StringUtil.isNotEmpty(purchaseStatus) ? purchaseStatus.split(",") : null;
-            String [] organArray = null;
+            String [] organArray = getOrganArray(subType, purchaseStatus);
             Map<Long,String> personMap = personService.getPersonMap();
             Map<Long,String> accountMap = accountService.getAccountMap();
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
@@ -299,7 +299,7 @@ public class DepotHeadService {
             String [] creatorArray = getCreatorArray(roleType);
             String [] statusArray = StringUtil.isNotEmpty(status) ? status.split(",") : null;
             String [] purchaseStatusArray = StringUtil.isNotEmpty(purchaseStatus) ? purchaseStatus.split(",") : null;
-            String [] organArray = null;
+            String [] organArray = getOrganArray(subType, purchaseStatus);
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
             result=depotHeadMapperEx.countsByDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
@@ -318,10 +318,10 @@ public class DepotHeadService {
      */
     public String[] getDepotArray(String subType) throws Exception {
         String [] depotArray = null;
-//        if(!BusinessConstants.SUB_TYPE_PURCHASE_ORDER.equals(subType) && !BusinessConstants.SUB_TYPE_SALES_ORDER.equals(subType)) {
-//            String depotIds = depotService.findDepotStrByCurrentUser();
-//            depotArray = StringUtil.isNotEmpty(depotIds) ? depotIds.split(",") : null;
-//        }
+        if(!BusinessConstants.SUB_TYPE_PURCHASE_ORDER.equals(subType) && !BusinessConstants.SUB_TYPE_SALES_ORDER.equals(subType)) {
+            String depotIds = depotService.findDepotStrByCurrentUser();
+            depotArray = StringUtil.isNotEmpty(depotIds) ? depotIds.split(",") : null;
+        }
         return depotArray;
     }
 
@@ -1152,12 +1152,16 @@ public class DepotHeadService {
         return list;
     }
 
-    public List<DriverDelivery> getDriverDelivery(String driverName, String licensePlateNumber, String keyword,
+    public List<DriverDelivery> getDriverDelivery(String driverName, String licensePlateNumber, String beginDatetime, String endDatetime, String keyword,
                                                   Integer offset, Integer pageSize, HttpServletRequest request) {
-        return depotHeadMapper.findAllDriver(driverName, licensePlateNumber, keyword, offset, pageSize);
+        return depotHeadMapper.findAllDriver(driverName, licensePlateNumber, beginDatetime, endDatetime, keyword, offset, pageSize);
     }
-    public int countDriverDelivery(String driverName, String licensePlateNumber, String keyword) {
-        return depotHeadMapper.countAllDriver(driverName, licensePlateNumber, keyword);
+    public Long countDriverDelivery(String driverName, String licensePlateNumber, String beginDatetime, String endDatetime, String keyword) {
+        Long count = depotHeadMapper.countAllDriver(driverName, licensePlateNumber, beginDatetime, endDatetime, keyword);
+        if (count == null) {
+            count = 0L;
+        }
+        return count;
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
