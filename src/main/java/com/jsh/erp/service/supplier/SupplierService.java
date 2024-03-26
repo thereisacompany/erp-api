@@ -296,7 +296,7 @@ public class SupplierService {
             // TODO 若有帶入車牌號碼，自動綁定車輛駕駛
             if (supplier.getLicensePlate() != null && !supplier.getLicensePlate().isEmpty()) {
                 Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(supplier.getLicensePlate());
-                if(vehicleMapper.isDriverLicensePlateNumberBind(supplier.getLicensePlate(), null) > 0) {
+                if(vehicleMapper.isDriverLicensePlateNumberBind(supplier.getLicensePlate(), supplier.getId()) > 0) {
                     throw new BusinessRunTimeException(ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_CODE,
                             ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG);
                 }

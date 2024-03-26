@@ -399,7 +399,7 @@
     <select id="isDriverLicensePlateNumberBind" resultType="java.lang.Integer">
         select count(1) from jsh_vehicle where license_plate_number = #{licensePlateNumber} and driver > 0
         <if test="id != null">
-            and id not in (#{id})
+            and driver not in (#{id})
         </if>
     </select>
 </mapper>
