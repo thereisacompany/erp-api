@@ -218,7 +218,7 @@ public class SupplierService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    private void insertCarUser(JSONObject obj, Supplier supplier, Long driverId) {
+    private void insertCarUser(JSONObject obj, Supplier supplier, Long driverId) throws Exception {
         if(obj.containsKey("loginName") && !obj.getString("loginName").isEmpty()) {
             if (supplierMapper.isDriverLoginNameExist(obj.getString("loginName"), null) > 0) {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE,
@@ -233,7 +233,7 @@ public class SupplierService {
                 throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
             }
-            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.getMD5(passwd), driverId);
+            supplierMapper.insertCarUser(supplier.getSupplier(), obj.getString("loginName"), Tools.md5Encryp(passwd), driverId);
         }
     }
 
@@ -288,7 +288,7 @@ public class SupplierService {
                         throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
                                 ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
                     }
-                    supplierMapper.updateCarUser(null, passwd==null? null : Tools.getMD5(passwd), carUserId);
+                    supplierMapper.updateCarUser(null, passwd==null? null : Tools.md5Encryp(passwd), carUserId);
                 }
             } else {
                 insertCarUser(obj, supplier, supplier.getId());
