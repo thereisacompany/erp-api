@@ -213,7 +213,7 @@
             and jdd.assign_date &lt;= #{endDateTime}
         </if>
         and ifnull(dh.delete_flag,'0') !='1'
-        order by dh.id desc
+        order by dh.id desc, me.`number` desc, jd.name desc
         <if test="offset != null and rows != null">
             limit #{offset},#{rows}
         </if>
