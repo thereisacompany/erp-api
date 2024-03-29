@@ -2,7 +2,9 @@ package com.jsh.erp.service.depotHead;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
+import com.jsh.erp.datasource.entities.User;
 import com.jsh.erp.service.ICommonQuery;
+import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.utils.Constants;
 import com.jsh.erp.utils.QueryUtils;
 import com.jsh.erp.utils.StringUtil;
@@ -16,6 +18,9 @@ import java.util.Map;
 @Service(value = "depotHead_component")
 @DepotHeadResource
 public class DepotHeadComponent implements ICommonQuery {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private DepotHeadService depotHeadService;
@@ -60,6 +65,15 @@ public class DepotHeadComponent implements ICommonQuery {
         Long driverId =  StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
         String beginDateTime = StringUtil.getInfo(search, "beginDateTime");
         String endDateTime = StringUtil.getInfo(search, "endDateTime");
+        if(creator == null) {
+            User user = userService.getCurrentUser();
+            if(roleType == null) {
+                roleType = userService.getRoleTypeByUserId(user.getId()).getType(); //角色類型
+            }
+            if(!roleType.equals("全部數據")) {
+                creator = user.getId();
+            }
+        }
         return depotHeadService.select(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark,
                 dStatus, driverId, beginDateTime, endDateTime, QueryUtils.offset(map), QueryUtils.rows(map));
@@ -94,6 +108,15 @@ public class DepotHeadComponent implements ICommonQuery {
         String beginDateTime = StringUtil.getInfo(search, "beginDateTime");
         String endDateTime = StringUtil.getInfo(search, "endDateTime");
         String remark = StringUtil.getInfo(search, "remark");
+        if(creator == null) {
+            User user = userService.getCurrentUser();
+            if(roleType == null) {
+                roleType = userService.getRoleTypeByUserId(user.getId()).getType(); //角色類型
+            }
+            if(!roleType.equals("全部數據")) {
+                creator = user.getId();
+            }
+        }
         return depotHeadService.countDepotHead(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
     }

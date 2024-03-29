@@ -749,6 +749,17 @@ public class DepotHeadService {
                             String remark, Integer offset, Integer rows) throws Exception{
         List<DepotHeadVo4InDetail> list = null;
         try{
+            User user = userService.getCurrentUser();
+            String roleType = userService.getRoleTypeByUserId(user.getId()).getType(); //角色類型
+            if(!roleType.equals("全部數據")) {
+                if(creatorArray == null) {
+                    creatorArray = new String[]{};
+                }
+               List<String> tempList = new ArrayList<>(Arrays.asList(creatorArray));
+               tempList.add(String.valueOf(user.getId()));
+               creatorArray = tempList.toArray(new String[0]);
+            }
+
             list = depotHeadMapperEx.findAllocationDetail(beginTime, endTime, subType, number, creatorArray,
                     materialParam, depotList, depotFList, remark, offset, rows);
 
