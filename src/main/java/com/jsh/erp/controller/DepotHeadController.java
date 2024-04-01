@@ -409,14 +409,14 @@ public class DepotHeadController {
     }
 
     /**
-     * 新增单据主表及单据子表信息
+     * 新增單據主表及單據子表信息
      * @param body
      * @param request
      * @return
      * @throws Exception
      */
     @PostMapping(value = "/addDepotHeadAndDetail")
-    @ApiOperation(value = "新增单据主表及单据子表信息")
+    @ApiOperation(value = "新增單據主表及單據子表信息")
     public Object addDepotHeadAndDetail(@RequestBody DepotHeadVo4Body body, HttpServletRequest request) throws  Exception{
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();
@@ -426,14 +426,14 @@ public class DepotHeadController {
     }
 
     /**
-     * 更新单据主表及单据子表信息
+     * 更新單據主表及單據子表信息
      * @param body
      * @param request
      * @return
      * @throws Exception
      */
     @PutMapping(value = "/updateDepotHeadAndDetail")
-    @ApiOperation(value = "更新单据主表及单据子表信息")
+    @ApiOperation(value = "更新單據主表及單據子表信息")
     public Object updateDepotHeadAndDetail(@RequestBody DepotHeadVo4Body body, HttpServletRequest request) throws Exception{
         JSONObject result = ExceptionConstants.standardSuccess();
         String beanJson = body.getInfo();

@@ -410,6 +410,9 @@ public class DepotItemService {
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
         //刪除單據的明細
         deleteDepotItemHeadId(headerId, Boolean.FALSE);
+
+        List<DepotItem> depotItemList = getListByHeaderId(headerId);
+
         JSONArray rowArr = JSONArray.parseArray(rows);
         if (null != rowArr && rowArr.size()>0) {
             for (int i = 0; i < rowArr.size(); i++) {
@@ -528,6 +531,39 @@ public class DepotItemService {
 //                    } else {
                         depotItem.setBasicNumber(oNumber); //其他情况
 //                    }
+
+                    if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+                        if(actionType.equals("update")) {
+                            BigDecimal orderNumber = BigDecimal.ZERO;
+                            if(depotHead.getStatus().equals(BusinessConstants.BILLS_STATUS_AUDIT)) {
+                                if (depotItemList.size() == 1) {
+                                    orderNumber = depotItemList.get(0).getConfirmNumber();
+                                } else {
+                                    Optional<DepotItem> findItem = depotItemList.stream().filter(d->{
+                                        boolean isSame = Boolean.TRUE;
+                                        if(d.getHeaderId()!=depotItem.getHeaderId()){
+                                            isSame = Boolean.FALSE;
+                                        }
+                                        if(d.getMaterialId()!=depotItem.getMaterialId()){
+                                            isSame = Boolean.FALSE;
+                                        }
+                                        if(d.getDepotId()!=depotItem.getDepotId()){
+                                            isSame = Boolean.FALSE;
+                                        }
+                                        return isSame;
+                                    }).findFirst();
+                                    if(findItem.isPresent()) {
+                                        orderNumber = findItem.get().getConfirmNumber();
+                                    }
+                                }
+                            } else{
+                                orderNumber = oNumber;
+                            }
+                            depotItem.setConfirmNumber(orderNumber);
+                        } else {
+                            depotItem.setConfirmNumber(oNumber);
+                        }
+                    }
                 }
 
                 //如果数量+已完成数量>原订单数量，给出预警(判断前提是存在关联订单)
@@ -608,7 +644,7 @@ public class DepotItemService {
                 if (StringUtil.isExist(rowObj.get("counterName"))) {
                     depotItem.setCounterName(rowObj.getString("counterName"));
                 }
-                // TODO 移倉
+                // 移倉
                 if(BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubType())) {
                     if (StringUtil.isExist(rowObj.get("anotherDepotId"))) {
                         if(rowObj.getLong("anotherDepotId").equals(rowObj.getLong("depotId"))) {
@@ -666,8 +702,11 @@ public class DepotItemService {
 
                 this.insertDepotItemWithObj(depotItem);
                 if(!isPickup) {
-                    //更新當前庫存
-                    updateCurrentStock(depotItem);
+                    // 更新當前庫存
+//                    if(isAuditPass) {
+                        updateCurrentStock(depotItem);
+//                    }
+
                     //更新商品的價格
                     updateMaterialExtendPrice(materialExtend.getId(), depotHead.getSubType(), rowObj, userInfo);
                 }
@@ -921,6 +960,12 @@ public class DepotItemService {
         }
     }
 
+    /**
+     *
+     * @param headerId
+     * @param isTrans 是否為移倉
+     * @throws Exception
+     */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void deleteDepotItemHeadId(Long headerId, boolean isTrans)throws Exception {
         try{

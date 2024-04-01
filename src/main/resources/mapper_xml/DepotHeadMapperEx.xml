@@ -359,6 +359,7 @@
         select jsh_depot_item.id,jsh_depot_item.header_id,
             jsh_material.name materialsList,
             jsh_depot_item.oper_number materialCount,
+            jsh_depot_item.confirm_number confirmNumber,
             jsh_material_extend.number materialNumber,
             jsh_material.category_id,
             jsh_depot.name as depotList

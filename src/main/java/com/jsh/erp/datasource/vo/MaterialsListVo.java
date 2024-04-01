@@ -14,6 +14,7 @@ public class MaterialsListVo {
     private Long categoryId;
 
     private BigDecimal materialCount;
+    private BigDecimal confirmNumber;
 
     private String materialNumber;
 
@@ -77,6 +78,14 @@ public class MaterialsListVo {
 
     public void setMaterialCount(BigDecimal materialCount) {
         this.materialCount = materialCount;
+    }
+
+    public BigDecimal getConfirmNumber() {
+        return confirmNumber;
+    }
+
+    public void setConfirmNumber(BigDecimal confirmNumber) {
+        this.confirmNumber = confirmNumber;
     }
 
     public String getMaterialNumber() {

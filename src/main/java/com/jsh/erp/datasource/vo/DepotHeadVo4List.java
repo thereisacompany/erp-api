@@ -56,6 +56,7 @@ public class DepotHeadVo4List extends DepotHead{
     private BigDecimal debt;
 
     private BigDecimal materialCount;
+    private BigDecimal orderCount;
 
     /**
      * 是否有付款单或收款单
@@ -281,6 +282,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setMaterialCount(BigDecimal materialCount) {
         this.materialCount = materialCount;
+    }
+
+    public BigDecimal getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(BigDecimal orderCount) {
+        this.orderCount = orderCount;
     }
 
     public Boolean getHasFinancialFlag() {

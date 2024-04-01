@@ -246,7 +246,21 @@ public class DepotHeadService {
                         if (!materialsListMap.isEmpty()) {
                             MaterialsListVo vo = materialsListMap.get(mKey);
                             dh.setMaterialsList(vo.getMaterialsList());
-                            dh.setMaterialCount(vo.getMaterialCount());
+                            if(dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+                                if(dh.getStatus().equals(BusinessConstants.BILLS_STATUS_AUDIT)) {
+                                    if(vo.getConfirmNumber()==null) {
+                                        dh.setOrderCount(vo.getMaterialCount());
+                                    } else {
+                                        dh.setOrderCount(vo.getConfirmNumber());
+                                    }
+                                    dh.setMaterialCount(vo.getMaterialCount());
+                                } else {
+                                    dh.setMaterialCount(BigDecimal.ZERO);
+                                    dh.setOrderCount(vo.getMaterialCount());
+                                }
+                            } else {
+                                dh.setMaterialCount(vo.getMaterialCount());
+                            }
                         }
                     }
                     //商品总数量
@@ -1448,6 +1462,7 @@ public class DepotHeadService {
 //                }
 //            }
 //        }
+
         try{
             depotHeadMapper.insertSelective(depotHead);
         }catch(Exception e){

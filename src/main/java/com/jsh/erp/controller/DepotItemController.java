@@ -160,7 +160,7 @@ public class DepotItemController {
     }
 
     /**
-     * 单据明细列表
+     * 單據明細列表
      * @param headerId
      * @param mpList
      * @param request
@@ -168,7 +168,7 @@ public class DepotItemController {
      * @throws Exception
      */
     @GetMapping(value = "/getDetailList")
-    @ApiOperation(value = "单据明细列表")
+    @ApiOperation(value = "單據明細列表")
     public BaseResponseInfo getDetailList(@RequestParam("headerId") Long headerId,
                               @RequestParam("mpList") String mpList,
                               @RequestParam(value = "linkType", required = false) String linkType,
@@ -186,7 +186,12 @@ public class DepotItemController {
             //存放数据json数组
             JSONArray dataArray = new JSONArray();
             if (null != dataList) {
+                DepotHead tempDepotHead = depotHeadService.getDepotHead(headerId);
+                String auditStatus = tempDepotHead.getStatus();
+                String subtype = tempDepotHead.getSubType();
+
                 BigDecimal totalOperNumber = BigDecimal.ZERO;
+//                BigDecimal totalOrderNumber = BigDecimal.ZERO;
                 BigDecimal totalAllPrice = BigDecimal.ZERO;
                 BigDecimal totalTaxMoney = BigDecimal.ZERO;
                 BigDecimal totalTaxLastMoney = BigDecimal.ZERO;
@@ -234,7 +239,23 @@ public class DepotItemController {
                     item.put("sku", diEx.getSku());
                     item.put("enableSerialNumber", diEx.getEnableSerialNumber());
                     item.put("enableBatchNumber", diEx.getEnableBatchNumber());
-                    item.put("operNumber", diEx.getOperNumber());
+
+                    if(subtype.equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+                        if(auditStatus.equals(BusinessConstants.BILLS_STATUS_AUDIT)) {
+                            item.put("operNumber", diEx.getOperNumber());
+                            if(diEx.getConfirmNumber()==null) {
+                                item.put("orderNumber", diEx.getOperNumber());
+                            } else {
+                                item.put("orderNumber", diEx.getConfirmNumber());
+                            }
+                        } else {
+                            item.put("operNumber", BigDecimal.ZERO);
+                            item.put("orderNumber", diEx.getOperNumber());
+                        }
+                    } else {
+                        item.put("operNumber", diEx.getOperNumber());
+                    }
+
                     item.put("basicNumber", diEx.getBasicNumber());
                     item.put("preNumber", diEx.getOperNumber()); //原数量
                     item.put("finishNumber", depotItemService.getFinishNumber(diEx.getMaterialExtendId(), diEx.getId(), diEx.getHeaderId(), unitInfo, materialUnit, linkType)); //已入庫|已出庫
@@ -261,6 +282,7 @@ public class DepotItemController {
                     dataArray.add(item);
                     //合计数据汇总
                     totalOperNumber = totalOperNumber.add(diEx.getOperNumber()==null?BigDecimal.ZERO:diEx.getOperNumber());
+//                    totalOrderNumber = totalOrderNumber.add(diEx.getConfirmNumber()==null?BigDecimal.ZERO:diEx.getConfirmNumber());
                     totalAllPrice = totalAllPrice.add(diEx.getAllPrice()==null?BigDecimal.ZERO:diEx.getAllPrice());
                     totalTaxMoney = totalTaxMoney.add(diEx.getTaxMoney()==null?BigDecimal.ZERO:diEx.getTaxMoney());
                     totalTaxLastMoney = totalTaxLastMoney.add(diEx.getTaxLastMoney()==null?BigDecimal.ZERO:diEx.getTaxLastMoney());
@@ -268,6 +290,7 @@ public class DepotItemController {
                 if(StringUtil.isNotEmpty(isReadOnly) && "1".equals(isReadOnly)) {
                     JSONObject footItem = new JSONObject();
                     footItem.put("operNumber", totalOperNumber);
+//                    footItem.put("orderNumber", totalOrderNumber);
                     footItem.put("allPrice", totalAllPrice);
                     footItem.put("taxMoney", totalTaxMoney);
                     footItem.put("taxLastMoney", totalTaxLastMoney);
