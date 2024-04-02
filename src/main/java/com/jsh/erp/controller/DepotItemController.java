@@ -370,13 +370,13 @@ public class DepotItemController {
             if(beginDateTime != null && !beginDateTime.isEmpty()) {
                 timeA = beginDateTime;
             } else {
-                timeA = Tools.firstDayOfMonth(now)
-                        + BusinessConstants.DAY_FIRST_TIME;
+//                timeA = Tools.firstDayOfMonth(now)
+//                        + BusinessConstants.DAY_FIRST_TIME;
             }
             if(endDateTime != null && !endDateTime.isEmpty()) {
                 timeB = endDateTime;
             } else {
-                timeB = Tools.lastDayOfMonth(now) + BusinessConstants.DAY_LAST_TIME;
+//                timeB = Tools.lastDayOfMonth(now) + BusinessConstants.DAY_LAST_TIME;
             }
 
             List<Long> depotList = parseListByDepotIds(depotIds);
