@@ -20,6 +20,7 @@
         <result column="header_id" jdbcType="INTEGER" property="headerId" />
         <result column="Number" jdbcType="VARCHAR" property="Number" />
         <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+        <result column="userName" jdbcType="VARCHAR" property="userName" />
         <result column="MName" jdbcType="VARCHAR" property="MName" />
         <result column="Model" jdbcType="VARCHAR" property="Model" />
         <result column="standard" jdbcType="VARCHAR" property="standard" />
@@ -633,7 +634,7 @@
     </select>
 
     <select id="findAllocationDetail" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultWithInfoExMap">
-        select dh.id header_id, dh.number,me.bar_code, m.`name` MName, m.id MId,
+        select dh.id header_id, dh.number,u.username userName,me.bar_code, m.`name` MName, m.id MId,
         m.model,m.standard,di.unit_price,di.material_unit as mUnit, dh.organ_id, di.id SubId,
         di.oper_number,di.confirm_number,di.all_price,SName, di.another_depot_id SId, di.another_counter_id SCounterId, di.another_counter_name SCounter,
         d.dName DName, di.depot_id DId, di.counter_id DCounterId, di.counter_name DCounter, jmc.name categoryName,
@@ -642,6 +643,7 @@
         me.`number` MNumber
         from jsh_depot_head dh
         left join jsh_depot_item di on di.header_id=dh.id and ifnull(di.delete_flag,'0') !='1'
+        left join jsh_user u on dh.creator=u.id and ifnull(u.Status,'0') !='1'
         left join jsh_material m on m.id=di.material_id and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_extend me on me.id=di.material_extend_id and ifnull(me.delete_Flag,'0') !='1'
         left join jsh_material_category jmc on jmc.id = m.category_id and ifnull(jmc.delete_Flag,'0') !='1'

@@ -12,6 +12,8 @@ public class DepotHeadVo4InDetail {
 
     private String barCode;
 
+    private String userName;
+
     private String MName;
 
     private String MId;
@@ -94,7 +96,12 @@ public class DepotHeadVo4InDetail {
     public void setBarCode(String barCode) {
         this.barCode = barCode;
     }
-
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
     public String getMId() {
         return MId;
     }
