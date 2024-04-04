@@ -556,10 +556,10 @@ public class DepotItemService {
                                         orderNumber = findItem.get().getConfirmNumber();
                                     }
                                 }
-                            } else{
-                                orderNumber = oNumber;
+                                depotItem.setConfirmNumber(orderNumber);
+//                            } else{
+//                                orderNumber = oNumber;
                             }
-                            depotItem.setConfirmNumber(orderNumber);
                         } else {
                             depotItem.setConfirmNumber(oNumber);
                         }
