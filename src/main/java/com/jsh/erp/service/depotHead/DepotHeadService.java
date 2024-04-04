@@ -786,7 +786,7 @@ public class DepotHeadService {
 //                    Unit unitInfo = materialService.findUnit(materialId); //查询计量单位信息
 //                    String materialUnit = diEx.getMaterialUnit();
                     Long organId = null;
-                    DepotHead depotHead = getDepotHead(detail.getDId());
+                    DepotHead depotHead = getDepotHead(detail.getHeaderId());
                     if (depotHead != null) {
                         organId = depotHead.getOrganId();
                     }

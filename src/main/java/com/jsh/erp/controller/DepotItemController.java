@@ -221,11 +221,15 @@ public class DepotItemController {
                     } else {
                         Long organId = null;
                         if(diEx.getDepotId() != null) {
-                            DepotHead depotHead = depotHeadService.getDepotHead(diEx.getDepotId());
+                            DepotHead depotHead = depotHeadService.getDepotHead(diEx.getHeaderId());
                             if (depotHead != null) {
                                 organId = depotHead.getOrganId();
                             }
-                            stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
+                            if(subtype.equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+                                stock = depotItemService.getStockByParam(null, diEx.getMaterialId(),null,null, organId);
+                            } else {
+                                stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
+                            }
                             if (StringUtil.isNotEmpty(unitInfo.getName())) {
                                 stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
                             }
