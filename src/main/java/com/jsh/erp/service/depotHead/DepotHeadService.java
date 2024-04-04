@@ -803,9 +803,9 @@ public class DepotHeadService {
                 BigDecimal confirmNumber = detail.getConfirmNumber();
                 // 處理status
                 String status = detail.getStatus();
-                if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING)) {
+                if(status.equals(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPING)) {
                     if(confirmNumber != null) {
-                        detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
+                        detail.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPED);
                     }
                 }
             });

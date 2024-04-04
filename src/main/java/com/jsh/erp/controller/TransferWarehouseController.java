@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.DepotHeadVo4Body;
-import com.jsh.erp.service.depotHead.DepotHeadService;
 import com.jsh.erp.service.transferwarehouse.TransferWarehouseService;
 import com.jsh.erp.utils.ErpInfo;
 import io.swagger.annotations.Api;
@@ -79,7 +78,7 @@ public class TransferWarehouseController {
         Map<String, Object> objectMap = new HashMap<>();
         // 各細單id depot_item
         String ids = jsonObject.getString("ids");
-        int res = transferWarehouseService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED, ids);
+        int res = transferWarehouseService.batchSetStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPED, ids);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {
@@ -107,6 +106,18 @@ public class TransferWarehouseController {
             }
         }
         int res = transferWarehouseService.confirmSingleStatus(id, amount, request);
+        if(res > 0) {
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else {
+            return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
+        }
+    }
+
+    @PostMapping(value = "/setInvalid/{id}")
+    @ApiOperation(value = "單一移倉設置作廢")
+    public String setInvalid(@PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        int res = transferWarehouseService.invalidSingleStatus(id, request);
         if(res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {

@@ -85,8 +85,9 @@ public class BusinessConstants {
     /**
      * 單據-移倉狀態 purchaseStatus '4'完成移倉、'5'移倉中
      */
-    public static final String PURCHASE_STATUS_TRANSER_SKIPED = "4";
-    public static final String PURCHASE_STATUS_TRANSFER_SKIPING = "5";
+    public static final String PURCHASE_STATUS_TRANSFER_SKIPPED = "4";
+    public static final String PURCHASE_STATUS_TRANSFER_SKIPPING = "5";
+    public static final String PURCHASE_STATUS_TRANSFER_INVALID = "6";
     /**
      * 出入庫分类
      *采购、采购退货、其它、零售、销售、调拨、盘点复盘等
@@ -188,6 +189,7 @@ public class BusinessConstants {
     public static final String LOG_OPERATION_TYPE_LOGIN = "登录";
     public static final String LOG_OPERATION_TYPE_IMPORT = "匯入";
     public static final String LOG_OPERATION_TYPE_ENABLED = "更新状态";
+    public static final String LOG_OPERATION_TYPE_INVALID = "作廢";
 
     /**
      * 数据数量单位

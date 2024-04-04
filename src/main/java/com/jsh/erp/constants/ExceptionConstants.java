@@ -414,6 +414,10 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據可以派發司機";
     public static final int DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_CODE = 8000024;
     public static final String DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_MSG = "當為自取類別時，必需自行帶入商品名稱";
+    public static final int DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_CODE = 8500025;
+    public static final String DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，只有移倉中的單據可以作廢";
+    public static final int DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_CODE = 8500026;
+    public static final String DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，已有部份商品移倉完成的單據，不可作廢";
     /**
      *  单据明细信息
      * type = 90

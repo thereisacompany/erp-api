@@ -81,7 +81,7 @@ public class TransferWarehouseService {
         depotHead.setCreator(userInfo == null ? null : userInfo.getId());
         depotHead.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (StringUtil.isEmpty(depotHead.getStatus())) {
-            depotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING);
+            depotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPING);
         }
         depotHead.setPurchaseStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
         depotHead.setPayType(depotHead.getPayType() == null ? "現付" : depotHead.getPayType());
@@ -153,8 +153,8 @@ public class TransferWarehouseService {
                 dhIdMap.put(headerId, headerIdList);
             }
 
-            if (BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED.equals(status)) {
-                if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING.equals(depotHead.getStatus())) {
+            if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPED.equals(status)) {
+                if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPING.equals(depotHead.getStatus())) {
                     headerIdList.add(headerId);
 //                    dhIds.add(depotHead.getId());
                 } else {
@@ -220,7 +220,7 @@ public class TransferWarehouseService {
         Long headerId = depotItem.getHeaderId();
 
         DepotHead depotHead = depotHeadService.getDepotHead(headerId);
-        if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPING.equals(depotHead.getStatus())) {
+        if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPING.equals(depotHead.getStatus())) {
             dhId = depotHead.getId();
         } else {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_TRANSFER_FAILED_CODE,
@@ -242,7 +242,7 @@ public class TransferWarehouseService {
                 }
             });
             if(list.size() == count.get()) {
-                updateDepotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSER_SKIPED);
+                updateDepotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPED);
 
                 // 需將舊有的資料取出，一併存入
                 List<Long> dhIds = new ArrayList<>();
@@ -256,6 +256,53 @@ public class TransferWarehouseService {
         }
         logService.insertLog("單據(確認移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber()).toString(),
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        return result;
+    }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public int invalidSingleStatus(Long id, HttpServletRequest request) throws Exception {
+        int result = 0;
+        Long dhId;
+        DepotItem depotItem = depotItemService.getDepotItem(id);
+        Long headerId = depotItem.getHeaderId();
+        DepotHead depotHead = depotHeadService.getDepotHead(headerId);
+        if (BusinessConstants.PURCHASE_STATUS_TRANSFER_SKIPPING.equals(depotHead.getStatus())) {
+            dhId = depotHead.getId();
+        } else {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_MSG));
+        }
+        if (dhId > 0) {
+            List<DepotItem> list = depotItemService.getListByHeaderId(headerId);
+
+            DepotHead updateDepotHead = new DepotHead();
+
+            // 所有移倉細單的 confirm_number 是否都不為null
+            AtomicInteger count = new AtomicInteger(0);
+            list.stream().forEach(item->{
+                if (item.getConfirmNumber() != null) {
+                    count.addAndGet(1);
+                }
+            });
+            if(count.get() == 0) {
+                updateDepotHead.setStatus(BusinessConstants.PURCHASE_STATUS_TRANSFER_INVALID);
+
+                // 需將舊有的資料取出，一併存入
+                List<Long> dhIds = new ArrayList<>();
+                dhIds.add(dhId);
+                DepotHeadExample example = new DepotHeadExample();
+                example.createCriteria().andIdIn(dhIds);
+
+                result = depotHeadMapper.updateByExampleSelective(updateDepotHead, example);
+            } else {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_MSG));
+            }
+        }
+        logService.insertLog("單據(移倉)",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber())
+                        .append(BusinessConstants.LOG_OPERATION_TYPE_INVALID).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         return result;
     }
