@@ -420,14 +420,18 @@ public class DepotItemController {
                     item.put("materialColor", diEx.getMColor());
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
-                    System.out.println("timeA >>>"+timeA);
-                    System.out.println("timeB >>>"+timeB);
-                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(depotList, diEx.getDepotId(), mId,null, timeA, organId);
-                    Map<String,BigDecimal> intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, diEx.getDepotId(), mId, timeA, timeB, organId);
+//                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(depotList, diEx.getDepotId(), mId,null, timeA, organId);
+                    Map<String,BigDecimal> intervalMap = new HashMap<>();
+                    if(depotList.size()==1) {
+                        intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, diEx.getDepotId(), mId, timeA, timeB, organId);
+                    } else {
+                        intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, null, mId, timeA, timeB, organId);
+                    }
                     BigDecimal inSum = intervalMap.get("inSum");
                     BigDecimal outSum = intervalMap.get("outSum");
-                    BigDecimal thisSum = prevSum.add(inSum).subtract(outSum);
-                    item.put("prevSum", prevSum);
+                    BigDecimal thisSum = inSum.subtract(outSum);
+                    item.put("prevSum", 0);
+                    item.put("defectiveSum", 0); // TODO 不良品
                     item.put("inSum", inSum);
                     totalIn += inSum.intValue();
                     item.put("outSum", outSum);

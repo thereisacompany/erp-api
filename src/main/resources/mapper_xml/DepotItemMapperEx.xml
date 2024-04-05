@@ -303,7 +303,7 @@
             and dh.organ_id = #{organId}
         </if>
         and ifnull(m.delete_flag,'0') !='1'
-        group by m.id, dh.organ_id, jd.id
+        group by m.id, dh.organ_id
         order by m.id desc
         <if test="offset != null and rows != null">
             limit #{offset},#{rows}
