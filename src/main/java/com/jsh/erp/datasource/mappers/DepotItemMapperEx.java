@@ -4,6 +4,7 @@ import com.jsh.erp.datasource.entities.*;
 import com.jsh.erp.datasource.vo.DepotItemStockWarningCount;
 import com.jsh.erp.datasource.vo.DepotItemVo4Stock;
 import com.jsh.erp.datasource.vo.DepotItemVoBatchNumberList;
+import com.jsh.erp.datasource.vo.DepotStockVo4WithMaterial;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -207,4 +208,9 @@ public interface DepotItemMapperEx {
 
     List<DepotItem> getDepotItemByBatchNumber(
             @Param("batchNumber") String batchNumber);
+
+    List<DepotStockVo4WithMaterial> selectStockByMaterialNumberAndOrgan( @Param("beginTime") String beginTime,
+                                                                         @Param("endTime") String endTime,
+                                                                         @Param("MNumber") String MNumber,
+                                                                         @Param("organId") Long organId);
 }

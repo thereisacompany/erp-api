@@ -9,6 +9,7 @@ import com.jsh.erp.datasource.mappers.*;
 import com.jsh.erp.datasource.vo.DepotItemStockWarningCount;
 import com.jsh.erp.datasource.vo.DepotItemVo4Stock;
 import com.jsh.erp.datasource.vo.DepotItemVoBatchNumberList;
+import com.jsh.erp.datasource.vo.DepotStockVo4WithMaterial;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.depotHead.DepotHeadService;
@@ -1200,6 +1201,10 @@ public class DepotItemService {
         intervalMap.put("inSum", inSum);
         intervalMap.put("outSum", outSum);
         return intervalMap;
+    }
+
+    public List<DepotStockVo4WithMaterial> getAllDepotStock(String beginTime, String endTime, String MNumber, Long organId) {
+        return depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId);
     }
 
     /**

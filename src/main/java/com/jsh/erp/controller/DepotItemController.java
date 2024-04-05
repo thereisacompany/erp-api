@@ -8,6 +8,7 @@ import com.jsh.erp.datasource.entities.*;
 import com.jsh.erp.datasource.mappers.MaterialMapperEx;
 import com.jsh.erp.datasource.vo.DepotItemStockWarningCount;
 import com.jsh.erp.datasource.vo.DepotItemVoBatchNumberList;
+import com.jsh.erp.datasource.vo.DepotStockVo4WithMaterial;
 import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.depotHead.DepotHeadService;
@@ -452,7 +453,30 @@ public class DepotItemController {
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "获取数据失败";
+            res.data = "獲取數據失敗";
+        }
+        return res;
+    }
+
+    @GetMapping(value = "/getAllDepotStock")
+    @ApiOperation(value = "進銷存統計-結存數量的各倉庫存")
+    public BaseResponseInfo getAllDepotStock( @RequestParam(value = "beginDateTime", required = false) String beginDateTime,
+                                              @RequestParam(value = "endDateTime", required = false) String endDateTime,
+                                              @RequestParam(value = "MNumber") String MNumber,
+                                              @RequestParam(value = "organId") Long organId,
+                                              HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+        Map<String, Object> map = new HashMap<>();
+
+        try {
+            List<DepotStockVo4WithMaterial> list = depotItemService.getAllDepotStock(beginDateTime, endDateTime, MNumber, organId);
+            map.put("rows", list);
+            res.code = 200;
+            res.data = map;
+        } catch(Exception e){
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取數據失敗";
         }
         return res;
     }
