@@ -451,7 +451,7 @@
       <if test="mainArrival != null and !mainArrival.isEmpty()">
         main_arrival,
       </if>
-      <if test="extrasArrival != null">
+      <if test="extrasArrival != null and !extrasArrival.isEmpty()">
         extras_arrival,
       </if>
       <if test="agreedDelivery != null and !agreedDelivery.isEmpty()">
@@ -585,7 +585,7 @@
       <if test="mainArrival != null and !mainArrival.isEmpty()">
         #{mainArrival,jdbcType=TIMESTAMP},
       </if>
-      <if test="extrasArrival != null">
+      <if test="extrasArrival != null and !extrasArrival.isEmpty()">
         #{extrasArrival,jdbcType=TIMESTAMP},
       </if>
       <if test="agreedDelivery != null and !agreedDelivery.isEmpty()">
