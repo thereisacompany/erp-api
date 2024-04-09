@@ -791,7 +791,7 @@ public class DepotHeadService {
                         organId = depotHead.getOrganId();
                     }
 
-                    stock = depotItemService.getStockByParam(detail.getDId(), materialId, null, null, organId);
+                    stock = depotItemService.getStockByParam(detail.getSId(), materialId, null, null, organId);
 //                    if (StringUtil.isNotEmpty(unitInfo.getName())) {
 //                        stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
 //                    }

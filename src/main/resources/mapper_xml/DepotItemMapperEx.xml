@@ -594,6 +594,7 @@
         <if test="diId != null">
             and di.confirm_number > 0
         </if>
+        and dh.status != 6
     </select>
 
     <select id="getStockByParamWithDepot" resultMap="stockMap">
@@ -624,6 +625,7 @@
         <if test="depotId != null">
             and di.depot_id = ${depotId}
         </if>
+        and dh.status != 6
     </select>
 
     <select id="findDepotItemListBydepotheadId"  resultType="com.jsh.erp.datasource.entities.DepotItem">
