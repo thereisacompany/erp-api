@@ -862,13 +862,21 @@
     </select>
 
     <select id="selectStockByMaterialNumberAndOrgan" resultType="com.jsh.erp.datasource.vo.DepotStockVo4WithMaterial">
-        SELECT jd.name depotName, me.counter counterName, di.basic_number stock
-        FROM jsh_material m
-        LEFT JOIN jsh_material_extend me ON me.tenant_id = 63 AND me.material_id = m.id AND ifnull(me.delete_Flag, '0') != '1'
-        LEFT JOIN jsh_depot_item di ON di.tenant_id = 63 AND di.material_id = m.id AND ifnull(di.delete_Flag, '0') != '1'
-        LEFT JOIN jsh_depot_head dh ON dh.tenant_id = 63 AND di.header_id = dh.id AND ifnull(dh.delete_flag, '0') != '1'
-        LEFT JOIN jsh_depot jd ON jd.tenant_id = 63 AND di.depot_id = jd.id
-        where 1=1 and me.default_flag=1
+        SELECT jd.name DepotName, jd2.name AnotherDepotName, di.counter_name counterName, di.another_counter_name anotherCounterName,
+        CASE WHEN dh.`type`='出庫' THEN (di.oper_number*-1) ELSE di.oper_number END stock,
+        di.confirm_number stock2
+        FROM erp.jsh_material m
+        LEFT JOIN erp.jsh_material_extend me ON me.material_id = m.id AND ifnull(me.delete_Flag, '0') != '1'
+        LEFT JOIN erp.jsh_depot_item di ON di.material_id = m.id AND ifnull(di.delete_Flag, '0') != '1'
+        LEFT JOIN erp.jsh_depot_head dh ON di.header_id = dh.id AND ifnull(dh.delete_flag, '0') != '1'
+        LEFT JOIN erp.jsh_depot jd ON di.depot_id = jd.id
+        LEFT JOIN erp.jsh_depot jd2 ON di.another_depot_id = jd2.id
+        WHERE 1 = 1
+<!--        SELECT jd.name DepotName, me.counter counterName, sum(current_number) stock-->
+<!--        FROM jsh_material_current_stock jmcs-->
+<!--        LEFT JOIN jsh_depot jd ON jd.id = jmcs.depot_id-->
+<!--        LEFT JOIN jsh_material_extend me ON me.tenant_id = 63 AND me.material_id = jmcs.material_id AND ifnull(me.delete_Flag, '0') != '1'-->
+<!--        where 1=1 and me.default_flag=1-->
         <if test="beginTime != null">
             and dh.oper_time >= #{beginTime}
         </if>

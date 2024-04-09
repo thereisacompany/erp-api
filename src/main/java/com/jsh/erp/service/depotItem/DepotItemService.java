@@ -1204,7 +1204,38 @@ public class DepotItemService {
     }
 
     public List<DepotStockVo4WithMaterial> getAllDepotStock(String beginTime, String endTime, String MNumber, Long organId) {
-        return depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId);
+        List<DepotStockVo4WithMaterial> list = depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId);
+        Map<String, DepotStockVo4WithMaterial> stockMap = new HashMap<>();
+        list.stream().forEach(stock->{
+            String key = stock.getDepotName();
+
+            DepotStockVo4WithMaterial depotStock = new DepotStockVo4WithMaterial();
+            if(stockMap.containsKey(key)) {
+                depotStock = stockMap.get(key);
+            }
+            depotStock.setDepotName(key);
+            depotStock.setStock(depotStock.getStock().add(stock.getStock()));
+
+            if(stock.getStock2() != null && stock.getStock2().intValue() > 0) { // 移倉單, 另存
+                String anotherKey = stock.getAnotherDepotName();
+                DepotStockVo4WithMaterial anotherDepotStock = new DepotStockVo4WithMaterial();
+                if(stockMap.containsKey(anotherKey)) {
+                    anotherDepotStock = stockMap.get(anotherKey);
+                }
+                anotherDepotStock.setDepotName(anotherKey);
+                anotherDepotStock.setStock(anotherDepotStock.getStock().add(stock.getStock2()));
+
+                stockMap.put(anotherKey, anotherDepotStock);
+            }
+
+            stockMap.put(key, depotStock);
+        });
+
+        List<DepotStockVo4WithMaterial> retList = new ArrayList<>();
+        stockMap.entrySet().stream().forEach(entry->{
+            retList.add(entry.getValue());
+        });
+        return retList;
     }
 
     /**
