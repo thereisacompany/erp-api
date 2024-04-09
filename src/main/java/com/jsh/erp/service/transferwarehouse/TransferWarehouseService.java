@@ -260,6 +260,13 @@ public class TransferWarehouseService {
         return result;
     }
 
+    /**
+     * 移倉作廢
+     * @param id
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int invalidSingleStatus(Long id, HttpServletRequest request) throws Exception {
         int result = 0;
@@ -300,6 +307,10 @@ public class TransferWarehouseService {
                         String.format(ExceptionConstants.DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_MSG));
             }
         }
+
+        // TODO 作廢後，需將數量還原
+        updateCurrentStockFun(headerId, depotItem.getMaterialId(), depotItem.getDepotId(), depotItem.getId());
+
         logService.insertLog("單據(移倉)",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber())
                         .append(BusinessConstants.LOG_OPERATION_TYPE_INVALID).toString(),
@@ -321,7 +332,7 @@ public class TransferWarehouseService {
         // 判斷確認數量是否有帶值，若與原移倉數量不相同，需額外調整
         if (amount != null) {
             if (depotItem.getOperNumber().longValue() != amount) {
-                // TODO 2023-11-30 是否要判斷確認的數量，是否有超過商品的庫存
+                // 2023-11-30 是否要判斷確認的數量，是否有超過商品的庫存
                 BigDecimal sourceAmount = depotItem.getOperNumber();
                 BigDecimal decimalAmount = new BigDecimal(amount);
                 depotItem.setOperNumber(decimalAmount);
