@@ -421,7 +421,7 @@ public class DepotItemController {
                     item.put("unitId", diEx.getUnitId());
                     item.put("unitName", null!=diEx.getUnitId() ? diEx.getMaterialUnit()+"[多單位]" : diEx.getMaterialUnit());
 //                    BigDecimal prevSum = depotItemService.getStockByParamWithDepot(depotList, diEx.getDepotId(), mId,null, timeA, organId);
-                    Map<String,BigDecimal> intervalMap = new HashMap<>();
+                    Map<String,BigDecimal> intervalMap;
                     if(depotList.size()==1) {
                         intervalMap = depotItemService.getIntervalMapByParamWithDepotList(depotList, diEx.getDepotId(), mId, timeA, timeB, organId);
                     } else {

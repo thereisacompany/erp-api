@@ -745,7 +745,6 @@ public class DepotItemService {
         //删除单据的明细
         deleteDepotItemHeadId(headerId, Boolean.TRUE);
         JSONArray rowArr = JSONArray.parseArray(rows);
-        System.out.println(">>>>>>>>>>>  saveTransferDetails  rowArr size >> "+rowArr.size());
         if (null != rowArr && rowArr.size()>0) {
             for (int i = 0; i < rowArr.size(); i++) {
                 DepotItem depotItem = new DepotItem();
@@ -1182,12 +1181,12 @@ public class DepotItemService {
         DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotList, depotId, mId, beginTime, endTime, organId);
         if(stockObj!=null) {
             BigDecimal inTotal = stockObj.getInTotal();
-            BigDecimal transfInTotal = stockObj.getTransfInTotal();
+            BigDecimal transfInTotal = BigDecimal.ZERO; //stockObj.getTransfInTotal();
             BigDecimal assemInTotal = stockObj.getAssemInTotal();
             BigDecimal disAssemInTotal = stockObj.getDisAssemInTotal();
             inSum = inTotal.add(transfInTotal).add(assemInTotal).add(disAssemInTotal);
             BigDecimal outTotal = stockObj.getOutTotal();
-            BigDecimal transfOutTotal = stockObj.getTransfOutTotal();
+            BigDecimal transfOutTotal = BigDecimal.ZERO; //stockObj.getTransfOutTotal();
             BigDecimal assemOutTotal = stockObj.getAssemOutTotal();
             BigDecimal disAssemOutTotal = stockObj.getDisAssemOutTotal();
             outSum = outTotal.add(transfOutTotal).add(assemOutTotal).add(disAssemOutTotal);
@@ -1206,7 +1205,7 @@ public class DepotItemService {
     public List<DepotStockVo4WithMaterial> getAllDepotStock(String beginTime, String endTime, String MNumber, Long organId) {
         List<DepotStockVo4WithMaterial> list = depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId);
         Map<String, DepotStockVo4WithMaterial> stockMap = new HashMap<>();
-        list.stream().forEach(stock->{
+        list.stream().forEach(stock-> {
             String key = stock.getDepotName();
 
             DepotStockVo4WithMaterial depotStock = new DepotStockVo4WithMaterial();
@@ -1228,6 +1227,17 @@ public class DepotItemService {
                 stockMap.put(anotherKey, anotherDepotStock);
             }
 
+            if(stock.getStatus() == 5) {
+                String wayKey = "在途中";
+                DepotStockVo4WithMaterial wayStock = new DepotStockVo4WithMaterial();
+                if(stockMap.containsKey(wayKey)) {
+                    wayStock = stockMap.get(key);
+                }
+                wayStock.setDepotName(wayKey);
+                wayStock.setStock(wayStock.getStock().add(stock.getStock()).multiply(BigDecimal.valueOf(-1)));
+
+                stockMap.put(wayKey, wayStock);
+            }
             stockMap.put(key, depotStock);
         });
 

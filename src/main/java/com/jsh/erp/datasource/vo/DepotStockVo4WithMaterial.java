@@ -16,4 +16,6 @@ public class DepotStockVo4WithMaterial {
     private BigDecimal stock = new BigDecimal(0);
     private BigDecimal stock2 = new BigDecimal(0);
 
+    private Integer status;
+
 }
