@@ -469,12 +469,13 @@ public class DepotItemController {
                                               @RequestParam(value = "endDateTime", required = false) String endDateTime,
                                               @RequestParam(value = "MNumber") String MNumber,
                                               @RequestParam(value = "organId") Long organId,
+                                              @RequestParam(value = "depotId", required = false) Long depotId,
                                               HttpServletRequest request) {
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<>();
 
         try {
-            List<DepotStockVo4WithMaterial> list = depotItemService.getAllDepotStock(beginDateTime, endDateTime, MNumber, organId);
+            List<DepotStockVo4WithMaterial> list = depotItemService.getAllDepotStock(beginDateTime, endDateTime, MNumber, organId, depotId);
             map.put("rows", list);
             res.code = 200;
             res.data = map;

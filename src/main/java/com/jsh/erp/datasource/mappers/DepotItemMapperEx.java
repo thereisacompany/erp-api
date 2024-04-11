@@ -50,6 +50,7 @@ public interface DepotItemMapperEx {
             @Param("beginTime") String beginTime,
             @Param("endTime") String endTime,
             @Param("organId") Long organId,
+            @Param("depotId") Long depotId,
             @Param("offset") Integer offset,
             @Param("rows") Integer rows
     );
@@ -212,5 +213,6 @@ public interface DepotItemMapperEx {
     List<DepotStockVo4WithMaterial> selectStockByMaterialNumberAndOrgan( @Param("beginTime") String beginTime,
                                                                          @Param("endTime") String endTime,
                                                                          @Param("MNumber") String MNumber,
-                                                                         @Param("organId") Long organId);
+                                                                         @Param("organId") Long organId,
+                                                                         @Param("depotId") Long depotId);
 }

@@ -1181,15 +1181,18 @@ public class DepotItemService {
         DepotItemVo4Stock stockObj = depotItemMapperEx.getStockByParamWithDepot(depotList, depotId, mId, beginTime, endTime, organId);
         if(stockObj!=null) {
             BigDecimal inTotal = stockObj.getInTotal();
-            BigDecimal transfInTotal = BigDecimal.ZERO; //stockObj.getTransfInTotal();
+            BigDecimal transfInTotal = stockObj.getTransfInTotal();
             BigDecimal assemInTotal = stockObj.getAssemInTotal();
             BigDecimal disAssemInTotal = stockObj.getDisAssemInTotal();
-            inSum = inTotal.add(transfInTotal).add(assemInTotal).add(disAssemInTotal);
+            inSum = inTotal.add(assemInTotal).add(disAssemInTotal);
             BigDecimal outTotal = stockObj.getOutTotal();
-            BigDecimal transfOutTotal = BigDecimal.ZERO; //stockObj.getTransfOutTotal();
+            BigDecimal transfOutTotal = stockObj.getTransfOutTotal();
+
             BigDecimal assemOutTotal = stockObj.getAssemOutTotal();
             BigDecimal disAssemOutTotal = stockObj.getDisAssemOutTotal();
-            outSum = outTotal.add(transfOutTotal).add(assemOutTotal).add(disAssemOutTotal);
+            outSum = outTotal.add(assemOutTotal).add(disAssemOutTotal);
+
+            inSum = inSum.add(transfInTotal.subtract(transfOutTotal));
         }
 //        if(stockCheckSum.compareTo(BigDecimal.ZERO)>0) {
 //            inSum = inSum.add(stockCheckSum);
@@ -1202,8 +1205,8 @@ public class DepotItemService {
         return intervalMap;
     }
 
-    public List<DepotStockVo4WithMaterial> getAllDepotStock(String beginTime, String endTime, String MNumber, Long organId) {
-        List<DepotStockVo4WithMaterial> list = depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId);
+    public List<DepotStockVo4WithMaterial> getAllDepotStock(String beginTime, String endTime, String MNumber, Long organId, Long depotId) {
+        List<DepotStockVo4WithMaterial> list = depotItemMapperEx.selectStockByMaterialNumberAndOrgan(beginTime, endTime, MNumber, organId, depotId);
         Map<String, DepotStockVo4WithMaterial> stockMap = new HashMap<>();
         list.stream().forEach(stock-> {
             String key = stock.getDepotName();
@@ -1243,7 +1246,10 @@ public class DepotItemService {
 
         List<DepotStockVo4WithMaterial> retList = new ArrayList<>();
         stockMap.entrySet().stream().forEach(entry->{
-            retList.add(entry.getValue());
+            DepotStockVo4WithMaterial stockVo = entry.getValue();
+            if(stockVo.getStock().compareTo(BigDecimal.ZERO) > 0) {
+                retList.add(stockVo);
+            }
         });
         return retList;
     }

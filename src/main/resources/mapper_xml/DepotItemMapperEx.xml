@@ -889,6 +889,9 @@
         <if test="organId != null">
             and dh.organ_id = #{organId}
         </if>
+        <if test="depotId != null">
+            and (di.depot_id=#{depotId} or di.another_depot_id=#{depotId})
+        </if>
         and dh.status != 6
         and ifnull(m.delete_flag,'0') !='1'
     </select>
