@@ -292,10 +292,10 @@ public class DepotItemService {
     }
 
     public List<DepotItemVo4WithMaterial> findByAllMaterial(String materialParam, String beginTime, String endTime, Long organId,
-                                                            Integer offset, Integer rows)throws Exception {
+                                                            Long depotId, Integer offset, Integer rows)throws Exception {
         List<DepotItemVo4WithMaterial> list =null;
         try{
-            list = depotItemMapperEx.findByAllMaterial(materialParam, beginTime, endTime, organId, offset, rows);
+            list = depotItemMapperEx.findByAllMaterial(materialParam, beginTime, endTime, organId, depotId, offset, rows);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }

@@ -386,10 +386,10 @@ public class DepotItemController {
 
             List<Long> depotList = parseListByDepotIds(depotIds);
             List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
-                    timeA, timeB, findOrganId, (currentPage-1)*pageSize, pageSize);
+                    timeA, timeB, findOrganId, depotList.isEmpty()?null:depotList.get(0), (currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
-            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB, findOrganId);
-            map.put("total", total);
+//            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB, findOrganId);
+//            map.put("total", total);
             int totalIn = 0;
             int totalOut = 0;
             int totalThis = 0;
@@ -445,6 +445,7 @@ public class DepotItemController {
                     dataArray.add(item);
                 }
             }
+            map.put("total", dataArray.size());
             map.put("totalIn", totalIn);
             map.put("totalOut", totalOut);
             map.put("totalThis", totalThis);
@@ -538,15 +539,11 @@ public class DepotItemController {
             depotList = StringUtil.strToLongList(depotIds);
         } else {
             //未选择仓库时默认为当前用户有权限的仓库
-//            JSONArray depotArr = depotService.findDepotByCurrentUser();
-//            for(Object obj: depotArr) {
-//                JSONObject object = JSONObject.parseObject(obj.toString());
-//                depotList.add(object.getLong("id"));
-//            }
-            depotList.add(1L);
-            depotList.add(2L);
-            depotList.add(3L);
-            depotList.add(4L);
+            JSONArray depotArr = depotService.findDepotByCurrentUser();
+            for(Object obj: depotArr) {
+                JSONObject object = JSONObject.parseObject(obj.toString());
+                depotList.add(object.getLong("id"));
+            }
 
             //如果有权限的仓库数量太多则提示要选择仓库
             if(depotList.size()>20) {
