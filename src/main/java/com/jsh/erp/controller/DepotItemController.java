@@ -226,11 +226,11 @@ public class DepotItemController {
                             if (depotHead != null) {
                                 organId = depotHead.getOrganId();
                             }
-                            if(subtype.equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
-                                stock = depotItemService.getStockByParam(null, diEx.getMaterialId(),null,null, organId);
-                            } else {
+//                            if(subtype.equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+//                                stock = depotItemService.getStockByParam(null, diEx.getMaterialId(),null,null, organId);
+//                            } else {
                                 stock = depotItemService.getStockByParam(diEx.getDepotId(), diEx.getMaterialId(),null,null, organId);
-                            }
+//                            }
                             if (StringUtil.isNotEmpty(unitInfo.getName())) {
                                 stock = unitService.parseStockByUnit(stock, unitInfo, materialUnit);
                             }
