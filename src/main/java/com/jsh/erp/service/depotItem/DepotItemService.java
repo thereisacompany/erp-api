@@ -573,6 +573,11 @@ public class DepotItemService {
                     if("add".equals(actionType)) {
                         //在新增模式进行状态赋值
                         if(!isPickup) {
+                            if(depotItem.getOperNumber().compareTo(BigDecimal.ONE) < 0) {
+                                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_CODE,
+                                        String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_MSG, depotHead.getOrganId() + "-" + materialExtend.getNumber()));
+                            }
+
                             BigDecimal preNumber = rowObj.getBigDecimal("preNumber");
                             BigDecimal finishNumber = rowObj.getBigDecimal("finishNumber");
                             if (depotItem.getOperNumber().add(finishNumber).compareTo(preNumber) > 0) {
@@ -582,6 +587,10 @@ public class DepotItemService {
                         }
                     } else if("update".equals(actionType)) {
                         if(!isPickup) {
+                            if(depotItem.getOperNumber().compareTo(BigDecimal.ONE) < 0) {
+                                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_CODE,
+                                        String.format(ExceptionConstants.DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_MSG, depotHead.getOrganId() + "-" + materialExtend.getNumber()));
+                            }
                             //当前单据的类型
                             String currentSubType = depotHead.getSubType();
                             //在更新模式进行状态赋值

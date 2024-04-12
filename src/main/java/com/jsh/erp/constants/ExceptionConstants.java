@@ -418,6 +418,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，只有移倉中的單據可以作廢";
     public static final int DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_CODE = 8500026;
     public static final String DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，已有部份商品移倉完成的單據，不可作廢";
+    public static final int DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_CODE = 85000027;
+    public static final String DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_MSG = "抱歉，帶入的商品數量不得小於0";
     /**
      *  单据明细信息
      * type = 90
