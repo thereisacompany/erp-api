@@ -234,7 +234,9 @@
     </if>
   </select>
   <select id="countAllDriver" resultType="java.lang.Long">
-    SELECT IFNULL(COUNT(1), 0)
+    SELECT IFNULL(COUNT(count_per_group), 0) AS total_count
+    FROM (
+    SELECT COUNT(1) as count_per_group
     FROM jsh_depot_head dh
     LEFT JOIN jsh_depot_detail jdd on dh.id = jdd.header_id
     LEFT JOIN jsh_supplier s on jdd.driver_id =s.id and IFNULL(s.delete_Flag,'0') !='1'
@@ -262,6 +264,7 @@
     AND jdd.status > 0
     AND IFNULL(dh.delete_flag,'0') !='1'
     GROUP BY s.supplier, jv.license_plate_number
+    ) AS grouped_counts
   </select>
   <insert id="insertDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
     insert into jsh_depot_detail (id, header_id, item_id, status, driver_id, assign_date, assign_user, file_path)
