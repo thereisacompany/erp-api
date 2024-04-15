@@ -1247,7 +1247,7 @@ public class DepotHeadService {
 
         try {
             if (detail != null) {
-                detail.setStatus("1");
+                detail.setStatus("2");
                 detail.setDriverId(driverId);
                 detail.setAssignDate(assignDate);
                 detail.setAssignUser(assignUser);
@@ -1256,7 +1256,7 @@ public class DepotHeadService {
                 // insert jsh_depot_record
                 DepotRecord record = new DepotRecord();
                 record.setDetailId(detail.getId());
-                record.setStatus("1");
+                record.setStatus("2");
                 record.setDate(LocalDateTime.now().format(formatterChange));
                 depotHeadMapper.insertDetailRecord(record);
 
@@ -1265,7 +1265,7 @@ public class DepotHeadService {
                 // insert jsh_depot_detail
                 detail = new DepotDetail();
                 detail.setHeaderId(headerId);
-                detail.setStatus("1");
+                detail.setStatus("2");
                 detail.setDriverId(driverId);
                 detail.setAssignDate(assignDate);
                 detail.setAssignUser(assignUser);
@@ -1275,7 +1275,7 @@ public class DepotHeadService {
                 detail = depotHeadMapper.selectDetailByHeaderId(headerId);
                 DepotRecord record = new DepotRecord();
                 record.setDetailId(detail.getId());
-                record.setStatus("1");
+                record.setStatus("2");
                 record.setDate(LocalDateTime.now().format(formatterChange));
                 depotHeadMapper.insertDetailRecord(record);
 
