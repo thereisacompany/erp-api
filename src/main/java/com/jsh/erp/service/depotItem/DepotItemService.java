@@ -1237,6 +1237,7 @@ public class DepotItemService {
 
             if(stock.getStatus() == 5) {
                 String wayKey = "在途中";
+                wayKey += "("+stock.getDepotName()+"->"+stock.getAnotherDepotName()+")";
                 DepotStockVo4WithMaterial wayStock = new DepotStockVo4WithMaterial();
                 if(stockMap.containsKey(wayKey)) {
                     wayStock = stockMap.get(key);
