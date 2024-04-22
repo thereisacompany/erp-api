@@ -571,7 +571,7 @@
     <select id="getStockByParamWithDepotList" resultMap="stockMap">
         select
         sum(case when dh.type='入庫' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
-        sum(case when dh.type='出庫' and dh.sub_type!='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='移倉' AND jdd.status != '6' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
         sum(case when dh.sub_type='移倉' <include refid="anotherDepotParam" /> then di.basic_number else 0 end) as transfInTotal,
         sum(case when dh.sub_type='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as transfOutTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
@@ -581,6 +581,7 @@
         from
         jsh_depot_head dh
         left join jsh_depot_item di on dh.id=di.header_id
+        left join jsh_depot_detail jdd ON jdd.header_id=dh.id
         and ifnull(di.delete_flag,'0') !='1'
         where 1=1
         and ifnull(dh.delete_flag,'0') !='1'
@@ -603,7 +604,7 @@
     <select id="getStockByParamWithDepot" resultMap="stockMap">
         select
         sum(case when dh.type='入庫' <include refid="depotParam" /> then di.basic_number else 0 end) as inTotal,
-        sum(case when dh.type='出庫' and dh.sub_type!='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
+        sum(case when dh.type='出庫' and dh.sub_type!='移倉' AND jdd.status != '6' <include refid="depotParam" /> then di.basic_number else 0 end) as outTotal,
         sum(case when dh.sub_type='移倉' <include refid="anotherDepotParam" /> then di.basic_number else 0 end) as transfInTotal,
         sum(case when dh.sub_type='移倉' <include refid="depotParam" /> then di.basic_number else 0 end) as transfOutTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
@@ -613,6 +614,7 @@
         from
         jsh_depot_head dh
         left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'
+        left join jsh_depot_detail jdd ON jdd.header_id=dh.id
         where 1=1
         and ifnull(dh.delete_flag,'0') !='1'
         and di.material_id=#{mId}
@@ -874,6 +876,7 @@
         LEFT JOIN jsh_material_extend me ON me.material_id = m.id AND ifnull(me.delete_Flag, '0') != '1'
         LEFT JOIN jsh_depot_item di ON di.material_id = m.id AND ifnull(di.delete_Flag, '0') != '1'
         LEFT JOIN jsh_depot_head dh ON di.header_id = dh.id AND ifnull(dh.delete_flag, '0') != '1'
+        LEFT JOIN jsh_depot_detail jdd ON dh.id=jdd.header_id
         LEFT JOIN jsh_depot jd ON di.depot_id = jd.id
         LEFT JOIN jsh_depot jd2 ON di.another_depot_id = jd2.id
         WHERE 1 = 1
@@ -893,6 +896,7 @@
             and (di.depot_id=#{depotId} or di.another_depot_id=#{depotId})
         </if>
         and dh.status not in (0,6)
+        and (case when jdd.status>0 then jdd.status else '0' end) not in ('6')
         and ifnull(m.delete_flag,'0') !='1'
     </select>
 </mapper>
