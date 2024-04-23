@@ -588,7 +588,7 @@ public class DepotHeadService {
                         String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_MSG));
             }
         }
-        logService.insertLog("单据", sb.toString(),
+        logService.insertLog("單據", sb.toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         return 1;
     }

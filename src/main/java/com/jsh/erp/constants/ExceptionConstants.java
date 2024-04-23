@@ -379,7 +379,7 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_ANOTHER_DEPOT_EQUAL_FAILED_MSG = "移入倉庫與原倉庫不能重覆";
     //单据删除-只有未审核的单据才能删除
     public static final int DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_CODE = 8500011;
-    public static final String DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_MSG = "抱歉，只有未审核的单据才能删除";
+    public static final String DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_MSG = "抱歉，只有未審核的單據才能删除";
     //单据审核-只有未审核的单据才能审核
     public static final int DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_CODE = 8500012;
     public static final String DEPOT_HEAD_UN_AUDIT_TO_AUDIT_FAILED_MSG = "抱歉，只有未审核的单据才能审核";
