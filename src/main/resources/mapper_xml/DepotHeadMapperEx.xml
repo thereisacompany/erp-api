@@ -970,7 +970,8 @@
 
     <update id="batchDeleteDepotHeadByIds">
         update jsh_depot_head
-        set delete_flag='1'
+        set status = '6'
+<!--        set delete_flag='1'-->
         where 1=1
         and id in (
         <foreach collection="ids" item="id" separator=",">

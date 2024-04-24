@@ -76,6 +76,7 @@ public class BusinessConstants {
     public static final String BILLS_STATUS_AUDIT = "1";
     public static final String BILLS_STATUS_SKIPED = "2";
     public static final String BILLS_STATUS_SKIPING = "3";
+    public static final String BILLS_STATUS_INVALID = "6";
     /**
      * 单据-采购状态 purchaseStatus '0'未采购、'2'完成采购、'3'部分采购
      * */

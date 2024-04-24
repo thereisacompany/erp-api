@@ -501,7 +501,7 @@ public class DepotHeadService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int batchDeleteBillByIds(String ids)throws Exception {
         StringBuffer sb = new StringBuffer();
-        sb.append(BusinessConstants.LOG_OPERATION_TYPE_DELETE);
+        sb.append(BusinessConstants.LOG_OPERATION_TYPE_INVALID);
         List<DepotHead> dhList = getDepotHeadListByIds(ids);
         for(DepotHead depotHead: dhList){
             sb.append("[").append(depotHead.getNumber()).append("]");
@@ -528,57 +528,57 @@ public class DepotHeadService {
                     }
                 }
                 //对于零售出庫单据，更新会员的预收款信息
-                if (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
-                        && BusinessConstants.SUB_TYPE_RETAIL.equals(depotHead.getSubType())){
-                    if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())) {
-                        if (depotHead.getOrganId() != null) {
-                            supplierService.updateAdvanceIn(depotHead.getOrganId(), depotHead.getTotalPrice().abs());
-                        }
-                    }
-                }
+//                if (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
+//                        && BusinessConstants.SUB_TYPE_RETAIL.equals(depotHead.getSubType())){
+//                    if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPayType())) {
+//                        if (depotHead.getOrganId() != null) {
+//                            supplierService.updateAdvanceIn(depotHead.getOrganId(), depotHead.getTotalPrice().abs());
+//                        }
+//                    }
+//                }
                 List<DepotItem> list = depotItemService.getListByHeaderId(depotHead.getId());
                 //删除单据子表数据
-                depotItemMapperEx.batchDeleteDepotItemByDepotHeadIds(new Long[]{depotHead.getId()});
+//                depotItemMapperEx.batchDeleteDepotItemByDepotHeadIds(new Long[]{depotHead.getId()});
                 //删除单据主表信息
                 batchDeleteDepotHeadByIds(depotHead.getId().toString());
                 //将关联的单据置为审核状态-针对采购入庫、销售出庫和盘点复盘
-                if(StringUtil.isNotEmpty(depotHead.getLinkNumber())){
-                    if((BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType()) &&
-                        BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType()))
-                    || (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType()) &&
-                        BusinessConstants.SUB_TYPE_SALES.equals(depotHead.getSubType()))
-                    || (BusinessConstants.DEPOTHEAD_TYPE_OTHER.equals(depotHead.getType()) &&
-                        BusinessConstants.SUB_TYPE_REPLAY.equals(depotHead.getSubType()))) {
-                        String status = BusinessConstants.BILLS_STATUS_AUDIT;
-                        //查询除当前单据之外的关联单据列表
-                        List<DepotHead> exceptCurrentList = getListByLinkNumberExceptCurrent(depotHead.getLinkNumber(), depotHead.getNumber(), depotHead.getType());
-                        if(exceptCurrentList!=null && exceptCurrentList.size()>0) {
-                            status = BusinessConstants.BILLS_STATUS_SKIPING;
-                        }
-                        DepotHead dh = new DepotHead();
-                        dh.setStatus(status);
-                        DepotHeadExample example = new DepotHeadExample();
-                        example.createCriteria().andNumberEqualTo(depotHead.getLinkNumber());
-                        depotHeadMapper.updateByExampleSelective(dh, example);
-                    }
-                }
+//                if(StringUtil.isNotEmpty(depotHead.getLinkNumber())){
+//                    if((BusinessConstants.DEPOTHEAD_TYPE_IN.equals(depotHead.getType()) &&
+//                        BusinessConstants.SUB_TYPE_PURCHASE.equals(depotHead.getSubType()))
+//                    || (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType()) &&
+//                        BusinessConstants.SUB_TYPE_SALES.equals(depotHead.getSubType()))
+//                    || (BusinessConstants.DEPOTHEAD_TYPE_OTHER.equals(depotHead.getType()) &&
+//                        BusinessConstants.SUB_TYPE_REPLAY.equals(depotHead.getSubType()))) {
+//                        String status = BusinessConstants.BILLS_STATUS_AUDIT;
+//                        //查询除当前单据之外的关联单据列表
+//                        List<DepotHead> exceptCurrentList = getListByLinkNumberExceptCurrent(depotHead.getLinkNumber(), depotHead.getNumber(), depotHead.getType());
+//                        if(exceptCurrentList!=null && exceptCurrentList.size()>0) {
+//                            status = BusinessConstants.BILLS_STATUS_SKIPING;
+//                        }
+//                        DepotHead dh = new DepotHead();
+//                        dh.setStatus(status);
+//                        DepotHeadExample example = new DepotHeadExample();
+//                        example.createCriteria().andNumberEqualTo(depotHead.getLinkNumber());
+//                        depotHeadMapper.updateByExampleSelective(dh, example);
+//                    }
+//                }
                 //将关联的销售订单单据置为未采购状态-针对销售订单转采购订单的情况
-                if(StringUtil.isNotEmpty(depotHead.getLinkNumber())){
-                    if(BusinessConstants.DEPOTHEAD_TYPE_OTHER.equals(depotHead.getType()) &&
-                            BusinessConstants.SUB_TYPE_PURCHASE_ORDER.equals(depotHead.getSubType())) {
-                        DepotHead dh = new DepotHead();
-                        //获取分批操作后单据的商品和商品数量（汇总）
-                        List<DepotItemVo4MaterialAndSum> batchList = depotItemMapperEx.getBatchBillDetailMaterialSum(depotHead.getLinkNumber(), depotHead.getType());
-                        if(batchList.size()>0) {
-                            dh.setPurchaseStatus(BusinessConstants.PURCHASE_STATUS_SKIPING);
-                        } else {
-                            dh.setPurchaseStatus(BusinessConstants.PURCHASE_STATUS_UN_AUDIT);
-                        }
-                        DepotHeadExample example = new DepotHeadExample();
-                        example.createCriteria().andNumberEqualTo(depotHead.getLinkNumber());
-                        depotHeadMapper.updateByExampleSelective(dh, example);
-                    }
-                }
+//                if(StringUtil.isNotEmpty(depotHead.getLinkNumber())){
+//                    if(BusinessConstants.DEPOTHEAD_TYPE_OTHER.equals(depotHead.getType()) &&
+//                            BusinessConstants.SUB_TYPE_PURCHASE_ORDER.equals(depotHead.getSubType())) {
+//                        DepotHead dh = new DepotHead();
+//                        //获取分批操作后单据的商品和商品数量（汇总）
+//                        List<DepotItemVo4MaterialAndSum> batchList = depotItemMapperEx.getBatchBillDetailMaterialSum(depotHead.getLinkNumber(), depotHead.getType());
+//                        if(batchList.size()>0) {
+//                            dh.setPurchaseStatus(BusinessConstants.PURCHASE_STATUS_SKIPING);
+//                        } else {
+//                            dh.setPurchaseStatus(BusinessConstants.PURCHASE_STATUS_UN_AUDIT);
+//                        }
+//                        DepotHeadExample example = new DepotHeadExample();
+//                        example.createCriteria().andNumberEqualTo(depotHead.getLinkNumber());
+//                        depotHeadMapper.updateByExampleSelective(dh, example);
+//                    }
+//                }
                 //更新当前库存
                 for (DepotItem depotItem : list) {
                     depotItemService.updateCurrentStock(depotItem);
@@ -588,7 +588,7 @@ public class DepotHeadService {
                         String.format(ExceptionConstants.DEPOT_HEAD_UN_AUDIT_DELETE_FAILED_MSG));
             }
         }
-        logService.insertLog("單據", sb.toString(),
+        logService.insertLog("單據-配送單", sb.toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         return 1;
     }
