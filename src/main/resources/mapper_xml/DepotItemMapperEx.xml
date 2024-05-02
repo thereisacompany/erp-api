@@ -104,6 +104,7 @@
         <result column="assemOutTotal" jdbcType="DECIMAL" property="assemOutTotal" />
         <result column="disAssemInTotal" jdbcType="DECIMAL" property="disAssemInTotal" />
         <result column="disAssemOutTotal" jdbcType="DECIMAL" property="disAssemOutTotal" />
+        <result column="wayTotal" jdbcType="DECIMAL" property="wayTotal" />
     </resultMap>
 
     <resultMap id="batchNumberListMap" type="com.jsh.erp.datasource.vo.DepotItemVoBatchNumberList">
@@ -610,7 +611,8 @@
         sum(case when dh.sub_type='组装单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemInTotal,
         sum(case when dh.sub_type='组装单' and di.material_type='普通子件' <include refid="depotParam" /> then di.basic_number else 0 end) as assemOutTotal,
         sum(case when dh.sub_type='拆卸单' and di.material_type='普通子件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemInTotal,
-        sum(case when dh.sub_type='拆卸单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemOutTotal
+        sum(case when dh.sub_type='拆卸单' and di.material_type='组合件' <include refid="depotParam" /> then di.basic_number else 0 end) as disAssemOutTotal,
+        sum(CASE WHEN dh.sub_type = '移倉' AND dh.status = 5 <include refid="depotParam" /> then di.basic_number ELSE 0 END) AS wayTotal
         from
         jsh_depot_head dh
         left join jsh_depot_item di on dh.id=di.header_id and ifnull(di.delete_flag,'0') !='1'

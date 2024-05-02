@@ -1180,6 +1180,7 @@ public class DepotItemService {
         Map<String,BigDecimal> intervalMap = new HashMap<>();
         BigDecimal inSum = BigDecimal.ZERO;
         BigDecimal outSum = BigDecimal.ZERO;
+        BigDecimal waySum= BigDecimal.ZERO;
 
         //盘点复盘后数量的变动
 //        BigDecimal stockCheckSum = depotItemMapperEx.getStockCheckSumByDepotList(depotList, mId, beginTime, endTime);
@@ -1198,6 +1199,7 @@ public class DepotItemService {
             outSum = outTotal.add(assemOutTotal).add(disAssemOutTotal);
 
             inSum = inSum.add(transfInTotal.subtract(transfOutTotal));
+            waySum = stockObj.getWayTotal();
         }
 //        if(stockCheckSum.compareTo(BigDecimal.ZERO)>0) {
 //            inSum = inSum.add(stockCheckSum);
@@ -1207,6 +1209,7 @@ public class DepotItemService {
 //        }
         intervalMap.put("inSum", inSum);
         intervalMap.put("outSum", outSum);
+        intervalMap.put("waySum", waySum);
         return intervalMap;
     }
 

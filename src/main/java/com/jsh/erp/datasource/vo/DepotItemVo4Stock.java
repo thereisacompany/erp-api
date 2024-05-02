@@ -14,6 +14,8 @@ public class DepotItemVo4Stock {
     private BigDecimal disAssemInTotal;
     private BigDecimal disAssemOutTotal;
 
+    private BigDecimal wayTotal;
+
     public BigDecimal getInTotal() {
         return inTotal;
     }
@@ -76,5 +78,13 @@ public class DepotItemVo4Stock {
 
     public void setDisAssemOutTotal(BigDecimal disAssemOutTotal) {
         this.disAssemOutTotal = disAssemOutTotal;
+    }
+
+    public BigDecimal getWayTotal() {
+        return wayTotal;
+    }
+
+    public void setWayTotal(BigDecimal wayTotal) {
+        this.wayTotal = wayTotal;
     }
 }

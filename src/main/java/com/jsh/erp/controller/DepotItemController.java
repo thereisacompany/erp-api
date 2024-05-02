@@ -431,7 +431,7 @@ public class DepotItemController {
                     BigDecimal outSum = intervalMap.get("outSum");
                     BigDecimal thisSum = inSum.subtract(outSum);
                     item.put("prevSum", 0);
-                    item.put("defectiveSum", 0); // TODO 不良品
+                    item.put("defectiveSum", intervalMap.get("waySum")); // TODO 在途中
                     item.put("inSum", inSum);
                     totalIn += inSum.intValue();
                     item.put("outSum", outSum);
