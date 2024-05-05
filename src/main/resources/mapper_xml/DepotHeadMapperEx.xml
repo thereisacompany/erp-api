@@ -152,6 +152,7 @@
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
             and (dh.number like #{bindKey}
+            or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
             or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
             or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
@@ -299,6 +300,7 @@
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
             and (dh.number like #{bindKey}
+            or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
             or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
             or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
