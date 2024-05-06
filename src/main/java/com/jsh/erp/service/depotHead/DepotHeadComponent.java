@@ -42,11 +42,11 @@ public class DepotHeadComponent implements ICommonQuery {
         if(type==null || type.isEmpty()) {
             type = BusinessConstants.DEPOTHEAD_TYPE_OUT;
         }
-        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            if(subType==null || (subType != null && subType.isEmpty())) {
-                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
-            }
-        }
+//        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+//            if(subType==null || (subType != null && subType.isEmpty())) {
+//                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+//            }
+//        }
         String roleType = StringUtil.getInfo(search, "roleType");
         String hasDebt = StringUtil.getInfo(search, "hasDebt");
         String status = StringUtil.getInfo(search, "status");
@@ -90,11 +90,11 @@ public class DepotHeadComponent implements ICommonQuery {
         if(type==null || type.isEmpty()) {
             type = BusinessConstants.DEPOTHEAD_TYPE_OUT;
         }
-        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
-            if(subType==null || (subType != null && subType.isEmpty())) {
-                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
-            }
-        }
+//        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+//            if(subType==null || (subType != null && subType.isEmpty())) {
+//                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+//            }
+//        }
         String roleType = StringUtil.getInfo(search, "roleType");
         String hasDebt = StringUtil.getInfo(search, "hasDebt");
         String status = StringUtil.getInfo(search, "status");

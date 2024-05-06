@@ -98,12 +98,12 @@
                     </if>
                 </if>
                 <if test="subType != '配送單'">
-                    and dh.sub_type !="移倉"
+                    and dh.sub_type !='移倉'
                     and dh.sub_type=#{subType}
                 </if>
             </when>
             <otherwise>
-                and (dh.sub_type !="移倉"
+                and (dh.sub_type not in ('移倉', '退貨')
                 <if test="depotArray != null and depotArray !=''">
                     and di.depot_id in (
                     <foreach collection="depotArray" item="depotId" separator=",">
@@ -111,7 +111,7 @@
                     </foreach>
                     )
                 </if>
-                OR dh.sub_type not in ("移倉","配送單"))
+                or dh.sub_type not in ('移倉','退貨'))
             </otherwise>
         </choose>
 
@@ -246,12 +246,12 @@
                     </if>
                 </if>
                 <if test="subType != '配送單'">
-                    and dh.sub_type !="移倉"
+                    and dh.sub_type !='移倉'
                     and dh.sub_type=#{subType}
                 </if>
             </when>
             <otherwise>
-                and (dh.sub_type !="移倉"
+                and (dh.sub_type not in ('移倉', '退貨')
                 <if test="depotArray != null and depotArray !=''">
                     and di.depot_id in (
                     <foreach collection="depotArray" item="depotId" separator=",">
@@ -259,7 +259,7 @@
                     </foreach>
                     )
                 </if>
-                OR dh.sub_type not in ("移倉","配送單"))
+                or dh.sub_type not in ('移倉','退貨'))
             </otherwise>
         </choose>
 
