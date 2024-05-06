@@ -76,6 +76,11 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String recycle;
 
+    private String storeMan;
+    private String storeName;
+    private String storeAddress;
+    private String storePhone;
+
     public String getProjectName() {
         return projectName;
     }
@@ -330,5 +335,37 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setRecycle(String recycle) {
         this.recycle = recycle;
+    }
+
+    public String getStoreMan() {
+        return storeMan;
+    }
+
+    public void setStoreMan(String storeMan) {
+        this.storeMan = storeMan;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
+    }
+
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
+    }
+
+    public String getStorePhone() {
+        return storePhone;
+    }
+
+    public void setStorePhone(String storePhone) {
+        this.storePhone = storePhone;
     }
 }

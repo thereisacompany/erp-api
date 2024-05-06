@@ -1414,6 +1414,16 @@ public class DepotHeadService {
                 json.put("recycle", recycle);
                 json.put("confirm", firstObj.getString("categoryName"));
                 json.put("memo", depotHead.getRemark());
+
+                if(isPickup == 3) { // 門市取貨派送
+                    JSONObject store = new JSONObject();
+                    store.put("man", base.getString("storeMan"));
+                    store.put("name", base.getString("storeName"));
+                    store.put("address", base.getString("storeAddress"));
+                    store.put("phone", base.getString("storePhone"));
+                    json.put("store", store);
+                }
+
                 depotHead.setRemark(json.toJSONString());
             }
         }
@@ -1584,6 +1594,22 @@ public class DepotHeadService {
 
             if(depotHead.getRemark() != null) {
                 json.put("memo", depotHead.getRemark());
+            }
+            if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) { // 門市取貨派送
+                JSONObject store = json.getJSONObject("store");
+                if(base.containsKey("storeMan")) {
+                    store.put("man", base.getString("storeMan"));
+                }
+                if(base.containsKey("storeName")) {
+                    store.put("name", base.getString("storeName"));
+                }
+                if(base.containsKey("storeAddress")) {
+                    store.put("address", base.getString("storeAddress"));
+                }
+                if(base.containsKey("storePhone")) {
+                    store.put("phone", base.getString("storePhone"));
+                }
+                json.put("store", store);
             }
             depotHead.setRemark(json.toJSONString());
         }
