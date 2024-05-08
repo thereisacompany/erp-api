@@ -1,5 +1,6 @@
 package com.jsh.erp.service.transferwarehouse;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
@@ -25,10 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -96,6 +94,14 @@ public class TransferWarehouseService {
         dhExample.createCriteria().andNumberEqualTo(depotHead.getNumber()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         List<DepotHead> list = depotHeadMapper.selectByExample(dhExample);
         if (list != null) {
+            JSONArray rowArr = JSONArray.parseArray(rows);
+
+            // TODO 檢查傳入的items，是否有不同倉的商品
+            List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
+            if(countNumberOfDepot(rowList) > 1) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_CODE,
+                        ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_MSG);
+            }
             Long headId = list.get(0).getId();
             /**入庫和出庫处理单据子表信息*/
             depotItemService.saveTransferDetails(rows, headId, "add", request);
@@ -122,6 +128,14 @@ public class TransferWarehouseService {
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
         } catch (Exception e) {
             JshException.writeFail(logger, e);
+        }
+        JSONArray rowArr = JSONArray.parseArray(rows);
+
+        // TODO 檢查傳入的items，是否有不同倉的商品
+        List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
+        if(countNumberOfDepot(rowList) > 1) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_CODE,
+                    ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_MSG);
         }
         /**入庫和出庫处理单据子表信息*/
         depotItemService.saveTransferDetails(rows, depotHead.getId(), "update", request);
@@ -412,5 +426,13 @@ public class TransferWarehouseService {
                 materialCurrentStockMapper.insertSelective(materialCurrentStock);
             }
         }
+    }
+
+    private int countNumberOfDepot(List<JSONObject> list) {
+        Set<Integer> uniqueTypes = new HashSet<>();
+        for (JSONObject item : list) {
+            uniqueTypes.add(item.getInteger("depotId"));
+        }
+        return uniqueTypes.size();
     }
 }

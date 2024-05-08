@@ -328,19 +328,19 @@ public class ExceptionConstants {
     public static final int MATERIAL_RATIO_NOT_INTEGER_CODE = 8000016;
     public static final String MATERIAL_RATIO_NOT_INTEGER_MSG = "第%s行比例格式错误";
     //组装拆卸单不能选择批号或序列号商品
-    public static final int MATERIAL_ASSEMBLE_SELECT_ERROR_CODE = 80000017;
+    public static final int MATERIAL_ASSEMBLE_SELECT_ERROR_CODE = 8000017;
     public static final String MATERIAL_ASSEMBLE_SELECT_ERROR_MSG = "抱歉，组装拆卸单不能选择批号或序列号商品:%s";
     //调拨单不能选择批号或序列号商品
-    public static final int MATERIAL_TRANSFER_SELECT_ERROR_CODE = 80000018;
+    public static final int MATERIAL_TRANSFER_SELECT_ERROR_CODE = 8000018;
     public static final String MATERIAL_TRANSFER_SELECT_ERROR_MSG = "抱歉，调拨单不能选择批号或序列号商品:%s，建议走其它入庫和出庫单";
     //盘点业务不能选择批号或序列号商品
-    public static final int MATERIAL_STOCK_CHECK_ERROR_CODE = 80000019;
+    public static final int MATERIAL_STOCK_CHECK_ERROR_CODE = 8000019;
     public static final String MATERIAL_STOCK_CHECK_ERROR_MSG = "抱歉，盘点业务不能选择批号或序列号商品:%s，建议走其它入庫和出庫单";
     //EXCEL中存在重复的商品
-    public static final int MATERIAL_EXCEL_IMPORT_EXIST_CODE = 80000020;
+    public static final int MATERIAL_EXCEL_IMPORT_EXIST_CODE = 8000020;
     public static final String MATERIAL_EXCEL_IMPORT_EXIST_MSG = "抱歉，EXCEL中存在重复的商品，具体信息为：%s";
     //EXCEL中存在重复的条码
-    public static final int MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_CODE = 80000021;
+    public static final int MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_CODE = 8000021;
     public static final String MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_MSG = "抱歉，EXCEL中存在重复的条码，具体条码为：%s";
 
     /**
@@ -418,8 +418,15 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，只有移倉中的單據可以作廢";
     public static final int DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_CODE = 8500026;
     public static final String DEPOT_HEAD_TRANSFER_TO_INVALID_FAILED_MSG = "抱歉，已有部份商品移倉完成的單據，不可作廢";
-    public static final int DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_CODE = 85000027;
+    public static final int DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_CODE = 8500027;
     public static final String DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_MSG = "抱歉，帶入的商品:%s,數量不得小於0";
+    public static final int DEPOT_HEAD_DEPOT_DIFF_CODE = 8500028;
+    public static final String DEPOT_HEAD_DEPOT_DIFF_MSG = "建立、編輯進貨單時，不得同時有不同倉庫的商品，請個別建立單據";
+
+    public static final int DEPOT_HEAD_TRANSFER_DEPOT_DIFF_CODE = 8500029;
+    public static final String DEPOT_HEAD_TRANSFER_DEPOT_DIFF_MSG = "建立、編輯移倉單時，不得同時有不同倉庫的商品，請個別建立單據";
+
+
     /**
      *  单据明细信息
      * type = 90

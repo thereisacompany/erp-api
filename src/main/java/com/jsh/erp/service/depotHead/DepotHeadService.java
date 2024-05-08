@@ -1495,6 +1495,17 @@ public class DepotHeadService {
         dhExample.createCriteria().andNumberEqualTo(depotHead.getNumber()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         List<DepotHead> list = depotHeadMapper.selectByExample(dhExample);
         if(list!=null) {
+            if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+                JSONArray rowArr = JSONArray.parseArray(rows);
+
+                // TODO 檢查傳入的items，是否有不同倉的商品
+                List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
+                if(countNumberOfDepot(rowList) > 1) {
+                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_CODE,
+                            ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_MSG);
+                }
+            }
+
             Long headId = list.get(0).getId();
             /**入庫和出庫處理單據子表信息*/
             depotItemService.saveDetails(rows, isPickup>1?Boolean.TRUE:Boolean.FALSE, headId, "add", request, userInfo);
@@ -1631,6 +1642,17 @@ public class DepotHeadService {
 //                }
 //            }
 //        }
+        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
+            JSONArray rowArr = JSONArray.parseArray(rows);
+
+            // TODO 檢查傳入的items，是否有不同倉的商品
+            List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
+            if(countNumberOfDepot(rowList) > 1) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_CODE,
+                        ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_MSG);
+            }
+        }
+
         /** 是否為門市取貨或門市取貨派送 */
         boolean isPickup = Boolean.FALSE;
         if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
@@ -2166,6 +2188,8 @@ public class DepotHeadService {
 
                 addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
 
+                importCount++;
+
                 // TODO 派發司機、指派人員
                 String driver = ExcelUtils.getContent(mainData, i, 14);
                 String assignMan = ExcelUtils.getContent(mainData, i, 15);
@@ -2178,11 +2202,10 @@ public class DepotHeadService {
                         // headerId driverId assignDate assignUser
                         assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
                     } catch (Exception e){
+                        logger.error("指派司機失敗 : "+e.getMessage());
                         System.out.println(e.getMessage());
                     }
                 }
-
-                importCount++;
             }
 
             logService.insertLog("匯入配送單",
@@ -2226,6 +2249,14 @@ public class DepotHeadService {
         return json.getString(key);
     }
 
+    private int countNumberOfDepot(List<JSONObject> list) {
+        Set<Integer> uniqueTypes = new HashSet<>();
+        for (JSONObject item : list) {
+            uniqueTypes.add(item.getInteger("depotId"));
+        }
+        return uniqueTypes.size();
+    }
+
     public static void main(String[] args) throws Exception {
 //        String datetimeStr = "10/10/23 17:10:10";
 //        String dateStr = "12/4/23";
@@ -2242,6 +2273,18 @@ public class DepotHeadService {
 
             }
         }
+
+//        JSONArray arr = new JSONArray();
+//        int[] datas = new int[]{1,1,1,1,1};
+//        for(int i =0;i<5;i++) {
+//            JSONObject json = new JSONObject();
+//            json.put("depotId", datas[i]);
+//            arr.add(json);
+//        }
+//
+//        List<JSONObject> list = arr.toJavaList(JSONObject.class);
+//        System.out.println(">>>"+countNumberOfDepot(list));
+
 //        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 //        System.out.println(time);
 //        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
