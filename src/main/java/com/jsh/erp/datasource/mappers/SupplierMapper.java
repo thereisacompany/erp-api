@@ -23,6 +23,8 @@ public interface SupplierMapper {
 
     int isDriverLoginNameExist(String loginName, Long supplierId);
 
+    Long selectIdBySupplier(String supplier);
+
     String selectCarUser(Long supplierId);
 
     long selectCarUserId(Long supplierId);

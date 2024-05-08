@@ -162,6 +162,10 @@
     from jsh_depot_head
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectIdByNumber" resultType="java.lang.Long">
+    select id from jsh_depot_head
+    where number = #{number}
+  </select>
 
   <select id="selectHeaderDetailByHeaderId" resultMap="DetailResultMap">
     SELECT jdd.id, jdd.status, js.id supplierId, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number, jdd.file_path

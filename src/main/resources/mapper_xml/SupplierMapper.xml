@@ -414,6 +414,9 @@
   <select id="selectLastDriverId" resultType="java.lang.Long">
     select id from jsh_supplier where type like '%司機' order by id desc limit 1
   </select>
+  <select id="selectIdBySupplier" resultType="java.lang.Long">
+    select id from jsh_supplier where type like '%司機' and supplier = #{supplier}
+  </select>
   <select id="selectCarUser" resultType="java.lang.String">
     select login_name from jsh_caruser where supplier_id = #{supplierId}
   </select>

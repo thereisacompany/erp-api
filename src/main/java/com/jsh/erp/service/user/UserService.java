@@ -381,6 +381,17 @@ public class UserService {
         return userId;
     }
 
+    public Long getIdByUserName(String userName) {
+        Long userId = 0L;
+        UserExample example = new UserExample();
+        example.createCriteria().andUsernameEqualTo(userName).andStatusEqualTo(BusinessConstants.USER_STATUS_NORMAL);
+        List<User> list = userMapper.selectByExample(example);
+        if(list!=null) {
+            userId = list.get(0).getId();
+        }
+        return userId;
+    }
+
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void addUserAndOrgUserRel(UserEx ue, HttpServletRequest request) throws Exception{
         if(BusinessConstants.DEFAULT_MANAGER.equals(ue.getLoginName())) {

@@ -35,8 +35,9 @@ public interface DepotHeadMapper {
 //    int updateDetailRecord(@Param("record") DepotRecord record);
     int updateDetailReport(@Param("report") DepotReport report);
 
-
     DepotHead selectByPrimaryKey(Long id);
+
+    Long selectIdByNumber(String number);
 
     int updateByExampleSelective(@Param("record") DepotHead record, @Param("example") DepotHeadExample example);
 

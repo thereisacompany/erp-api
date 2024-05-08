@@ -79,6 +79,11 @@ public class SupplierService {
         return result;
     }
 
+    public Integer getSupplierId(String supplier) {
+        Long id = supplierMapper.selectIdBySupplier(supplier);
+        return Integer.parseInt(String.valueOf(id));
+    }
+
     public List<Supplier> getSupplierListByIds(String ids)throws Exception {
         List<Long> idList = StringUtil.strToLongList(ids);
         List<Supplier> list = new ArrayList<>();

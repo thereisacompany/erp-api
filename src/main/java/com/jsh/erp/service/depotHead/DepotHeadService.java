@@ -2053,7 +2053,7 @@ public class DepotHeadService {
 //                    recycle = getJsonValue(saveJson, "recycle");
 //                }
                 beanJson.put("recycle", recycle);
-                // 配道備註
+                // 配送備註
                 String memo = ExcelUtils.getContent(mainData, i, 13);
 //                if (memo == null || (memo != null && memo.isEmpty())) {
 //                    memo = getJsonValue(saveJson, "memo");
@@ -2079,7 +2079,7 @@ public class DepotHeadService {
                         String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
                         beanJson.put("operTime", operTime);
                     } catch (DateTimeParseException e1) {
-                        // TODO 記錄
+                        // 記錄
                         importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
                         continue;
                     }
@@ -2165,6 +2165,22 @@ public class DepotHeadService {
                 String rows = ary.toJSONString();
 
                 addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
+
+                // TODO 派發司機、指派人員
+                String driver = ExcelUtils.getContent(mainData, i, 14);
+                String assignMan = ExcelUtils.getContent(mainData, i, 15);
+                if(driver != null && !driver.isEmpty()) {
+                    try {
+                        // number
+                        Long headerId = depotHeadMapper.selectIdByNumber(number);
+                        Long userId = userService.getIdByUserName(assignMan);
+                        Integer driverId = supplierService.getSupplierId(driver);
+                        // headerId driverId assignDate assignUser
+                        assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
+                    } catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
+                }
 
                 importCount++;
             }
