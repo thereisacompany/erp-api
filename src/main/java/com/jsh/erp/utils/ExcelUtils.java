@@ -6,6 +6,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.datasource.vo.DepotHeadVo4List;
 import com.jsh.erp.datasource.vo.MaterialsListVo;
 import jxl.*;
@@ -49,7 +50,7 @@ public class ExcelUtils {
 	public static File exportHAConfirm(DepotHeadVo4List item, MaterialsListVo material) {
 		File excelFile = null;
 
-//		System.out.println("exportHAConfirm item >>>"+item);
+		System.out.println("exportHAConfirm item >>>"+item);
 
 		try {
 			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
@@ -64,12 +65,19 @@ public class ExcelUtils {
 					}
 				}
 			}
+			int startRow = 0;
+			boolean isPickup1 = item.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1);
+			if(isPickup1) {
+				filePath = "./excelFile/門市取貨安裝-空白確認書.xlsx";
+				outputName = "%s門市取貨安裝確認書.xlsx";
+				startRow = 1;
+			}
 
 			FileInputStream templateFile = new FileInputStream(filePath);
 			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
 			XSSFSheet sheet = workbook.getSheetAt(0);
 
-			Row row1 = sheet.getRow(1);
+			Row row1 = sheet.getRow(1+startRow);
 			row1.getCell(1).setCellValue(item.getReceiveName());	// 收貨人
 			row1.getCell(3).setCellValue(item.getCellphone());	// 電話
 			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
@@ -100,7 +108,7 @@ public class ExcelUtils {
 				outputName = String.format(outputName, item.getNumber());
 			}
 
-			Row row2 = sheet.getRow(2);
+			Row row2 = sheet.getRow(2+startRow);
 			row2.getCell(1).setCellValue(item.getAddress()); // 裝機地址
 			// 商品貨態
 //			if(item.getMainArrival() == null ||item.getMainArrival().isEmpty()) {
@@ -109,30 +117,44 @@ public class ExcelUtils {
 //				row2.getCell(7).setCellValue("\u2610 扣庫存  \u2611 "+item.getMainArrival()+" 到貨");
 //			}
 
-			Row row4 = sheet.getRow(4);
-			if(material == null) {
-				// 出貨倉別
-				row2.getCell(7).setCellValue(item.getDepotList());
-				//品號
-				row4.getCell(0).setCellValue(item.getMaterialNumber());
+			Row row4 = sheet.getRow(4+startRow);
+			if(isPickup1) {
+				// 商品貨態
+//				row2.getCell(7).setCellValue();
 				// 商品型號
-				row4.getCell(1).setCellValue(item.getMaterialsList());
+				row4.getCell(0).setCellValue(item.getMaterialsList());
 				if (item.getMaterialCount() != null) {
 					BigDecimal amount = new BigDecimal(String.valueOf(item.getMaterialCount()));
 					row4.getCell(4).setCellValue(amount.intValue());
 				} else {
 					row4.getCell(4).setCellValue(0);
 				}
-			} else {
-				row2.getCell(7).setCellValue(material.getDepotList());
 
-				row4.getCell(0).setCellValue(material.getMaterialNumber());
-				row4.getCell(1).setCellValue(material.getMaterialsList());
-				if (material.getMaterialCount() != null) {
-					BigDecimal amount = new BigDecimal(String.valueOf(material.getMaterialCount()));
-					row4.getCell(4).setCellValue(amount.intValue());
+			} else {
+				if (material == null) {
+					// 出貨倉別
+					row2.getCell(7).setCellValue(item.getDepotList());
+					//品號
+					row4.getCell(0).setCellValue(item.getMaterialNumber());
+					// 商品型號
+					row4.getCell(1).setCellValue(item.getMaterialsList());
+					if (item.getMaterialCount() != null) {
+						BigDecimal amount = new BigDecimal(String.valueOf(item.getMaterialCount()));
+						row4.getCell(4).setCellValue(amount.intValue());
+					} else {
+						row4.getCell(4).setCellValue(0);
+					}
 				} else {
-					row4.getCell(4).setCellValue(0);
+					row2.getCell(7).setCellValue(material.getDepotList());
+
+					row4.getCell(0).setCellValue(material.getMaterialNumber());
+					row4.getCell(1).setCellValue(material.getMaterialsList());
+					if (material.getMaterialCount() != null) {
+						BigDecimal amount = new BigDecimal(String.valueOf(material.getMaterialCount()));
+						row4.getCell(4).setCellValue(amount.intValue());
+					} else {
+						row4.getCell(4).setCellValue(0);
+					}
 				}
 			}
 
@@ -150,8 +172,8 @@ public class ExcelUtils {
 
 			// TODO QRCode
 			String FILE_MIME_TYPE = "PNG";
-			int QRCODE_IMAGE_WIDTH = 80;
-			int QRCODE_IMAGE_HEIGHT = 80;
+			int QRCODE_IMAGE_WIDTH = isPickup1?50:80;
+			int QRCODE_IMAGE_HEIGHT = isPickup1?50:80;
 			byte[] qrcode = generateQRCodeImage(QRCODE_IMAGE_WIDTH, QRCODE_IMAGE_HEIGHT, FILE_MIME_TYPE, item.getNumber());
 			// Set the asset no in the second cell and brand in the third cell
 
@@ -161,9 +183,9 @@ public class ExcelUtils {
 			ClientAnchor qrCodeAnchor = workbook.getCreationHelper().createClientAnchor();
 //                    ClientAnchor qrCodeAnchor = drawing.createAnchor(1000, 1000, 0, 0, 0 ,index ,1 ,index);
 //                    qrCodeAnchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
-			qrCodeAnchor.setCol1(7);
+			qrCodeAnchor.setCol1(7+startRow);
 //                    qrCodeAnchor.setCol2(1);
-			qrCodeAnchor.setRow1(4);
+			qrCodeAnchor.setRow1(4+startRow);
 //                    qrCodeAnchor.setRow2(index);
 			qrCodeAnchor.setDx1(75);
 //                    qrCodeAnchor.setDx2(500);
@@ -177,9 +199,19 @@ public class ExcelUtils {
 
 //			row4.getCell(7).setCellValue("QRCode");	// QRCode
 
-			Row row7 = sheet.getRow(7);
+			Row row7 = sheet.getRow(7+startRow);
 			if(remarkJson != null) {
 				row7.getCell(1).setCellValue(remarkJson.getString("memo"));    // 配送備註
+
+				if(isPickup1) {
+					JSONObject store = remarkJson.getJSONObject("store");
+
+					Row row0 = sheet.getRow(1);
+					row0.getCell(1).setCellValue(store.getString("man"));	// 取貨人
+					row0.getCell(3).setCellValue(store.getString("phone"));	// 電話
+					row0.getCell(5).setCellValue(store.getString("name"));	// 門市名稱
+					row0.getCell(7).setCellValue(store.getString("address"));	// 門市地址
+				}
 			}
 
 			FileOutputStream outputStream = new FileOutputStream(outputName);
