@@ -14,6 +14,7 @@
         <result column="contacts" jdbcType="VARCHAR" property="contacts" />
         <result column="telephone" jdbcType="VARCHAR" property="telephone" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="isPrint" jdbcType="VARCHAR" property="isPrint" />
     </resultMap>
 
     <resultMap id="ResultWithInfoExMap" type="com.jsh.erp.datasource.vo.DepotHeadVo4InDetail">
@@ -69,7 +70,7 @@
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
         select dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
-        me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName,
+        me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName, di.is_print isPrint,
         IFNULL(jdd.status,0) DStatus
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'

@@ -81,6 +81,8 @@ public class DepotHeadVo4List extends DepotHead{
     private String storeAddress;
     private String storePhone;
 
+    private String isPrint;
+
     public String getProjectName() {
         return projectName;
     }
@@ -367,5 +369,13 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setStorePhone(String storePhone) {
         this.storePhone = storePhone;
+    }
+
+    public String getIsPrint() {
+        return isPrint;
+    }
+
+    public void setIsPrint(String isPrint) {
+        this.isPrint = isPrint;
     }
 }
