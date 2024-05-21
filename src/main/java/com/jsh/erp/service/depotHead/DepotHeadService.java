@@ -1887,6 +1887,15 @@ public class DepotHeadService {
         return resList;
     }
 
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void setPrintData(Long[] subIds) {
+        try {
+            depotItemMapperEx.updateDepotItemIsPrint(Arrays.toString(subIds));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public BaseResponseInfo importExcel(MultipartFile file, HttpServletRequest request) throws Exception {
         BaseResponseInfo info = new BaseResponseInfo();
 

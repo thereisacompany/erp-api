@@ -626,6 +626,48 @@ public class DepotHeadController {
         }
     }
 
+    @GetMapping(value = "/print/list")
+    @ApiOperation(value = "批次列印確認書")
+    public void printList(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
+                           @ApiParam(value = "細單單號") @RequestParam(value = "subIds") Long[] sudIds,
+                           HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+
+            List<File> files = new ArrayList<>();
+            for (DepotHeadVo4List depotHeadVo4List : list) {
+                List<Long> idList = new ArrayList<>();
+                idList.add(depotHeadVo4List.getId());
+                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
+
+                if(findMaterialsListMapByHeaderIdList.size()==1) {
+                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
+                    files.add(file);
+                } else {
+                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+                        MaterialsListVo vo = materialMap.getValue();
+                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
+                            files.add(file);
+                        }
+                    });
+                }
+            }
+            if(!files.isEmpty()) {
+                // TODO
+                depotHeadService.setPrintData(sudIds);
+
+                ExportExecUtil.showExecs(files, response);
+
+                files.stream().forEach(File::delete);
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @PostMapping(value = "/importExcel")
     @ApiOperation(value = "excel表格匯入配送單")
     public BaseResponseInfo importExcel(MultipartFile file,

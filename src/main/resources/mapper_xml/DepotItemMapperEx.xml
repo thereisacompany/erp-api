@@ -123,6 +123,10 @@
         <result column="oper_number" jdbcType="VARCHAR" property="operNumber" />
     </resultMap>
 
+    <update id="updateDepotItemIsPrint" parameterType="java.lang.Long">
+        UPDATE jsh_depot_item SET is_print = '1' WHERE id IN (#{ids});
+    </update>
+
     <select id="selectByConditionDepotItem" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="com.jsh.erp.datasource.mappers.DepotItemMapper.BaseResultMap">
         select *
         FROM jsh_depot_item
