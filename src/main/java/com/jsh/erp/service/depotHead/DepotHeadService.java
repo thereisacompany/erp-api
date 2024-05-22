@@ -52,6 +52,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
 import static com.jsh.erp.utils.Tools.getNow3;
@@ -1890,7 +1891,7 @@ public class DepotHeadService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void setPrintData(Long[] subIds) {
         try {
-            depotItemMapperEx.updateDepotItemIsPrint(Arrays.toString(subIds));
+            depotItemMapperEx.updateDepotItemIsPrint(Arrays.asList(subIds));
         } catch (Exception e) {
             e.printStackTrace();
         }

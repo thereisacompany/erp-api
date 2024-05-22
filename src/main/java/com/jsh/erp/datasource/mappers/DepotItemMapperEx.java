@@ -18,7 +18,7 @@ import java.util.List;
  * @Date: 2019/1/24 16:59
  */
 public interface DepotItemMapperEx {
-    void updateDepotItemIsPrint(@Param("ids") String ids);
+    void updateDepotItemIsPrint(@Param("ids") List<Long> ids);
 
     List<DepotItem> selectByConditionDepotItem(
             @Param("name") String name,
