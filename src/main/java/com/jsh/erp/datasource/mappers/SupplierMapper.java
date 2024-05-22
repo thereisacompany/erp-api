@@ -27,7 +27,7 @@ public interface SupplierMapper {
 
     String selectCarUser(Long supplierId);
 
-    long selectCarUserId(Long supplierId);
+    Long selectCarUserId(Long supplierId);
 
     List<Supplier> selectByExample(SupplierExample example);
 

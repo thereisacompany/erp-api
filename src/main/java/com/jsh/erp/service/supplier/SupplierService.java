@@ -283,7 +283,7 @@ public class SupplierService {
 
         if(supplier.getType().contains("司機")) {
             Long carUserId = supplierMapper.selectCarUserId(supplier.getId());
-            if(carUserId > 0L) { // 此司機已有建立過登入帳號
+            if(carUserId != null && carUserId > 0L) { // 此司機已有建立過登入帳號
                 String passwd = null;
                 if (obj.containsKey("loginPassword")) {
                     passwd = obj.getString("loginPassword");
