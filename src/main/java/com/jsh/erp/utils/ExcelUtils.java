@@ -145,10 +145,17 @@ public class ExcelUtils {
 						row4.getCell(4).setCellValue(0);
 					}
 				} else {
-					row2.getCell(7).setCellValue(material.getDepotList());
+					if(material.getDepotList() != null) {
+						row2.getCell(7).setCellValue(material.getDepotList());
+					}
 
-					row4.getCell(0).setCellValue(material.getMaterialNumber());
-					row4.getCell(1).setCellValue(material.getMaterialsList());
+					if(material.getMaterialNumber() != null) {
+						row4.getCell(0).setCellValue(material.getMaterialNumber());
+					}
+					if(material.getMaterialsList() != null) {
+						row4.getCell(1).setCellValue(material.getMaterialsList());
+					}
+
 					if (material.getMaterialCount() != null) {
 						BigDecimal amount = new BigDecimal(String.valueOf(material.getMaterialCount()));
 						row4.getCell(4).setCellValue(amount.intValue());
@@ -206,11 +213,13 @@ public class ExcelUtils {
 				if(isPickup1) {
 					JSONObject store = remarkJson.getJSONObject("store");
 
-					Row row0 = sheet.getRow(1);
-					row0.getCell(1).setCellValue(store.getString("man"));	// 取貨人
-					row0.getCell(3).setCellValue(store.getString("phone"));	// 電話
-					row0.getCell(5).setCellValue(store.getString("name"));	// 門市名稱
-					row0.getCell(7).setCellValue(store.getString("address"));	// 門市地址
+					if(store!=null) {
+						Row row0 = sheet.getRow(1);
+						row0.getCell(1).setCellValue(store.getString("man"));    // 取貨人
+						row0.getCell(3).setCellValue(store.getString("phone"));    // 電話
+						row0.getCell(5).setCellValue(store.getString("name"));    // 門市名稱
+						row0.getCell(7).setCellValue(store.getString("address"));    // 門市地址
+					}
 				}
 			}
 
@@ -223,8 +232,8 @@ public class ExcelUtils {
 
 			templateFile.close();
 		} catch (Exception e) {
-//			e.printStackTrace();
-			throw new RuntimeException(e);
+			e.printStackTrace();
+//			throw new RuntimeException(e);
 		}
 		return excelFile;
 	}

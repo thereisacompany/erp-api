@@ -684,7 +684,7 @@ public class DepotHeadService {
         return materialsListMap;
     }
 
-    private Map<String, MaterialPickupsListVo> findMaterialsPickupListMapByHeaderIdList(List<Long> idList) {
+    public Map<String, MaterialPickupsListVo> findMaterialsPickupListMapByHeaderIdList(List<Long> idList) {
         Map<String, MaterialPickupsListVo> materialPickupsListVoMap = new HashMap<>();
         if(idList.isEmpty()) {
             return materialPickupsListVoMap;

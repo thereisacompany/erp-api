@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class MaterialPickupsListVo {
 
+    private Long id;
     private Long headerId;
     private String name;
     private BigDecimal amount;
