@@ -611,12 +611,12 @@ public class DepotHeadController {
 //
 //            }
             if(!files.isEmpty()) {
-                if(files.size() == 1) {
-                    File file = files.get(0);
-                    ExportExecUtil.showExec(file, file.getName(), response);
-                } else {
+//                if(files.size() == 1) {
+//                    File file = files.get(0);
+//                    ExportExecUtil.showExec(file, file.getName(), response);
+//                } else {
                     ExportExecUtil.showExecs(files, response);
-                }
+//                }
 
                 files.stream().forEach(File::delete);
             }
