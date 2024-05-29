@@ -1023,4 +1023,26 @@
       delete_flag = #{deleteFlag,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertAgreedDeliver" parameterType="com.jsh.erp.datasource.vo.AgreedDelivery">
+    INSERT INTO erp_dev.jsh_depot_agreed_delivery (detail_id, datetime, creator, is_default)
+    VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateAgreedDelivery" parameterType="java.lang.Long">
+    UPDATE jsh_depot_agreed_delivery SET is_default = 0 WHERE detail_id = ${detailId}
+  </update>
+
+  <select id="selectAgreedDeliveryByHeader" resultType="com.jsh.erp.datasource.vo.AgreedDeliveryVoList">
+    select
+    header_id headerId, `datetime`
+    from jsh_depot_detail jdd
+    left join jsh_depot_agreed_delivery jdad on jdad.detail_id = jdd.id
+    where header_id in
+    <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+      #{item}
+    </foreach>
+    and jdad.is_default = 1
+  </select>
+
 </mapper>

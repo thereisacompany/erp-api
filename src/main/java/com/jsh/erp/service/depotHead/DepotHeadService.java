@@ -118,6 +118,12 @@ public class DepotHeadService {
         DepotHead result=null;
         try{
             result=depotHeadMapper.selectByPrimaryKey(id);
+
+            List<AgreedDeliveryVoList> list = depotHeadMapper.selectAgreedDeliveryByHeader(Arrays.asList(id));
+            if(!list.isEmpty()) {
+                AgreedDeliveryVoList vo = list.get(0);
+                result.setAgreedDelivery(vo.getDatetime());
+            }
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -130,6 +136,19 @@ public class DepotHeadService {
         List<DepotHead> list=null;
         try{
             list=depotHeadMapper.selectByExample(example);
+            List<Long> ids = new ArrayList<>();
+            list.stream().forEach(dh->ids.add(dh.getId()));
+            if(!ids.isEmpty()) {
+                List<AgreedDeliveryVoList> agreedList = depotHeadMapper.selectAgreedDeliveryByHeader(ids);
+                list.stream().forEach(dh->{
+                    Optional<AgreedDeliveryVoList> findAd =
+                            agreedList.stream().filter(ad->ad.getHeaderId()==dh.getId()).findFirst();
+                    if(findAd.isPresent()) {
+                        AgreedDeliveryVoList vo = findAd.get();
+                        dh.setAgreedDelivery(vo.getDatetime());
+                    }
+                });
+            }
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -158,18 +177,22 @@ public class DepotHeadService {
                  materialParam, keyword, organId, organArray, MNumber, creator, depotId, counterId, depotArray, accountId, remark,
                     dStatus, driverId, beginDateTime, endDateTime, offset, rows);
             if (null != list) {
+                List<Long> ids = new ArrayList<>();
                 List<Long> idList = new ArrayList<>();
                 List<Long> pickupList = new ArrayList<>();
                 List<String> numberList = new ArrayList<>();
                 for (DepotHeadVo4List dh : list) {
+                    Long id = dh.getId();
                     if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
                             || dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
-                        pickupList.add(dh.getId());
+                        pickupList.add(id);
                     } else {
-                        idList.add(dh.getId());
+                        idList.add(id);
                     }
+                    ids.add(id);
                     numberList.add(dh.getNumber());
                 }
+
                 //通过批量查询去构造map
                 Map<String,BigDecimal> finishDepositMap = getFinishDepositMapByNumberList(numberList);
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
@@ -177,6 +200,11 @@ public class DepotHeadService {
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                 Map<String, MaterialPickupsListVo> pickupListMap = findMaterialsPickupListMapByHeaderIdList(pickupList);
 //                Map<Long,BigDecimal> materialCountListMap = getMaterialCountListMapByHeaderIdList(idList);
+                List<AgreedDeliveryVoList> agreedList = new ArrayList<>();
+                if(!ids.isEmpty()) {
+                    agreedList = depotHeadMapper.selectAgreedDeliveryByHeader(ids);
+                }
+
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId()+""+dh.getSubId()+""+dh.getMNumber();
 
@@ -296,6 +324,13 @@ public class DepotHeadService {
                             dh.setInstall("");
                             dh.setRecycle("");
                         }
+                    }
+
+                    Optional<AgreedDeliveryVoList> findAd =
+                            agreedList.stream().filter(ad->ad.getHeaderId()==dh.getId()).findFirst();
+                    if(findAd.isPresent()) {
+                        AgreedDeliveryVoList vo = findAd.get();
+                        dh.setAgreedDelivery(vo.getDatetime());
                     }
 
                     resList.add(dh);
@@ -1280,6 +1315,18 @@ public class DepotHeadService {
                 record.setDate(LocalDateTime.now().format(formatterChange));
                 depotHeadMapper.insertDetailRecord(record);
 
+                // agreed_delivery insert to agreed table
+                if(depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
+                    depotHeadMapper.updateAgreedDelivery(detail.getId());
+                    AgreedDelivery agreedDelivery = new AgreedDelivery();
+                    agreedDelivery.setDetailId(detail.getId());
+                    agreedDelivery.setDatetime(depotHead.getAgreedDelivery());
+                    User user = userService.getCurrentUser();
+                    agreedDelivery.setName(user.getUsername());
+                    agreedDelivery.setIsDefault(1);
+                    depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+                }
+
                 logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
             }
         } catch (Exception e) {
@@ -1628,6 +1675,21 @@ public class DepotHeadService {
 
         try{
             depotHeadMapper.updateByPrimaryKeySelective(depotHead);
+
+            DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
+            if(detail != null) {
+                // agreed_delivery insert to agreed table
+                if (depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
+                    depotHeadMapper.updateAgreedDelivery(detail.getId());
+                    AgreedDelivery agreedDelivery = new AgreedDelivery();
+                    agreedDelivery.setDetailId(detail.getId());
+                    agreedDelivery.setDatetime(depotHead.getAgreedDelivery());
+                    User user = userService.getCurrentUser();
+                    agreedDelivery.setName(user.getUsername());
+                    agreedDelivery.setIsDefault(1);
+                    depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+                }
+            }
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }

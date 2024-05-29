@@ -4,9 +4,7 @@ import com.jsh.erp.datasource.entities.*;
 
 import java.util.List;
 
-import com.jsh.erp.datasource.vo.DeliveryStatus;
-import com.jsh.erp.datasource.vo.DepotHeadDetail;
-import com.jsh.erp.datasource.vo.DriverDelivery;
+import com.jsh.erp.datasource.vo.*;
 import org.apache.ibatis.annotations.Param;
 
 public interface DepotHeadMapper {
@@ -59,4 +57,10 @@ public interface DepotHeadMapper {
                         @Param("beginTime") String beginTime,
                         @Param("endTime") String endTime,
                        @Param("keyword") String keyword);
+
+    int insertAgreedDeliver(AgreedDelivery record);
+    int updateAgreedDelivery(@Param("detailId") Long detailId);
+
+    List<AgreedDeliveryVoList> selectAgreedDeliveryByHeader(@Param("idList") List<Long> idList);
+
 }
