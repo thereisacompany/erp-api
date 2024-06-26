@@ -410,7 +410,7 @@ public class DepotItemService {
         //刪除序列號和回收序列號
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
         //刪除單據的明細
-        deleteDepotItemHeadId(headerId, Boolean.FALSE);
+        deleteDepotItemHeadId(headerId, 0L, Boolean.FALSE);
 
         List<DepotItem> depotItemList = getListByHeaderId(headerId);
 
@@ -747,13 +747,18 @@ public class DepotItemService {
         DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
         //删除序列号和回收序列号
         deleteOrCancelSerialNumber(actionType, depotHead, headerId);
+
         //删除单据的明细
-        deleteDepotItemHeadId(headerId, Boolean.TRUE);
+//        deleteDepotItemHeadId(headerId, Boolean.TRUE);
         JSONArray rowArr = JSONArray.parseArray(rows);
         if (null != rowArr && rowArr.size()>0) {
             for (int i = 0; i < rowArr.size(); i++) {
                 DepotItem depotItem = new DepotItem();
                 JSONObject rowObj = JSONObject.parseObject(rowArr.getString(i));
+
+                //刪除單據的明細
+                deleteDepotItem(rowObj.getLong("subId"), null);
+
                 depotItem.setHeaderId(headerId);
                 String barCode = rowObj.getString("barCode");
                 MaterialExtend materialExtend = materialExtendService.getInfoByBarCode(barCode);
@@ -972,19 +977,20 @@ public class DepotItemService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void deleteDepotItemHeadId(Long headerId, boolean isTrans)throws Exception {
+    public void deleteDepotItemHeadId(Long headerId, Long itemId, boolean isTrans)throws Exception {
         try{
             //1、查询删除前的单据明细
             List<DepotItem> depotItemList = getListByHeaderId(headerId);
             //2、删除单据明细
             DepotItemExample example = new DepotItemExample();
             example.createCriteria().andHeaderIdEqualTo(headerId);
+            if(isTrans) {
+                example.createCriteria().andIdEqualTo(itemId);
+            }
             depotItemMapper.deleteByExample(example);
             //3、计算删除之后单据明细中商品的库存
             for(DepotItem depotItem : depotItemList){
-                if(isTrans) {
-
-                } else {
+                if(!isTrans) {
                     updateCurrentStock(depotItem);
                 }
             }
