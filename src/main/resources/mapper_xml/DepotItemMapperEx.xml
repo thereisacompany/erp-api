@@ -303,10 +303,10 @@
             or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="beginTime != null">
-            and dh.oper_time >= #{beginTime}
+            and dh.create_time >= #{beginTime}
         </if>
         <if test="endTime != null">
-            and dh.oper_time &lt;= #{endTime}
+            and dh.create_time &lt;= #{endTime}
         </if>
         <if test="organId != null">
             and dh.organ_id = #{organId}
@@ -595,10 +595,10 @@
         and ifnull(dh.delete_flag,'0') !='1'
         and di.material_id=#{mId}
         <if test="beginTime != null">
-            and dh.oper_time &gt;= #{beginTime}
+            and dh.create_time &gt;= #{beginTime}
         </if>
         <if test="endTime != null">
-            and dh.oper_time &lt;= #{endTime}
+            and dh.create_time &lt;= #{endTime}
         </if>
         <if test="organId != null">
             and dh.organ_id = ${organId}
@@ -629,10 +629,10 @@
         and ifnull(dh.delete_flag,'0') !='1'
         and di.material_id=#{mId}
         <if test="beginTime != null">
-            and dh.oper_time &gt;= #{beginTime}
+            and dh.create_time &gt;= #{beginTime}
         </if>
         <if test="endTime != null">
-            and dh.oper_time &lt;= #{endTime}
+            and dh.create_time &lt;= #{endTime}
         </if>
         <if test="organId != null">
             and dh.organ_id = ${organId}

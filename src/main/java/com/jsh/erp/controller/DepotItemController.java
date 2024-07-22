@@ -384,7 +384,10 @@ public class DepotItemController {
 //                timeB = Tools.lastDayOfMonth(now) + BusinessConstants.DAY_LAST_TIME;
             }
 
-            List<Long> depotList = parseListByDepotIds(depotIds);
+            List<Long> depotList = new ArrayList<>();
+            if(!depotIds.isEmpty()) {
+                depotList = parseListByDepotIds(depotIds);
+            }
             List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
                     timeA, timeB, findOrganId, depotList.isEmpty()?null:depotList.get(0), (currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
