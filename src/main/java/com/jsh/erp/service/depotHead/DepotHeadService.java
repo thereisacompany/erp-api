@@ -210,11 +210,11 @@ public class DepotHeadService {
 
                     //客單編號
                     if(dh.getCustomNumber()!=null) {
-                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+//                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
                     }
                     //原始客編
                     if(dh.getSourceNumber()!=null) {
-                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+//                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
                     }
 
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
@@ -994,10 +994,10 @@ public class DepotHeadService {
                 Map<String, MaterialPickupsListVo> pickupListMap = findMaterialsPickupListMapByHeaderIdList(pickupList);
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getCustomNumber()!=null) {
-                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+//                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
                     }
                     if(dh.getSourceNumber()!=null) {
-                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+//                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
                     }
                     if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
                         String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
