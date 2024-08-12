@@ -96,14 +96,14 @@ public class FunctionController {
                 //增加首页菜单项
                 JSONObject homeItem = new JSONObject();
                 homeItem.put("id", 0);
-                homeItem.put("text", "首页");
-                homeItem.put("icon", "home");
+                homeItem.put("text", "首頁");
+                homeItem.put("icon", "bx-home-circle");
                 homeItem.put("url", "/dashboard/analysis");
                 homeItem.put("component", "/layouts/TabLayout");
                 dataArray.add(0,homeItem);
             }
         } catch (DataAccessException e) {
-            logger.error(">>>>>>>>>>>>>>>>>>>查找异常", e);
+            logger.error(">>>>>>>>>>>>>>>>>>>查找異常", e);
         }
         return dataArray;
     }
