@@ -43,6 +43,36 @@ public class ExcelUtils {
 	public static final int EMU_PER_PIXEL = 9525;
 	public static final int EMU_PER_POINT = 12700;
 
+	public static File exportPicking(DepotHeadVo4List item, MaterialsListVo material) {
+		File excelFile = null;
+		try{
+			String filePath = "./excelFile/配送單-撿貨總表.xlsx";
+			String outputName = "%s配送單-撿貨總表.xlsx";
+
+			LocalDateTime now = LocalDateTime.now();
+
+			// 匯出檔名
+			outputName = String.format(outputName, now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+
+			FileInputStream templateFile = new FileInputStream(filePath);
+			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
+
+			FileOutputStream outputStream = new FileOutputStream(outputName);
+
+
+			workbook.write(outputStream);
+
+			excelFile = new File(outputName);
+//			System.out.println("excel file name >>>"+excelFile.getName());
+			outputStream.close();
+
+			templateFile.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return excelFile;
+	}
+
 	/**
 	 * @param item
 	 * @return

@@ -625,6 +625,79 @@ public class DepotHeadController {
         }
     }
 
+    @GetMapping(value = "/exportPicking")
+    @ApiOperation(value = "匯出撿貨單")
+    public void exportPicking(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
+                               @ApiParam(value = "細單單號") @RequestParam(value = "subIds") Long[] subIds,
+                               HttpServletRequest request, HttpServletResponse response) {
+        try {
+//            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+//
+//            List<File> files = new ArrayList<>();
+//            for (DepotHeadVo4List depotHeadVo4List : list) {
+//                List<Long> idList = new ArrayList<>();
+//                List<Long> pickupList = new ArrayList<>();
+//                if (depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+//                        || depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+//                    pickupList.add(depotHeadVo4List.getId());
+//                } else {
+//                    idList.add(depotHeadVo4List.getId());
+//                }
+//
+//                if(!idList.isEmpty()) {
+//                    Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+//                            depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
+//                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+//                        MaterialsListVo vo = materialMap.getValue();
+//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
+//                            files.add(file);
+//                        }
+//                    });
+//                }
+//                if(!pickupList.isEmpty()) {
+//                    Map<String, MaterialPickupsListVo> pickupListMap =
+//                            depotHeadService.findMaterialsPickupListMapByHeaderIdList(pickupList);
+//                    pickupListMap.entrySet().stream().forEach(materialMap->{
+//                        MaterialPickupsListVo vo = materialMap.getValue();
+//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+//                            MaterialsListVo mVo = new MaterialsListVo();
+//                            mVo.setId(vo.getId());
+//                            mVo.setHeaderId(vo.getHeaderId());
+//                            mVo.setMaterialsList(vo.getName());
+//                            mVo.setMaterialCount(vo.getAmount());
+//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, mVo);
+//                            files.add(file);
+//                        }
+//                    });
+//                }
+
+//                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+//                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
+//                if(findMaterialsListMapByHeaderIdList.size()==1) {
+//                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
+//                    files.add(file);
+//                } else {
+//                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+//                        MaterialsListVo vo = materialMap.getValue();
+//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
+//                            files.add(file);
+//                        }
+//                    });
+//                }
+//            }
+            File file = ExcelUtils.exportPicking(null ,null);
+//            ExportExecUtil.showExecs(Arrays.asList(file), response);
+            ExportExecUtil.showExec(file, file.getName(), response);
+            file.delete();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @GetMapping(value = "/export/list")
     @ApiOperation(value = "批次匯出確認書")
     public void exportList(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
