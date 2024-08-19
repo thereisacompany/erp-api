@@ -362,6 +362,8 @@
     <select id="findMaterialsListMapByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialsListVo">
         select jsh_depot_item.id,jsh_depot_item.header_id,
             jsh_material.name materialsList,
+            jsh_material.model materialsModel,
+            jsh_material.standard materialsStandard,
             jsh_depot_item.oper_number materialCount,
             jsh_depot_item.confirm_number confirmNumber,
             jsh_material_extend.number materialNumber,

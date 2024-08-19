@@ -422,10 +422,12 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_NUMBER_NEED_LESS_ZERO_FAILED_MSG = "抱歉，帶入的商品:%s,數量不得小於0";
     public static final int DEPOT_HEAD_DEPOT_DIFF_CODE = 8500028;
     public static final String DEPOT_HEAD_DEPOT_DIFF_MSG = "建立、編輯進貨單時，不得同時有不同倉庫的商品，請個別建立單據";
-
     public static final int DEPOT_HEAD_TRANSFER_DEPOT_DIFF_CODE = 8500029;
     public static final String DEPOT_HEAD_TRANSFER_DEPOT_DIFF_MSG = "建立、編輯移倉單時，不得同時有不同倉庫的商品，請個別建立單據";
-
+    public static final int DEPOT_HEAD_EXPORT_PICKING_MAX_CODE = 8500030;
+    public static final String DEPOT_HEAD_EXPORT_PICKING_MAX_MSG = "匯出揀貨單數量超過20筆，請重新選擇";
+    public static final int DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_CODE = 8500031;
+    public static final String DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_MSG = "匯出揀貨單內含門市取貨單據，請重新選擇";
 
     /**
      *  单据明细信息

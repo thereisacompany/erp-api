@@ -10,6 +10,8 @@ public class MaterialsListVo {
     private Long headerId;
 
     private String materialsList;
+    private String materialsModel;
+    private String materialsStandard;
 
     private Long categoryId;
 
@@ -54,6 +56,22 @@ public class MaterialsListVo {
 
     public void setMaterialsList(String materialsList) {
         this.materialsList = materialsList;
+    }
+
+    public String getMaterialsModel() {
+        return materialsModel;
+    }
+
+    public void setMaterialsModel(String materialsModel) {
+        this.materialsModel = materialsModel;
+    }
+
+    public String getMaterialsStandard() {
+        return materialsStandard;
+    }
+
+    public void setMaterialsStandard(String materialsStandard) {
+        this.materialsStandard = materialsStandard;
     }
 
     public String getDepotList() {

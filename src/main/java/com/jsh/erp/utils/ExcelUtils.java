@@ -43,7 +43,7 @@ public class ExcelUtils {
 	public static final int EMU_PER_PIXEL = 9525;
 	public static final int EMU_PER_POINT = 12700;
 
-	public static File exportPicking(DepotHeadVo4List item, MaterialsListVo material) {
+	public static File exportPicking(List<DepotHeadVo4List> items, String name) {
 		File excelFile = null;
 		try{
 			String filePath = "./excelFile/配送單-撿貨總表.xlsx";
@@ -57,9 +57,42 @@ public class ExcelUtils {
 			FileInputStream templateFile = new FileInputStream(filePath);
 			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
 
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			Row row1 = sheet.getRow(1);
+			row1.getCell(1).setCellValue(now.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+			Row row2 = sheet.getRow(2);
+			row2.getCell(1).setCellValue(now.format(DateTimeFormatter.ofPattern("HH:mm")));
+
+			Row row;
+			int i = 0;
+			for(DepotHeadVo4List depotHeadVo : items) {
+				row = sheet.getRow(5+i);
+
+				row.getCell(1).setCellValue(depotHeadVo.getCustomNumber());
+				row.getCell(2).setCellValue(depotHeadVo.getSourceNumber());
+				String showId = String.format("%03d", depotHeadVo.getOrganId());
+//				System.out.println(">>"+showId+" "+depotHeadVo.getOrganName());
+				row.getCell(3).setCellValue(showId+" "+depotHeadVo.getOrganName());
+				row.getCell(4).setCellValue(depotHeadVo.getMaterialNumber());
+				String[] tmpName = depotHeadVo.getMaterialsList().split("@");
+				row.getCell(5).setCellValue(tmpName[0]);
+				if(tmpName.length>1) {
+					row.getCell(6).setCellValue(tmpName[1]);
+				} else {
+					row.getCell(6).setCellValue("");
+				}
+				row.getCell(7).setCellValue(String.valueOf(depotHeadVo.getMaterialCount().intValue()));
+				row.getCell(8).setCellValue(depotHeadVo.getCounterName());
+				JSONObject remarkJson = JSONObject.parseObject(depotHeadVo.getRemark());
+				row.getCell(9).setCellValue(remarkJson.getString("memo"));
+
+				i++;
+			}
+			Row rowName = sheet.getRow(26);
+			rowName.getCell(0).setCellValue("製表人："+name);
+			rowName.getCell(7).setCellValue("揀貨人員：");
+
 			FileOutputStream outputStream = new FileOutputStream(outputName);
-
-
 			workbook.write(outputStream);
 
 			excelFile = new File(outputName);
