@@ -18,18 +18,20 @@ public class ExportExecUtil {
 //	       fileName = new String(fileName.getBytes("gbk"),"ISO8859_1");
 		fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
 		response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\""); //".xls" +
-		FileInputStream fis = new FileInputStream(excelFile);
-		OutputStream out = response.getOutputStream();
-		int SIZE = 1024 * 1024;
-		byte[] bytes = new byte[SIZE];
-		int LENGTH = -1;
-		while((LENGTH = fis.read(bytes)) != -1){
-			out.write(bytes,0,LENGTH);
+		response.setContentLengthLong(excelFile.length());  // 設置Content-Length
+
+		try(FileInputStream fis = new FileInputStream(excelFile)) {
+			OutputStream out = response.getOutputStream();
+			byte[] bytes = new byte[1024 * 1024];
+			int LENGTH = -1;
+			while ((LENGTH = fis.read(bytes)) != -1) {
+				out.write(bytes, 0, LENGTH);
+			}
+
+			out.flush();
+		} catch (Exception e) {
+			throw new RuntimeException("Error writing file to output stream.", e);
 		}
-
-		out.flush();
-		fis.close();
-
 	}
 
 	public static void showExecs(List<File> list, HttpServletResponse response) throws IOException {
