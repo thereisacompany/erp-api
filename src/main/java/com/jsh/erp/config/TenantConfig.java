@@ -53,12 +53,13 @@ public class TenantConfig {
                 String token = request.getHeader("X-Access-Token");
                 Long tenantId = Tools.getTenantIdByToken(token);
                 if (tenantId!=0L) {
-                    // 这里可以判断是否过滤表
+                    // 這裡可以判斷是否過濾表
                     if ("jsh_material_property".equals(tableName) || "jsh_sequence".equals(tableName)
                             || "jsh_user_business".equals(tableName) || "jsh_function".equals(tableName)
                             || "jsh_platform_config".equals(tableName) || "jsh_tenant".equals(tableName)
                             || "jsh_depot_detail".equals(tableName) || "jsh_depot_record".equals(tableName)
-                            || "jsh_depot_report".equals(tableName) || "jsh_material_pickup".equals(tableName)) {
+                            || "jsh_depot_report".equals(tableName) || "jsh_material_pickup".equals(tableName)
+                            || "jsh_depot_agreed_delivery".equals(tableName)) {
                         res = true;
                     } else {
                         res = false;
