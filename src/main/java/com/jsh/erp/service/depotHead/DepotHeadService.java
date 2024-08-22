@@ -274,6 +274,9 @@ public class DepotHeadService {
                     } else {
                         if (!materialsListMap.isEmpty()) {
                             MaterialsListVo vo = materialsListMap.get(mKey);
+                            if(vo == null) {
+                                continue;
+                            }
                             dh.setMaterialsList(vo.getMaterialsList());
                             if(dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
                                 if(dh.getStatus().equals(BusinessConstants.BILLS_STATUS_AUDIT)) {
