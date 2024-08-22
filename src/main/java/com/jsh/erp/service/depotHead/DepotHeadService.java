@@ -52,7 +52,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
 import static com.jsh.erp.utils.Tools.getNow3;
@@ -1558,7 +1557,7 @@ public class DepotHeadService {
             if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
                 JSONArray rowArr = JSONArray.parseArray(rows);
 
-                // TODO 檢查傳入的items，是否有不同倉的商品
+                // 檢查傳入的items，是否有不同倉的商品
                 List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
                 if(countNumberOfDepot(rowList) > 1) {
                     throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_CODE,
@@ -1720,7 +1719,7 @@ public class DepotHeadService {
         if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_IN)) {
             JSONArray rowArr = JSONArray.parseArray(rows);
 
-            // TODO 檢查傳入的items，是否有不同倉的商品
+            // 檢查傳入的items，是否有不同倉的商品
             List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
             if(countNumberOfDepot(rowList) > 1) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DEPOT_DIFF_CODE,
@@ -2005,6 +2004,8 @@ public class DepotHeadService {
             int importCount = 0; // 匯入筆數
             Map<String, String> importError = new HashMap<>(); // 匯入有缺欄位的客單編號+原始編號，或是重複的客單編號+原始編號
 
+            Map<String, JSONObject> beanList = new HashMap<>();
+            Map<String, String> rowList = new HashMap<>();
             for (int i = 1; i < mainData.getRows(); i++) {
                 JSONObject beanJson = new JSONObject();
 
@@ -2088,7 +2089,7 @@ public class DepotHeadService {
                     importError.put(""+i, "出貨倉別未填寫");
                     continue;
                 }
-                // TODO 門市取貨、門市取貨派送 不需填品號，亦不需扣庫存
+                // 門市取貨、門市取貨派送 不需填品號，亦不需扣庫存
                 int isPickup = 1;
                 if(depotName.equals(BusinessConstants.SUB_TYPE_PICKUP)) {
                     isPickup = 2;
@@ -2102,7 +2103,7 @@ public class DepotHeadService {
                 if (tmpDepot.isPresent()) {
                     depot = tmpDepot.get();
                 } else {
-                    // TODO 記錄
+                    // 記錄
                     if(isPickup==1) {
                         importError.put("" + i, "查無此倉庫(" + depotName + ")");
                         continue;
@@ -2118,7 +2119,7 @@ public class DepotHeadService {
                 String mNumber = ExcelUtils.getContent(mainData, i, 8);
                 MaterialVo4Unit materialVo4Unit=new MaterialVo4Unit();
                 if(mNumber ==null || (mNumber != null && mNumber.isEmpty())){
-                    // TODO 記錄
+                    // 記錄
                     if(isPickup==1) {
                         importError.put("" + i, "品號未填寫");
                         continue;
@@ -2129,7 +2130,7 @@ public class DepotHeadService {
                     if (tempM.isPresent()) {
                         materialVo4Unit = tempM.get();
                     } else {
-                        // TODO 記錄
+                        // 記錄
                         if(isPickup==1) {
                             importError.put("" + i, "查無此品號(" + mNumber + ")");
                             continue;
@@ -2142,7 +2143,7 @@ public class DepotHeadService {
                 // 數量 (必填)
                 String amount = ExcelUtils.getContent(mainData, i, 10);
                 if (amount == null || (amount != null && amount.isEmpty())) {
-                    // TODO 記錄
+                    // 記錄
                     importError.put("" + i, "數量未填寫");
                     continue;
                 }
@@ -2270,48 +2271,63 @@ public class DepotHeadService {
 
                 String rows = ary.toJSONString();
 
-                addDepotHeadAndDetail(beanJson.toJSONString(), rows, request, userInfo);
+                beanList.put(String.valueOf(i), beanJson);
+                rowList.put(String.valueOf(i), rows);
 
                 importCount++;
-
-                // TODO 派發司機、指派人員
-                String driver = ExcelUtils.getContent(mainData, i, 14);
-                String assignMan = ExcelUtils.getContent(mainData, i, 15);
-                if(driver != null && !driver.isEmpty()) {
-                    try {
-                        // number
-                        Long headerId = depotHeadMapper.selectIdByNumber(number);
-                        Long userId = userService.getIdByUserName(assignMan);
-                        Integer driverId = supplierService.getSupplierId(driver);
-                        // headerId driverId assignDate assignUser
-                        assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
-                    } catch (Exception e){
-                        logger.error("指派司機失敗 : "+e.getMessage());
-                        System.out.println(e.getMessage());
-                    }
-                }
             }
 
-            logService.insertLog("匯入配送單",
-                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
-                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-            Long endTime = System.currentTimeMillis();
-            logger.info("匯入秏時：{}", endTime - beginTime);
-            info.code = 200;
-            info.data = "匯入成功";
-            // TODO 加入顯示匯入失敗的記錄 及判斷importCount 是否等於匯入數量
+            // 顯示匯入失敗的記錄
             if(importError.size() > 0) {
                 StringBuffer sb= new StringBuffer();
-                sb.append(", 匯入失敗列數:\n");
+                sb.append("請檢查文件資料，匯入失敗列數:\n");
                 importError.entrySet().stream().forEach(value->{
                     sb.append("Excel文件第"+value.getKey()+"列");
                     sb.append("->");
                     sb.append(value.getValue());
                     sb.append("\n");
                 });
-                info.data += sb.toString();
+                info.code = 200;
+                info.data = sb.toString();
+                return info;
             }
-            logger.info((String) info.data);
+
+            // TODO 先全部檢查無誤，才開始寫入
+            beanList.entrySet().stream().forEach(value -> {
+                try {
+                    String key = value.getKey();
+                    String rows = rowList.get(key);
+                    addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
+
+                    // 派發司機、指派人員
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 14);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
+                    if(driver != null && !driver.isEmpty()) {
+                        try {
+                            // number
+                            Long headerId = depotHeadMapper.selectIdByNumber(value.getValue().getString("number"));
+                            Long userId = userService.getIdByUserName(assignMan);
+                            Integer driverId = supplierService.getSupplierId(driver);
+                            // headerId driverId assignDate assignUser
+                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
+                        } catch (Exception e){
+                            logger.error("指派司機失敗 : "+e.getMessage());
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            logService.insertLog("匯入配送單",
+                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+            Long endTime = System.currentTimeMillis();
+            logger.info(info.data + "，匯入秏時：{}", endTime - beginTime);
+
+            info.code = 200;
+            info.data = "匯入成功";
         } catch (BusinessRunTimeException brte) {
             brte.printStackTrace();
             info.code = brte.getCode();
