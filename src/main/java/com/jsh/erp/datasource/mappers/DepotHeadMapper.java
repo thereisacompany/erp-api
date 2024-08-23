@@ -61,6 +61,8 @@ public interface DepotHeadMapper {
     int insertAgreedDeliver(AgreedDelivery record);
     int updateAgreedDelivery(@Param("detailId") Long detailId);
 
+    List<AgreedDelivery> selectAgreedDelivery(@Param("detailId") Long detailId);
+
     List<AgreedDeliveryVoList> selectAgreedDeliveryByHeader(@Param("idList") List<Long> idList);
 
 }

@@ -1145,7 +1145,7 @@ public class DepotHeadService {
             } else {
                 dhd.setAssignUser(null);
             }
-            if(!detail.getFilePath().isEmpty()) {
+            if(detail.getFilePath() != null && !detail.getFilePath().isEmpty()) {
                 String[] paths = detail.getFilePath().split(",");
                 Arrays.sort(paths, (s1, s2) -> {
                     String num1 = s1.replaceAll("\\D+", "");
@@ -1203,6 +1203,19 @@ public class DepotHeadService {
                 });
             }
         }
+        return list;
+    }
+
+    public List<AgreedDelivery> getAgreedData(Long headerId) {
+        List<AgreedDelivery> list = new ArrayList<>();
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        }
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(headerId, null);
+        list = depotHeadMapper.selectAgreedDelivery(detail.getId());
         return list;
     }
 

@@ -70,6 +70,12 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="date" jdbcType="VARCHAR" property="date" />
   </resultMap>
+  <resultMap id="AgreedResultMap" type="com.jsh.erp.datasource.vo.AgreedDelivery">
+    <result column="detail_id" jdbcType="BIGINT" property="detailId" />
+    <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+    <result column="creator" jdbcType="VARCHAR" property="name" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+  </resultMap>
   <resultMap id="ReportResultMap" type="com.jsh.erp.datasource.entities.DepotReport">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
@@ -1032,6 +1038,13 @@
   <update id="updateAgreedDelivery" parameterType="java.lang.Long">
     UPDATE jsh_depot_agreed_delivery SET is_default = 0 WHERE detail_id = #{detailId}
   </update>
+
+  <select id="selectAgreedDelivery" resultMap="AgreedResultMap">
+    SELECT datetime, creator, is_default
+    FROM jsh_depot_agreed_delivery
+    WHERE detail_id = ${detailId}
+    ORDER BY is_default DESC, datetime DESC
+  </select>
 
   <select id="selectAgreedDeliveryByHeader" resultType="com.jsh.erp.datasource.vo.AgreedDeliveryVoList">
     select
