@@ -658,7 +658,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                     findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                         MaterialsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(subIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             depotHeadVo4List.setDepotList(vo.getDepotList());
                             depotHeadVo4List.setMaterialNumber(vo.getMaterialNumber());
                             depotHeadVo4List.setMaterialsList(vo.getMaterialsModel()+"@"+vo.getMaterialsStandard());
@@ -709,7 +709,8 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                     findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                         MaterialsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(subIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        Arrays.stream(subIds).forEach(System.out::println);
+                        if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
                             files.add(file);
                         }
@@ -720,7 +721,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsPickupListMapByHeaderIdList(pickupList);
                     pickupListMap.entrySet().stream().forEach(materialMap->{
                         MaterialPickupsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(subIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             MaterialsListVo mVo = new MaterialsListVo();
                             mVo.setId(vo.getId());
                             mVo.setHeaderId(vo.getHeaderId());
@@ -732,20 +733,6 @@ public class DepotHeadController {
                     });
                 }
 
-//                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
-//                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
-//                if(findMaterialsListMapByHeaderIdList.size()==1) {
-//                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
-//                    files.add(file);
-//                } else {
-//                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
-//                        MaterialsListVo vo = materialMap.getValue();
-//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
-//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
-//                            files.add(file);
-//                        }
-//                    });
-//                }
             }
             if(!files.isEmpty()) {
                 ExportExecUtil.showExecs(files, response);
@@ -782,7 +769,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                     findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                         MaterialsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(sudIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
                             files.add(file);
                         }
@@ -793,7 +780,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsPickupListMapByHeaderIdList(pickupList);
                     pickupListMap.entrySet().stream().forEach(materialMap->{
                         MaterialPickupsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(sudIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             MaterialsListVo mVo = new MaterialsListVo();
                             mVo.setId(vo.getId());
                             mVo.setHeaderId(vo.getHeaderId());
@@ -805,20 +792,6 @@ public class DepotHeadController {
                     });
                 }
 
-//                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
-//                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
-//                if(findMaterialsListMapByHeaderIdList.size()==1) {
-//                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
-//                    files.add(file);
-//                } else {
-//                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
-//                        MaterialsListVo vo = materialMap.getValue();
-//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
-//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
-//                            files.add(file);
-//                        }
-//                    });
-//                }
             }
             if(!files.isEmpty()) {
                 depotHeadService.setPrintData(sudIds);
@@ -1025,7 +998,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                     findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                         MaterialsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(sudIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
                             files.add(file);
                         }
@@ -1036,7 +1009,7 @@ public class DepotHeadController {
                             depotHeadService.findMaterialsPickupListMapByHeaderIdList(pickupList);
                     pickupListMap.entrySet().stream().forEach(materialMap->{
                         MaterialPickupsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
+                        if(Arrays.stream(sudIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             MaterialsListVo mVo = new MaterialsListVo();
                             mVo.setId(vo.getId());
                             mVo.setHeaderId(vo.getHeaderId());
@@ -1048,18 +1021,6 @@ public class DepotHeadController {
                     });
                 }
 
-//                if(findMaterialsListMapByHeaderIdList.size()==1) {
-//                    File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, null);
-//                    files.add(file);
-//                } else {
-//                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
-//                        MaterialsListVo vo = materialMap.getValue();
-//                        if(Arrays.stream(sudIds).filter(subId->subId==vo.getId()).findFirst().isPresent()) {
-//                            File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
-//                            files.add(file);
-//                        }
-//                    });
-//                }
             }
             if(!files.isEmpty()) {
                 depotHeadService.setPrintData(sudIds);
