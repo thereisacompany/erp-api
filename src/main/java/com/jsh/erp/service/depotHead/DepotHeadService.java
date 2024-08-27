@@ -1146,16 +1146,16 @@ public class DepotHeadService {
             } else {
                 dhd.setAssignUser(null);
             }
-            if(detail.getFilePath() != null && !detail.getFilePath().isEmpty()) {
-                String[] paths = detail.getFilePath().split(",");
-                Arrays.sort(paths, (s1, s2) -> {
-                    String num1 = s1.replaceAll("\\D+", "");
-                    String num2 = s2.replaceAll("\\D+", "");
-                    return num1.compareTo(num2);
-                });
-                dhd.setFilePath(Arrays.toString(paths).replace("[", "").replace("]", "").replace(" ", ""));
-            }
-//            dhd.setFilePath(detail.getFilePath());
+//            if(detail.getFilePath() != null && !detail.getFilePath().isEmpty()) {
+//                String[] paths = detail.getFilePath().split(",");
+//                Arrays.sort(paths, (s1, s2) -> {
+//                    String num1 = s1.replaceAll("\\D+", "");
+//                    String num2 = s2.replaceAll("\\D+", "");
+//                    return num1.compareTo(num2);
+//                });
+//                dhd.setFilePath(Arrays.toString(paths).replace("[", "").replace("]", "").replace(" ", ""));
+//            }
+            dhd.setFilePath(detail.getFilePath());
             dhd.setStatus(detail.getStatus());
 
             List<DeliveryStatus> statusList = depotHeadMapper.selectDetailRecord(detail.getId());
