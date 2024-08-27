@@ -51,6 +51,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.jsh.erp.utils.Tools.getCenternTime;
@@ -2288,6 +2289,9 @@ public class DepotHeadService {
                 rowList.put(String.valueOf(i), rows);
 
                 importCount++;
+
+                // 匯入時太快執行，導致寫入的number產生重覆
+                TimeUnit.MILLISECONDS.sleep(100);
             }
 
             // 顯示匯入失敗的記錄
