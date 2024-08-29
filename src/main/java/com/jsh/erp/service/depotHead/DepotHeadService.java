@@ -1217,6 +1217,14 @@ public class DepotHeadService {
         }
         DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(headerId, null);
         list = depotHeadMapper.selectAgreedDelivery(detail.getId());
+        list.stream().forEach(ad->{
+            String datetime = ad.getDatetime();
+            String end = ad.getDatetimeEnd();
+            if(!datetime.equals(end)) {
+                String[] endStr = end.split(" ");
+                ad.setDatetime(datetime.concat("-").concat(endStr[1]));
+            }
+        });
         return list;
     }
 
