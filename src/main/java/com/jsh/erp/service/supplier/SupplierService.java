@@ -230,7 +230,7 @@ public class SupplierService {
                         ExceptionConstants.SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG);
             }
 
-            String passwd = "";
+            String passwd = "123456";
             if (obj.containsKey("loginPassword") && obj.containsValue("loginPassword")) {
                 passwd = obj.getString("loginPassword");
             }
@@ -288,7 +288,7 @@ public class SupplierService {
                 if (obj.containsKey("loginPassword")) {
                     passwd = obj.getString("loginPassword");
                 }
-                if(passwd != null) {
+                if(passwd != null && !passwd.isEmpty()) {
                     if (passwd.length() < 6 && passwd.length() > 12) {
                         throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE,
                                 ExceptionConstants.SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG);
