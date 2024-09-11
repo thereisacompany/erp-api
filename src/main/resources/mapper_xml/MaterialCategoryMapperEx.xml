@@ -81,7 +81,7 @@
         <if test="currentId != null">
             and id !=#{currentId}
         </if>
-        order by sort asc
+        order by cast(sort AS UNSIGNED) asc
     </select>
     <insert id="addMaterialCategory" parameterType="com.jsh.erp.datasource.entities.MaterialCategory"
             useGeneratedKeys="true" keyProperty="id" keyColumn="id">
