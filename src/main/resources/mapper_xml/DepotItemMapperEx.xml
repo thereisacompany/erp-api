@@ -44,6 +44,7 @@
         <result column="supplier" jdbcType="VARCHAR" property="organName" />
         <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="DepotId" jdbcType="BIGINT" property="depotId" />
+        <result column="AnotherDepotId" jdbcType="BIGINT" property="anotherDepotId" />
         <result column="DepotName" jdbcType="VARCHAR" property="depotName" />
         <result column="counterName" jdbcType="VARCHAR" property="counterName" />
         <result column="MName" jdbcType="VARCHAR" property="MName" />
@@ -285,7 +286,7 @@
 
     <select id="findByAllMaterial" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByWithMaterial">
         select m.id MId, me.bar_code, dh.organ_id, js.supplier, me.`number` MNumber,
-        jd.id DepotId, jd.name DepotName, me.counter counterName,
+        jd.id DepotId, jd.name DepotName, me.counter counterName, di.another_depot_id AnotherDepotId,
         m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,
         concat_ws('', m.unit, u.basic_unit) MaterialUnit, m.color MColor, m.unit_id, u.name unit_name, ifnull(me.purchase_decimal,0) purchase_decimal
@@ -312,7 +313,7 @@
             and dh.organ_id = #{organId}
         </if>
         <if test="depotId != null">
-            and di.depot_id = #{depotId}
+            and (di.depot_id = #{depotId} or di.another_depot_id = #{depotId})
         </if>
         and ifnull(m.delete_flag,'0') !='1'
         group by m.id, dh.organ_id

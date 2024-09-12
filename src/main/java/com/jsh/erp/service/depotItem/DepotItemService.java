@@ -1204,6 +1204,12 @@ public class DepotItemService {
             BigDecimal disAssemOutTotal = stockObj.getDisAssemOutTotal();
             outSum = outTotal.add(assemOutTotal).add(disAssemOutTotal);
 
+            if(transfInTotal==null) {
+                transfInTotal = BigDecimal.ZERO;
+            }
+            if(transfOutTotal==null) {
+                transfOutTotal = BigDecimal.ZERO;
+            }
             inSum = inSum.add(transfInTotal.subtract(transfOutTotal));
             waySum = stockObj.getWayTotal();
         }

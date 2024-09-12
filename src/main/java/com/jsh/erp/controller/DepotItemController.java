@@ -402,7 +402,11 @@ public class DepotItemController {
                 for (DepotItemVo4WithMaterial diEx : dataList) {
                     if(depotList.size()==1) {
                         if(diEx.getDepotId() != depotList.get(0)) {
-                            continue;
+                            if(diEx.getAnotherDepotId() != depotList.get(0)) {
+                                continue;
+                            } else {
+                                diEx.setDepotId(diEx.getAnotherDepotId());
+                            }
                         }
                     }
                     JSONObject item = new JSONObject();

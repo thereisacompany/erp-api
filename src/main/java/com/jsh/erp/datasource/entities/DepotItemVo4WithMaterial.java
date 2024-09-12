@@ -58,6 +58,7 @@ public class DepotItemVo4WithMaterial {
     private String barCode;
 
     private Long depotId;
+    private Long anotherDepotId;
 
     public Long getMId() {
         return MId;
@@ -277,5 +278,13 @@ public class DepotItemVo4WithMaterial {
 
     public void setDepotId(Long depotId) {
         this.depotId = depotId;
+    }
+
+    public Long getAnotherDepotId() {
+        return anotherDepotId;
+    }
+
+    public void setAnotherDepotId(Long anotherDepotId) {
+        this.anotherDepotId = anotherDepotId;
     }
 }
