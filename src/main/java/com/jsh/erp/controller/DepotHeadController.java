@@ -631,43 +631,42 @@ public class DepotHeadController {
     @ApiOperation(value = "匯出撿貨單")
     public void exportPicking(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
                                @ApiParam(value = "細單單號") @RequestParam(value = "subIds") Long[] subIds,
-                               HttpServletRequest request, HttpServletResponse response) {
+                               HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(numbers.length > 20) {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_CODE,
                     ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_MSG);
         }
 
-        try {
-            List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+        List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
+        File outputFile;
+        List<File> files = new ArrayList<>();
+        for (DepotHeadVo4List depotHeadVo4List : list) {
+            List<Long> idList = new ArrayList<>();
 
-            File outputFile;
-            List<File> files = new ArrayList<>();
-            for (DepotHeadVo4List depotHeadVo4List : list) {
-                List<Long> idList = new ArrayList<>();
-
-                if (depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
-                        || depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
-                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_CODE,
-                            ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_MSG);
-                } else {
-                    idList.add(depotHeadVo4List.getId());
-                }
-
-                if(!idList.isEmpty()) {
-                    Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
-                            depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
-                    findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
-                        MaterialsListVo vo = materialMap.getValue();
-                        if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
-                            depotHeadVo4List.setDepotList(vo.getDepotList());
-                            depotHeadVo4List.setMaterialNumber(vo.getMaterialNumber());
-                            depotHeadVo4List.setMaterialsList(vo.getMaterialsModel()+"@"+vo.getMaterialsStandard());
-                            depotHeadVo4List.setMaterialCount(vo.getMaterialCount());
-                        }
-                    });
-                }
+            if (depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                    || depotHeadVo4List.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_CODE,
+                        ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_MSG);
+            } else {
+                idList.add(depotHeadVo4List.getId());
             }
 
+            if(!idList.isEmpty()) {
+                Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
+                        depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
+                findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
+                    MaterialsListVo vo = materialMap.getValue();
+                    if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
+                        depotHeadVo4List.setDepotList(vo.getDepotList());
+                        depotHeadVo4List.setMaterialNumber(vo.getMaterialNumber());
+                        depotHeadVo4List.setMaterialsList(vo.getMaterialsModel()+"@"+vo.getMaterialsStandard());
+                        depotHeadVo4List.setMaterialCount(vo.getMaterialCount());
+                    }
+                });
+            }
+        }
+
+        try {
             if(list.size() > 0) {
                 User userInfo = userService.getCurrentUser();
                 String name = "Server";
@@ -679,7 +678,7 @@ public class DepotHeadController {
                 file.delete();
             }
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -703,19 +702,19 @@ public class DepotHeadController {
                 } else {
                     idList.add(depotHeadVo4List.getId());
                 }
-
                 if(!idList.isEmpty()) {
                     Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
                             depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
                     findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
                         MaterialsListVo vo = materialMap.getValue();
-                        Arrays.stream(subIds).forEach(System.out::println);
+//                        Arrays.stream(subIds).forEach(System.out::println);
                         if(Arrays.stream(subIds).filter(subId->subId.equals(vo.getId())).findFirst().isPresent()) {
                             File file = ExcelUtils.exportHAConfirm(depotHeadVo4List, vo);
                             files.add(file);
                         }
                     });
                 }
+
                 if(!pickupList.isEmpty()) {
                     Map<String, MaterialPickupsListVo> pickupListMap =
                             depotHeadService.findMaterialsPickupListMapByHeaderIdList(pickupList);
@@ -741,6 +740,7 @@ public class DepotHeadController {
             }
 
         }catch (Exception e) {
+            System.out.println(">>>"+e.toString());
             e.printStackTrace();
         }
     }

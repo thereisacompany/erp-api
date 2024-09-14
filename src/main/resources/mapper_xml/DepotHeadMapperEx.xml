@@ -385,7 +385,7 @@
     </select>
 
     <select id="findMaterialPickupsListMapByHeaderIdList" resultType="com.jsh.erp.datasource.vo.MaterialPickupsListVo">
-        select jsh_material_pickup.id,
+        select jsh_depot_item.id,
         jsh_depot_item.header_id,
         jsh_material_pickup.name,
         jsh_material_pickup.amount

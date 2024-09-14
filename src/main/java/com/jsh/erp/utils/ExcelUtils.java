@@ -74,11 +74,17 @@ public class ExcelUtils {
 //				System.out.println(">>"+showId+" "+depotHeadVo.getOrganName());
 				row.getCell(3).setCellValue(showId+" "+depotHeadVo.getOrganName());
 				row.getCell(4).setCellValue(depotHeadVo.getMaterialNumber());
-				String[] tmpName = depotHeadVo.getMaterialsList().split("@");
-				row.getCell(5).setCellValue(tmpName[0]);
-				if(tmpName.length>1) {
-					row.getCell(6).setCellValue(tmpName[1]);
+				if(depotHeadVo.getMaterialsList()!=null && !depotHeadVo.getMaterialsList().isEmpty()
+						&& !depotHeadVo.getMaterialsList().equals("@")) {
+					String[] tmpName = depotHeadVo.getMaterialsList().split("@");
+					row.getCell(5).setCellValue(tmpName[0]);
+					if (tmpName.length > 1) {
+						row.getCell(6).setCellValue(tmpName[1]);
+					} else {
+						row.getCell(6).setCellValue("");
+					}
 				} else {
+					row.getCell(5).setCellValue("");
 					row.getCell(6).setCellValue("");
 				}
 				row.getCell(7).setCellValue(String.valueOf(depotHeadVo.getMaterialCount().intValue()));
@@ -96,12 +102,13 @@ public class ExcelUtils {
 			workbook.write(outputStream);
 
 			excelFile = new File(outputName);
-//			System.out.println("excel file name >>>"+excelFile.getName());
+			System.out.println("excel file name >>>"+excelFile.getName());
 			outputStream.close();
 
 			templateFile.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("exportPicking >>>"+e);
 		}
 		return excelFile;
 	}
@@ -113,8 +120,7 @@ public class ExcelUtils {
 	public static File exportHAConfirm(DepotHeadVo4List item, MaterialsListVo material) {
 		File excelFile = null;
 
-		System.out.println("exportHAConfirm item >>>"+item);
-
+//		System.out.println("exportHAConfirm item >>>"+item);
 		try {
 			JSONObject remarkJson = JSONObject.parseObject(item.getRemark());
 
