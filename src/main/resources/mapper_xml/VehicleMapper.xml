@@ -22,6 +22,7 @@
         <result column="emissions" jdbcType="INTEGER" property="emissions" />
         <result column="price" jdbcType="INTEGER" property="price" />
         <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="ownership" jdbcType="TINYINT" property="ownership" />
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
         <result column="driver_name" jdbcType="VARCHAR" property="driverName"/>
@@ -60,7 +61,7 @@
     <sql id="Base_Column_List">
         id, license_plate_number, brand_model, take_over, loan_due, contract_expired, driver, color, mileage,
         engine_number, manufacture, test_date, insurance_date, insurance_date_end, renewal_date,
-        license_valid, cargo_insurance_due, emissions, price, status, ownership, tenant_id
+        license_valid, cargo_insurance_due, emissions, price, status, remark, ownership, tenant_id
     </sql>
 
     <select id="selectByExample" parameterType="com.jsh.erp.datasource.entities.VehicleExample" resultMap="BaseResultMap">
@@ -156,6 +157,9 @@
             <if test="status != null">
                 status,
             </if>
+            <if test="remark != null">
+                remark,
+            </if>
             <if test="ownership != null">
                 ownership,
             </if>
@@ -223,6 +227,9 @@
             </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
             </if>
             <if test="ownership != null">
                 #{ownership,jdbcType=TINYINT},
@@ -369,6 +376,9 @@
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="ownership != null">
                 ownership = #{ownership,jdbcType=TINYINT},

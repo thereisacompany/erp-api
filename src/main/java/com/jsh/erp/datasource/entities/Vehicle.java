@@ -83,6 +83,9 @@ public class Vehicle {
     @ApiModelProperty(value = "車輛狀態(1:正常 2:出租中 3:出售中")
     private Integer status;
 
+    @ApiModelProperty(value = "備註")
+    private String remark;
+
     @ApiModelProperty(value = "歸屬(1:公司 2:私人 3:租用")
     private Integer ownership;
 
