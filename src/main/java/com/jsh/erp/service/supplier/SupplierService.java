@@ -185,6 +185,12 @@ public class SupplierService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int insertSupplier(JSONObject obj, HttpServletRequest request)throws Exception {
         Supplier supplier = JSONObject.parseObject(obj.toJSONString(), Supplier.class);
+
+        if(checkIsNameAndTypeExist(0L, supplier.getSupplier(), supplier.getType()) > 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_ADD_FAILED_CODE,
+                    String.format(ExceptionConstants.SUPPLIER_ADD_FAILED_MSG, supplier.getType()));
+        }
+
         supplier.setEnabled(true);
 
         int result=supplierMapper.insertSelective(supplier);
@@ -274,6 +280,11 @@ public class SupplierService {
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public int updateSupplier(JSONObject obj, HttpServletRequest request)throws Exception {
         Supplier supplier = JSONObject.parseObject(obj.toJSONString(), Supplier.class);
+        if(checkIsNameAndTypeExist(supplier.getId(), supplier.getSupplier(), supplier.getType()) > 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_EDIT_FAILED_CODE,
+                    String.format(ExceptionConstants.SUPPLIER_EDIT_FAILED_MSG, supplier.getType()));
+        }
+
         if(supplier.getBeginNeedPay() == null) {
             supplier.setBeginNeedPay(BigDecimal.ZERO);
         }
@@ -568,63 +579,169 @@ public class SupplierService {
         importExcel(sList, type);
     }
 
-    public void importCustomer(MultipartFile file, HttpServletRequest request) throws Exception{
+    public String importCustomer(MultipartFile file, HttpServletRequest request) throws Exception{
+        String msg = "";
         String type = "客户";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
         Sheet src = workbook.getSheet(0);
-        //'名称', '联系人', '手机号码', '联系电话', '电子邮箱', '传真', '期初应收', '纳税人识别号', '税率(%)', '开户行', '账号', '地址', '备注', '排序', '状态'
+        // '名稱', '全名', '統一編號', '聯繫人', '手機號碼', '聯繫電話', '電子郵箱', '地址'
         List<Supplier> sList = new ArrayList<>();
-        for (int i = 2; i < src.getRows(); i++) {
+        Map<String, String> importError = new HashMap<>();
+        for (int i = 1; i < src.getRows(); i++) {
             String supplierName = ExcelUtils.getContent(src, i, 0);
-            String enabled = ExcelUtils.getContent(src, i, 14);
-            if(StringUtil.isNotEmpty(supplierName) && StringUtil.isNotEmpty(enabled)) {
+//            String enabled = ExcelUtils.getContent(src, i, 14);
+//            if(StringUtil.isNotEmpty(supplierName) && StringUtil.isNotEmpty(enabled)) {
+
+            if(StringUtil.isNotEmpty(supplierName)) {
+                boolean status = checkIsNameAndTypeExist(0L, supplierName, type) > 0;
+                if(status) {
+                    importError.put(""+i, "名稱重覆");
+                    continue;
+                }
+                String all = ExcelUtils.getContent(src, i, 1);
+                if(StringUtil.isEmpty(all)) {
+                    importError.put(""+i, "全名未填寫");
+                    continue;
+                }
                 Supplier s = new Supplier();
                 s.setType(type);
                 s.setSupplier(supplierName);
-                s.setContacts(ExcelUtils.getContent(src, i, 1));
-                s.setTelephone(ExcelUtils.getContent(src, i, 2));
-                s.setPhoneNum(ExcelUtils.getContent(src, i, 3));
-                s.setEmail(ExcelUtils.getContent(src, i, 4));
-                s.setFax(ExcelUtils.getContent(src, i, 5));
-                s.setBeginNeedGet(parseBigDecimalEx(ExcelUtils.getContent(src, i, 6)));
-                s.setTaxNum(ExcelUtils.getContent(src, i, 7));
-                s.setTaxRate(parseBigDecimalEx(ExcelUtils.getContent(src, i, 8)));
-                s.setBankName(ExcelUtils.getContent(src, i, 9));
-                s.setAccountNumber(ExcelUtils.getContent(src, i, 10));
-                s.setAddress(ExcelUtils.getContent(src, i, 11));
-                s.setDescription(ExcelUtils.getContent(src, i, 12));
-                s.setSort(ExcelUtils.getContent(src, i, 13));
-                s.setEnabled("1".equals(enabled));
+                s.setSupplierall(all);
+                s.setTaxid(ExcelUtils.getContent(src, i, 2));
+                s.setContacts(ExcelUtils.getContent(src, i, 3));
+                s.setTelephone(ExcelUtils.getContent(src, i, 4));
+                s.setPhoneNum(ExcelUtils.getContent(src, i, 5));
+                s.setEmail(ExcelUtils.getContent(src, i, 6));
+//                s.setFax(ExcelUtils.getContent(src, i, 5));
+//                s.setBeginNeedGet(parseBigDecimalEx(ExcelUtils.getContent(src, i, 6)));
+//                s.setTaxNum(ExcelUtils.getContent(src, i, 7));
+//                s.setTaxRate(parseBigDecimalEx(ExcelUtils.getContent(src, i, 8)));
+//                s.setBankName(ExcelUtils.getContent(src, i, 9));
+//                s.setAccountNumber(ExcelUtils.getContent(src, i, 10));
+                s.setAddress(ExcelUtils.getContent(src, i, 7));
+//                s.setDescription(ExcelUtils.getContent(src, i, 12));
+//                s.setSort(ExcelUtils.getContent(src, i, 13));
+//                s.setEnabled("1".equals(enabled));
+                s.setEnabled(Boolean.TRUE);
                 sList.add(s);
+            } else {
+                importError.put(""+i, "名稱未填寫");
             }
         }
-        importExcel(sList, type);
+        if(importError.isEmpty()) {
+            importExcel(sList, type);
+        } else {
+            StringBuffer sb= new StringBuffer();
+            sb.append("請檢查文件資料，匯入失敗列數:\n");
+            importError.entrySet().stream().forEach(value->{
+                sb.append("Excel文件第"+value.getKey()+"列");
+                sb.append("->");
+                sb.append(value.getValue());
+                sb.append("\n");
+            });
+            msg = sb.toString();
+        }
+        return msg;
     }
 
-    public void importMember(MultipartFile file, HttpServletRequest request) throws Exception{
-        String type = "會員";
+    public String importMember(MultipartFile file, HttpServletRequest request) throws Exception{
+        String msg = "";
+//        String type = "會員";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
         Sheet src = workbook.getSheet(0);
-        //'名称', '联系人', '手机号码', '联系电话', '电子邮箱', '备注', '排序', '状态'
-        List<Supplier> sList = new ArrayList<>();
-        for (int i = 2; i < src.getRows(); i++) {
-            String supplierName = ExcelUtils.getContent(src, i, 0);
-            String enabled = ExcelUtils.getContent(src, i, 7);
-            if(StringUtil.isNotEmpty(supplierName) && StringUtil.isNotEmpty(enabled)) {
+        // 五種人事類別(家電-司機、家電-助手、冷氣-師傅、冷氣-助手、行政)
+//        List<Supplier> sList = new ArrayList<>();
+        Map<String, List<Supplier>> sList = new HashMap<>();
+        Map<String, String> importError = new HashMap<>();
+        for (int i = 1; i < src.getRows(); i++) {
+            String type = ExcelUtils.getContent(src, i, 0);
+            if (type.isEmpty()) {
+                importError.put(""+i, "人事類別未填寫");
+                continue;
+            }
+
+            String supplierName = ExcelUtils.getContent(src, i, 2);
+//            String enabled = ExcelUtils.getContent(src, i, 7);
+//            if(StringUtil.isNotEmpty(supplierName) && StringUtil.isNotEmpty(enabled)) {
+            if(StringUtil.isNotEmpty(supplierName)) {
+                boolean status = checkIsNameAndTypeExist(0L, supplierName, type) > 0;
+                if(status) {
+                    importError.put(""+i, "人事類別-"+type+"，姓名重覆");
+                    continue;
+                }
+                // 司機帳號
+                String loginName = ExcelUtils.getContent(src, i, 1);
+                // 車牌號碼
+                String licensePlate = ExcelUtils.getContent(src, i, 16);
+
+                if(type.contains("司機")){
+                    if (StringUtil.isNotEmpty(loginName) &&
+                            supplierMapper.isDriverLoginNameExist(loginName, null) > 0) {
+                        importError.put(""+i, "人事類別-"+type+"，帳號已存在");
+                        continue;
+                    }
+                    if(StringUtil.isNotEmpty(licensePlate) &&
+                            vehicleMapper.isDriverLicensePlateNumberBind(licensePlate, null) > 0) {
+                        importError.put(""+i, ExceptionConstants.LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG);
+                        continue;
+                    }
+                }
+
                 Supplier s = new Supplier();
                 s.setType(type);
                 s.setSupplier(supplierName);
-                s.setContacts(ExcelUtils.getContent(src, i, 1));
-                s.setTelephone(ExcelUtils.getContent(src, i, 2));
-                s.setPhoneNum(ExcelUtils.getContent(src, i, 3));
-                s.setEmail(ExcelUtils.getContent(src, i, 4));
-                s.setDescription(ExcelUtils.getContent(src, i, 5));
-                s.setSort(ExcelUtils.getContent(src, i, 6));
-                s.setEnabled("1".equals(enabled));
-                sList.add(s);
+                s.setIdNumber(ExcelUtils.getContent(src, i, 3));
+                s.setBirthday(ExcelUtils.getContent(src, i, 4));
+                s.setContacts(ExcelUtils.getContent(src, i, 5));
+                s.setTelephone(ExcelUtils.getContent(src, i, 6));
+                s.setPhoneNum(ExcelUtils.getContent(src, i, 7));
+                s.setEmail(ExcelUtils.getContent(src, i, 8));
+                s.setAddress(ExcelUtils.getContent(src, i, 9));
+                s.setGroupInsuranceStart(ExcelUtils.getContent(src, i, 10));
+                s.setGroupInsuranceEnd(ExcelUtils.getContent(src, i, 11));
+                s.setLaborHealthInsuranceStart(ExcelUtils.getContent(src, i, 12));
+                s.setLaborHealthInsuranceEnd(ExcelUtils.getContent(src, i, 13));
+                s.setOnboarding(ExcelUtils.getContent(src, i, 14));
+                s.setResign(ExcelUtils.getContent(src, i, 15));
+                s.setLicensePlate(licensePlate);
+//                s.setDescription(ExcelUtils.getContent(src, i, 5));
+//                s.setSort(ExcelUtils.getContent(src, i, 6));
+//                s.setEnabled("1".equals(enabled));
+                s.setEnabled(Boolean.TRUE);
+//                sList.add(s);
+
+                if(sList.containsKey(type)) {
+                    sList.get(type).add(s);
+                } else {
+                    List<Supplier> list = new ArrayList<>();
+                    list.add(s);
+                    sList.put(type, list);
+                }
+            } else {
+                importError.put(""+i, "姓名未填寫");
             }
         }
-        importExcel(sList, type);
+        if(importError.isEmpty()) {
+            sList.entrySet().forEach(entry->{
+                try {
+                    importExcel(entry.getValue(), entry.getKey());
+                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+                    System.out.println("importMember : "+e);
+                }
+            });
+        } else {
+            StringBuffer sb= new StringBuffer();
+            sb.append("請檢查文件資料，匯入失敗列數:\n");
+            importError.entrySet().stream().forEach(value->{
+                sb.append("Excel文件第"+value.getKey()+"列");
+                sb.append("->");
+                sb.append(value.getValue());
+                sb.append("\n");
+            });
+            msg = sb.toString();
+        }
+        return msg;
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
@@ -639,12 +756,26 @@ public class SupplierService {
                 SupplierExample example = new SupplierExample();
                 example.createCriteria().andSupplierEqualTo(s.getSupplier()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
                 List<Supplier> list= supplierMapper.selectByExample(example);
-                if(list.size() <= 0) {
+                if(list.isEmpty()) {
                     supplierMapper.insertSelective(s);
+
+                    if(s.getType().contains("司機")) {
+                        Long driverId = supplierMapper.selectLastDriverId();
+                        if(StringUtil.isNotEmpty(s.getLoginName())) {
+                            supplierMapper.insertCarUser(s.getSupplier(), s.getLoginName(), Tools.md5Encryp("123456"), driverId);
+                        }
+
+                        // 若有帶入車牌號碼，自動綁定車輛駕駛
+                        if (StringUtil.isNotEmpty(s.getLicensePlate())) {
+                            Vehicle vehicle = vehicleMapper.selectByLicensePlateNumber(s.getLicensePlate());
+                            vehicle.setDriver(String.valueOf(driverId));
+                            vehicleMapper.updateByPrimaryKeySelective(vehicle);
+                        }
+                    }
                 } else {
-                    Long id = list.get(0).getId();
-                    s.setId(id);
-                    supplierMapper.updateByPrimaryKeySelective(s);
+//                    Long id = list.get(0).getId();
+//                    s.setId(id);
+//                    supplierMapper.updateByPrimaryKeySelective(s);
                 }
             }
             info.code = 200;

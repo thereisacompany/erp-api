@@ -296,49 +296,49 @@ public class SupplierController {
     }
 
     /**
-     * 导入客户
+     * 匯入客户
      * @param file
      * @param request
      * @param response
      * @return
      */
     @PostMapping(value = "/importCustomer")
-    @ApiOperation(value = "导入客户")
+    @ApiOperation(value = "匯入客户資料")
     public BaseResponseInfo importCustomer(MultipartFile file,
                                         HttpServletRequest request, HttpServletResponse response) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-            supplierService.importCustomer(file, request);
+            String msg = supplierService.importCustomer(file, request);
             res.code = 200;
-            res.data = "导入成功";
+            res.data = msg.isEmpty()?"匯入成功":msg;
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "导入失败";
+            res.data = "匯入失敗";
         }
         return res;
     }
 
     /**
-     * 导入会员
+     * 匯入人事資料
      * @param file
      * @param request
      * @param response
      * @return
      */
     @PostMapping(value = "/importMember")
-    @ApiOperation(value = "导入会员")
+    @ApiOperation(value = "匯入人事資料")
     public BaseResponseInfo importMember(MultipartFile file,
                                            HttpServletRequest request, HttpServletResponse response) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-            supplierService.importMember(file, request);
+            String msg = supplierService.importMember(file, request);
             res.code = 200;
-            res.data = "导入成功";
+            res.data = msg.isEmpty()?"匯入成功":msg;
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "导入失败";
+            res.data = "匯入失敗";
         }
         return res;
     }

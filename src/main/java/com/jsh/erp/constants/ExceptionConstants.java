@@ -221,13 +221,13 @@ public class ExceptionConstants {
      * */
     //添加供应商信息失败
     public static final int SUPPLIER_ADD_FAILED_CODE = 7000000;
-    public static final String SUPPLIER_ADD_FAILED_MSG = "添加供应商信息失败";
+    public static final String SUPPLIER_ADD_FAILED_MSG = "新增%s失敗-名稱重覆";
     //删除供应商信息失败
     public static final int SUPPLIER_DELETE_FAILED_CODE = 7000001;
     public static final String SUPPLIER_DELETE_FAILED_MSG = "删除供应商信息失败";
     //修改供应商信息失败
     public static final int SUPPLIER_EDIT_FAILED_CODE = 7000002;
-    public static final String SUPPLIER_EDIT_FAILED_MSG = "修改供应商信息失败";
+    public static final String SUPPLIER_EDIT_FAILED_MSG = "修改%s失敗-名稱重覆";
     //新增司機失敗-未帶入帳號
     public static final int SUPPLIER_DRIVER_ADD_FAILED_CODE = 7000003;
     public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機失敗-未帶入帳號";
