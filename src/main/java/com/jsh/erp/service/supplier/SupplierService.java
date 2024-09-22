@@ -581,7 +581,7 @@ public class SupplierService {
 
     public String importCustomer(MultipartFile file, HttpServletRequest request) throws Exception{
         String msg = "";
-        String type = "客户";
+        String type = "客戶";
         Workbook workbook = Workbook.getWorkbook(file.getInputStream());
         Sheet src = workbook.getSheet(0);
         // '名稱', '全名', '統一編號', '聯繫人', '手機號碼', '聯繫電話', '電子郵箱', '地址'
