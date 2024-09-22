@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.Vehicle;
 import com.jsh.erp.datasource.vo.VehicleLicenseNumberListVo;
+import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.service.vehicle.VehicleService;
 import com.jsh.erp.utils.BaseResponseInfo;
+import com.jsh.erp.utils.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -14,9 +16,11 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +107,39 @@ public class VehicleController {
         JSONObject result = ExceptionConstants.standardSuccess();
         vehicleService.updateVehicleDriver(id, null, request);
         return result;
+    }
+
+    /**
+     * 匯入車輛
+     * @param file
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping(value = "/importExcel")
+    @ApiOperation(value = "匯入車輛資料")
+    public BaseResponseInfo importExcel(MultipartFile file,
+                                           HttpServletRequest request, HttpServletResponse response) throws Exception{
+        BaseResponseInfo res = new BaseResponseInfo();
+        try {
+            String fileName = file.getOriginalFilename();
+            if(StringUtil.isNotEmpty(fileName)) {
+                String fileExt = fileName.substring(fileName.indexOf(".")+1);
+                if(!"xls".equals(fileExt)) {
+                    throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXTENSION_ERROR_CODE,
+                            ExceptionConstants.MATERIAL_EXTENSION_ERROR_MSG);
+                }
+            }
+
+            String msg = vehicleService.importExcel(file, request);
+            res.code = 200;
+            res.data = msg.isEmpty()?"匯入成功":msg;
+        } catch(Exception e){
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "匯入失敗";
+        }
+        return res;
     }
 
 }

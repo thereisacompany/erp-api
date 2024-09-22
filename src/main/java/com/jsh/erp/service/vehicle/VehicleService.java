@@ -10,15 +10,22 @@ import com.jsh.erp.exception.BusinessRunTimeException;
 import com.jsh.erp.exception.JshException;
 import com.jsh.erp.service.log.LogService;
 import com.jsh.erp.service.supplier.SupplierService;
+import com.jsh.erp.utils.ExcelUtils;
+import com.jsh.erp.utils.StringUtil;
+import jxl.Sheet;
+import jxl.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VehicleService {
@@ -248,6 +255,89 @@ public class VehicleService {
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
+    }
+
+    public String importExcel(MultipartFile file, HttpServletRequest request) throws Exception{
+        String msg = "";
+        Workbook workbook = Workbook.getWorkbook(file.getInputStream());
+        Sheet src = workbook.getSheet(0);
+        List<Vehicle> vList = new ArrayList<>();
+        Map<String, String> importError = new HashMap<>();
+        for (int i = 1; i < src.getRows(); i++) {
+            String licensePlateNumber = ExcelUtils.getContent(src, i, 0);
+
+            if(StringUtil.isNotEmpty(licensePlateNumber)) {
+                Vehicle existVehiclePlateNumber = vehicleMapper.selectByLicensePlateNumber(licensePlateNumber);
+                if(existVehiclePlateNumber != null) {
+                    importError.put(""+i, ExceptionConstants.VEHICLE_LICENSE_PLATE_NUMBER_EXIST_MSG);
+                    continue;
+                }
+                String brand = ExcelUtils.getContent(src, i, 1);
+                if(StringUtil.isEmpty(brand)) {
+                    importError.put(""+i, "品牌型號未填寫");
+                    continue;
+                }
+
+                Vehicle v = new Vehicle();
+                v.setLicensePlateNumber(licensePlateNumber);
+                v.setBrandModel(brand);
+                v.setColor(ExcelUtils.getContent(src, i, 2));
+                String mileage = ExcelUtils.getContent(src, i, 3);
+                if(StringUtil.isNotEmpty(mileage)) {
+                    v.setMileage(Integer.valueOf(mileage));
+                }
+                v.setEngineNumber(ExcelUtils.getContent(src, i, 4));
+                v.setManufacture(ExcelUtils.getContent(src, i, 5));
+                v.setTestDate(ExcelUtils.getContent(src, i, 6));
+                v.setInsuranceDate(ExcelUtils.getContent(src, i, 7));
+                v.setInsuranceDateEnd(ExcelUtils.getContent(src, i, 8));
+                v.setTakeOver(ExcelUtils.getContent(src, i, 9));
+                v.setLoanDue(ExcelUtils.getContent(src, i, 10));
+                v.setContractExpired(ExcelUtils.getContent(src, i, 11));
+                v.setRenewalDate(ExcelUtils.getContent(src, i, 12));
+                v.setLicenseValid(ExcelUtils.getContent(src, i, 13));
+                v.setCargoInsuranceDue(ExcelUtils.getContent(src, i, 14));
+                String emissions = ExcelUtils.getContent(src, i, 15);
+                if(StringUtil.isNotEmpty(emissions)) {
+                    v.setEmissions(Integer.valueOf(emissions));
+                }
+                String price = ExcelUtils.getContent(src, i, 16);
+                if(StringUtil.isNotEmpty(price)) {
+                    v.setPrice(Integer.valueOf(price));
+                }
+
+                String status = ExcelUtils.getContent(src, i, 17);
+                if(StringUtil.isNotEmpty(status)) {
+                    String[] tmp = status.split("-");
+                    v.setStatus(Integer.valueOf(tmp[0]));
+                }
+
+                String ownerShip = ExcelUtils.getContent(src, i, 18);
+                if(StringUtil.isNotEmpty(ownerShip)) {
+                    String[] ship = ownerShip.split("-");
+                    v.setOwnership(Integer.valueOf(ship[0]));
+                }
+                v.setDriver("");
+
+                vList.add(v);
+            } else {
+                importError.put(""+i, "車牌號碼未填寫");
+            }
+        }
+        if(importError.isEmpty()) {
+            vList.forEach(vData-> vehicleMapper.insertSelective(vData));
+        } else {
+            StringBuffer sb= new StringBuffer();
+            sb.append("請檢查文件資料，匯入失敗列數:\n");
+            importError.entrySet().stream().forEach(value->{
+                sb.append("Excel文件第"+value.getKey()+"列");
+                sb.append("->");
+                sb.append(value.getValue());
+                sb.append("\n");
+            });
+            msg = sb.toString();
+        }
+        return msg;
     }
 
 }
