@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jsh.erp.constants.BusinessConstants;
 import com.jsh.erp.constants.ExceptionConstants;
-import com.jsh.erp.datasource.entities.SysLoginModel;
-import com.jsh.erp.datasource.entities.Tenant;
-import com.jsh.erp.datasource.entities.User;
-import com.jsh.erp.datasource.entities.UserEx;
+import com.jsh.erp.datasource.entities.*;
 import com.jsh.erp.datasource.vo.TreeNodeEx;
 import com.jsh.erp.exception.BusinessParamCheckingException;
 import com.jsh.erp.service.log.LogService;
@@ -144,8 +141,9 @@ public class UserController {
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("msgTip", msgTip);
             if(user!=null){
-                String roleType = userService.getRoleTypeByUserId(user.getId()).getType(); //角色类型
-                redisService.storageObjectBySession(token,"roleType",roleType);
+                Role role = userService.getRoleTypeByUserId(user.getId());
+                String roleType = role.getType(); //角色类型
+                redisService.storageObjectBySession(token,"roleType", roleType);
                 redisService.storageObjectBySession(token,"clientIp", Tools.getLocalIp(request));
                 logService.insertLogWithUserId(user.getId(), user.getTenantId(), "用户",
                         new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGIN).append(user.getLoginName()).toString(),
@@ -157,6 +155,7 @@ public class UserController {
                 if(!"admin".equals(user.getLoginName())){
                     data.put("userBtn", btnStrArr);
                 }
+                data.put("roleName", role.getName());
                 data.put("roleType", roleType);
             }
             res.code = 200;
