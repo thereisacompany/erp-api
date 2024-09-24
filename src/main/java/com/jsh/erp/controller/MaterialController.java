@@ -377,14 +377,14 @@ public class MaterialController {
     }
 
     /**
-     * excel表格导入产品（含初始库存）
+     * excel表格匯入產品（含初始库存）
      * @param file
      * @param request
      * @param response
      * @return
      */
     @PostMapping(value = "/importExcel")
-    @ApiOperation(value = "excel表格导入产品")
+    @ApiOperation(value = "excel表格匯入產品")
     public BaseResponseInfo importExcel(MultipartFile file,
                             HttpServletRequest request, HttpServletResponse response) throws Exception{
         BaseResponseInfo res = new BaseResponseInfo();

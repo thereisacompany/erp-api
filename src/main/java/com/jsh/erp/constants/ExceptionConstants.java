@@ -317,7 +317,7 @@ public class ExceptionConstants {
     public static final String MATERIAL_ENABLED_ERROR_MSG = "第%s行状态格式错误";
     //单次导入超出1000条
     public static final int MATERIAL_IMPORT_OVER_LIMIT_CODE = 8000013;
-    public static final String MATERIAL_IMPORT_OVER_LIMIT_MSG = "抱歉，单次导入不能超出1000条";
+    public static final String MATERIAL_IMPORT_OVER_LIMIT_MSG = "抱歉，單次匯入不能超出1000筆";
     //基础重量格式错误
     public static final int MATERIAL_WEIGHT_NOT_DECIMAL_CODE = 8000014;
     public static final String MATERIAL_WEIGHT_NOT_DECIMAL_MSG = "第%s行基础重量格式错误";
@@ -338,7 +338,7 @@ public class ExceptionConstants {
     public static final String MATERIAL_STOCK_CHECK_ERROR_MSG = "抱歉，盘点业务不能选择批号或序列号商品:%s，建议走其它入庫和出庫单";
     //EXCEL中存在重复的商品
     public static final int MATERIAL_EXCEL_IMPORT_EXIST_CODE = 8000020;
-    public static final String MATERIAL_EXCEL_IMPORT_EXIST_MSG = "抱歉，EXCEL中存在重复的商品，具体信息为：%s";
+    public static final String MATERIAL_EXCEL_IMPORT_EXIST_MSG = "抱歉，EXCEL中存在重複的商品，具體訊息為：%s";
     //EXCEL中存在重复的条码
     public static final int MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_CODE = 8000021;
     public static final String MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_MSG = "抱歉，EXCEL中存在重复的条码，具体条码为：%s";

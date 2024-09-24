@@ -470,7 +470,7 @@ public class MaterialExtendService {
         return list;
     }
 
-    private String getMaxBarCode() {
+    public String getMaxBarCode() {
         String maxBarCodeOld = materialMapperEx.getMaxBarCode();
         if(StringUtil.isNotEmpty(maxBarCodeOld)) {
             return (Long.parseLong(maxBarCodeOld)+1)+"";
