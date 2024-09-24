@@ -121,7 +121,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>jshERP-1.3.37</finalName>
+		<finalName>jshERP-1.3.38</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
