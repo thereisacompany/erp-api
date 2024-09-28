@@ -2017,6 +2017,7 @@ public class DepotHeadService {
 //            List<Material> materialList = materialService.getMaterial();
             List<MaterialVo4Unit> materialList =  materialMapperEx.selectByConditionMaterial(null, null, null, null, null,
                     null, null, null, null, null, null, null,0,10000);
+            Map<String, BigDecimal> stockMap = new HashMap<>(); // 庫存
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
@@ -2169,6 +2170,27 @@ public class DepotHeadService {
                     importError.put("" + i, "數量未填寫");
                     continue;
                 }
+                // 客戶id
+                Long organId = materialVo4Unit.getOrganId();
+
+                // TODO 檢查庫存是否足夠
+                if(isPickup == 1) {
+                    String stockKey = depot.getId()+"-"+materialVo4Unit.getId()+"-"+organId;
+                    BigDecimal stock = BigDecimal.ZERO;
+                    if (stockMap.containsKey(stockKey)) {
+                        stock = stockMap.get(stockKey);
+                    } else {
+                        stock = depotItemService.getStockByParam(depot.getId(), materialVo4Unit.getId(), null, null,
+                                organId);
+                        stockMap.put(stockKey, stock);
+                    }
+                    stockMap.put(stockKey, stock.subtract(BigDecimal.valueOf(Long.parseLong(amount))));
+                    if(BigDecimal.valueOf(Long.parseLong(amount)).compareTo(stock) > 0) {
+                        importError.put("" + i, String.format(ExceptionConstants.MATERIAL_STOCK_NOT_ENOUGH_MSG, materialVo4Unit.getName()) + ":" + stock);
+                        continue;
+                    }
+                }
+
                 beanJson.put("amount", amount);
                 // 安裝方式
                 String install = ExcelUtils.getContent(mainData, i, 11);
@@ -2190,8 +2212,6 @@ public class DepotHeadService {
                 beanJson.put("memo", memo);
 
 //                String[] organAndNumber = mNumber.split("-");
-                // 客戶id
-                Long organId = materialVo4Unit.getOrganId();
 //                if(organAndNumber.length > 0) {
 //                    organId = Long.valueOf(organAndNumber[0]);
 //                }
@@ -2341,7 +2361,7 @@ public class DepotHeadService {
                         }
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             });
 
