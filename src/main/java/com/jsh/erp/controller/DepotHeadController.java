@@ -383,11 +383,13 @@ public class DepotHeadController {
                         dhl.setRecycle(json.getString("recycle"));
                         dhl.setRemark(json.getString("memo"));
                         if(dhl.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) { // 門市取貨派送
-                            JSONObject store = json.getJSONObject("store");
-                            dhl.setStoreMan(store.getString("man"));
-                            dhl.setStoreName(store.getString("name"));
-                            dhl.setStoreAddress(store.getString("address"));
-                            dhl.setStorePhone(store.getString("phone"));
+                            if(json.containsKey("store")) {
+                                JSONObject store = json.getJSONObject("store");
+                                dhl.setStoreMan(store.getString("man"));
+                                dhl.setStoreName(store.getString("name"));
+                                dhl.setStoreAddress(store.getString("address"));
+                                dhl.setStorePhone(store.getString("phone"));
+                            }
                         }
                     } else {
                         dhl.setInstall("");
