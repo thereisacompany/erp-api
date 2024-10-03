@@ -610,9 +610,17 @@ public class MaterialService {
 //                }
                 //批量校验excel中有无重复条码
 //                batchCheckExistBarCodeByParam(mList, barCode, manyBarCode);
+
+                List<Material> materialList =
+                        getMaterialListByParam(m.getName(),m.getStandard(),m.getModel(),m.getColor(),m.getUnit(),m.getUnitId(), "");
+                if(!materialList.isEmpty()) {
+                    importError.put(""+i, "商品重複匯入");
+                    continue;
+                }
+
                 JSONObject materialExObj = new JSONObject();
                 JSONObject basicObj = new JSONObject();
-                basicObj.put("barCode", materialExtendService.getMaxBarCode());
+//                basicObj.put("barCode", materialExtendService.getMaxBarCode());
                 basicObj.put("number", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
                 // 客戶id
                 if(StringUtil.isNotEmpty(customer)) {
@@ -681,13 +689,18 @@ public class MaterialService {
 
             info.code = 200;
             if(importError.isEmpty()) {
-
                 for(MaterialWithInitStock m: mList) {
                     Long mId = 0L;
                     //判断该商品是否存在，如果不存在就新增，如果存在就更新
                     String basicBarCode = getBasicBarCode(m);
                     List<Material> materials = getMaterialListByParam(m.getName(),m.getStandard(),m.getModel(),m.getColor(),m.getUnit(),m.getUnitId(), basicBarCode);
                     if(materials.size() == 0) {
+                        JSONObject mJson = m.getMaterialExObj();
+                        JSONObject basicJSON = (JSONObject) mJson.get("basic");
+                        basicJSON.put("barCode", basicBarCode);
+//                        basicJSON.put("number", sequenceService.buildOnlyNumber(BusinessConstants.MATERIAL_NUMBER_SEQ));
+                        mJson.put("basic", basicJSON);
+                        m.setMaterialExObj(mJson);
                         materialMapperEx.insertSelectiveEx(m);
                         mId = m.getId();
                     } else {
@@ -902,7 +915,11 @@ public class MaterialService {
         if(StringUtil.isExist(materialExObj.get("basic"))) {
             String basicStr = materialExObj.getString("basic");
             MaterialExtend basicMaterialExtend = JSONObject.parseObject(basicStr, MaterialExtend.class);
+
             barCode = basicMaterialExtend.getBarCode();
+            if(barCode == null || barCode.isEmpty()) {
+                barCode = materialExtendService.getMaxBarCode();
+            }
         }
         return barCode;
     }
@@ -918,7 +935,7 @@ public class MaterialService {
      * @return
      */
     private List<Material> getMaterialListByParam(String name, String standard, String model, String color, String unit, Long unitId, String basicBarCode) throws Exception {
-        List<Material> list = new ArrayList<>();
+        List<Material> list;
         MaterialExample example = new MaterialExample();
         MaterialExample.Criteria criteria = example.createCriteria();
         criteria.andNameEqualTo(name);
