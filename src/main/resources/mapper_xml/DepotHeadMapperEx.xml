@@ -317,6 +317,10 @@
             </foreach>
             )
         </if>
+        <if test="MNumber != null">
+            <bind name="bindMNumber" value="'%'+MNumber+'%'"/>
+            and me.`number` like #{bindMNumber}
+        </if>
         <if test="creator != null">
             and dh.creator=#{creator}
         </if>

@@ -132,7 +132,9 @@ public class DepotHeadService {
 
     public List<DepotHead> getDepotHead()throws Exception {
         DepotHeadExample example = new DepotHeadExample();
-        example.createCriteria().andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
+        // TODO 先在此直接加上型態為配送單，若之後有使用到此method，需要再調整作法
+        example.createCriteria().andSubTypeEqualTo(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                .andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         List<DepotHead> list=null;
         try{
             list=depotHeadMapper.selectByExample(example);
@@ -346,7 +348,7 @@ public class DepotHeadService {
     }
 
     public Long countDepotHead(String type, String subType, String roleType, String hasDebt, String status, String purchaseStatus, String number, String linkNumber,
-           String beginTime, String endTime, String materialParam, String keyword, Long organId, Long creator, Long depotId, Long accountId, String remark,
+           String beginTime, String endTime, String materialParam, String keyword, Long organId, String MNumber, Long creator, Long depotId, Long accountId, String remark,
                                Long dStatus, Long driverId, String beginDateTime, String endDateTime) throws Exception{
         Long result=null;
         try{
@@ -358,7 +360,7 @@ public class DepotHeadService {
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
             result=depotHeadMapperEx.countsByDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
-                   materialParam, keyword, organId, organArray, creator, depotId, depotArray, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
+                   materialParam, keyword, organId, organArray, MNumber, creator, depotId, depotArray, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -2061,7 +2063,7 @@ public class DepotHeadService {
                     continue;
                 }
                 String finalExcelCustomNum = excelCustomNum;
-                Optional<DepotHead> tmpDepotHead = depotHeadList.parallelStream().filter(dh->{
+                Optional<DepotHead> tmpDepotHead = depotHeadList.stream().filter(dh->{
                     String customStr = "";
                     String sourceStr = "";
                     if (dh.getCustomNumber()!=null && !dh.getCustomNumber().isEmpty()) {
@@ -2121,7 +2123,7 @@ public class DepotHeadService {
                 }
                 beanJson.put("isPickup", isPickup);
 
-                Optional<Depot> tmpDepot = depotList.stream().filter(d -> d.getName().contains(depotName)).findFirst();
+                Optional<Depot> tmpDepot = depotList.stream().filter(d -> d.getName().equals(depotName)).findFirst();
                 Depot depot = new Depot();
                 if (tmpDepot.isPresent()) {
                     depot = tmpDepot.get();

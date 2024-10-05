@@ -108,6 +108,7 @@ public class DepotHeadComponent implements ICommonQuery {
         Long organId = StringUtil.parseStrLong(StringUtil.getInfo(search, "organId"));
         Long creator = StringUtil.parseStrLong(StringUtil.getInfo(search, "creator"));
         Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
+        String MNumber = StringUtil.getInfo(search, "MNumber");
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         Long dStatus = StringUtil.parseStrLong(StringUtil.getInfo(search, "dStatus"));
         Long driverId =  StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
@@ -124,7 +125,7 @@ public class DepotHeadComponent implements ICommonQuery {
             }
         }
         return depotHeadService.countDepotHead(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
-                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
+                beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
     }
 
     @Override
