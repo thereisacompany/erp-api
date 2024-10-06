@@ -1035,6 +1035,7 @@ public class DepotHeadService {
                     if(StringUtil.isNotEmpty(dh.getSalesMan())) {
                         dh.setSalesManStr(personService.getPersonByMapAndIds(personMap,dh.getSalesMan()));
                     }
+                    dh.setOperTime(dh.getCreateTime());
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
                     if (dh.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
@@ -2223,12 +2224,14 @@ public class DepotHeadService {
                     String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
                     beanJson.put("operTime", operTime);
+                    beanJson.put("agreedDelivery", operTime);
                 } catch(DateTimeParseException e) {
                     try{
                         LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
                         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                         String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
                         beanJson.put("operTime", operTime);
+                        beanJson.put("agreedDelivery", operTime);
                     } catch (DateTimeParseException e1) {
                         // 記錄
                         importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");

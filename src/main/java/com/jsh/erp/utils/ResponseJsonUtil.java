@@ -12,9 +12,11 @@ import java.util.TimeZone;
 
 public class ResponseJsonUtil {
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat FORMAT1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     static {
         FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        FORMAT1.setTimeZone(TimeZone.getTimeZone("GMT+8"));
     }
 
     /**
@@ -23,9 +25,13 @@ public class ResponseJsonUtil {
     public static final class ResponseFilter extends ExtJsonUtils.ExtFilter implements ValueFilter {
         @Override
         public Object process(Object object, String name, Object value) {
-            if (name.equals("createTime") || name.equals("modifyTime")||name.equals("updateTime")) {
+            //name.equals("createTime") ||
+            if (name.equals("modifyTime")||name.equals("updateTime")) {
                 return value;
             } else if (value instanceof Date) {
+                if(name.equals("createTime")) {
+                    return FORMAT1.format(value);
+                }
                 return FORMAT.format(value);
             } else {
                 return value;
