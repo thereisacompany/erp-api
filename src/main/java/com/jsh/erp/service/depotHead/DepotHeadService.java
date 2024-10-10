@@ -1377,7 +1377,9 @@ public class DepotHeadService {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
                     String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
         } else {
-            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
             }
@@ -2235,6 +2237,15 @@ public class DepotHeadService {
                     } catch (DateTimeParseException e1) {
                         // 記錄
                         importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                        continue;
+                    }
+                }
+
+                String driver = ExcelUtils.getContent(mainData, i, 14);
+                if(driver != null && !driver.isEmpty()) {
+                    String assignMan = ExcelUtils.getContent(mainData, i, 15);
+                    if(assignMan == null || assignMan.isEmpty()) {
+                        importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
                         continue;
                     }
                 }
