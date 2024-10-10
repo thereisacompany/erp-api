@@ -93,14 +93,19 @@ public class TransferWarehouseService {
         DepotHeadExample dhExample = new DepotHeadExample();
         dhExample.createCriteria().andNumberEqualTo(depotHead.getNumber()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         List<DepotHead> list = depotHeadMapper.selectByExample(dhExample);
+
         if (list != null) {
             JSONArray rowArr = JSONArray.parseArray(rows);
 
-            // TODO 檢查傳入的items，是否有不同倉的商品
+            // 檢查傳入的items，是否有不同倉的商品
             List<JSONObject> rowList = rowArr.toJavaList(JSONObject.class);
             if(countNumberOfDepot(rowList) > 1) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_CODE,
                         ExceptionConstants.DEPOT_HEAD_TRANSFER_DEPOT_DIFF_MSG);
+            }
+            if(countNumberOfAmount(rowList) > 0) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_TRANSFER_AMOUNT_ZERO_CODE,
+                        ExceptionConstants.DEPOT_HEAD_TRANSFER_AMOUNT_ZERO_MSG);
             }
             Long headId = list.get(0).getId();
             /**入庫和出庫处理单据子表信息*/
@@ -432,6 +437,21 @@ public class TransferWarehouseService {
         Set<Integer> uniqueTypes = new HashSet<>();
         for (JSONObject item : list) {
             uniqueTypes.add(item.getInteger("depotId"));
+        }
+        return uniqueTypes.size();
+    }
+
+    private int countNumberOfAmount(List<JSONObject> list) {
+        Set<Integer> uniqueTypes = new HashSet<>();
+        for (JSONObject item : list) {
+            if (StringUtil.isExist(item.get("operNumber"))) {
+                BigDecimal size = item.getBigDecimal("operNumber");
+                if(size == null || size == BigDecimal.ZERO) {
+                    uniqueTypes.add(1);
+                }
+            } else {
+                uniqueTypes.add(1);
+            }
         }
         return uniqueTypes.size();
     }
