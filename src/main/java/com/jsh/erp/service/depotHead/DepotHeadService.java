@@ -2035,6 +2035,7 @@ public class DepotHeadService {
             Map<String, JSONObject> beanList = new HashMap<>();
             Map<String, String> rowList = new HashMap<>();
             for (int i = 1; i < mainData.getRows(); i++) {
+                String nowDatetime = LocalDateTime.now().format(formatterChange);
                 JSONObject beanJson = new JSONObject();
 
                 // 確認書(必填)
@@ -2220,19 +2221,17 @@ public class DepotHeadService {
 //                if(organAndNumber.length > 0) {
 //                    organId = Long.valueOf(organAndNumber[0]);
 //                }
-
+                beanJson.put("operTime", nowDatetime);
                 try {
                     LocalDate date = LocalDate.parse(issueDate, formatterDate);
                     String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                    beanJson.put("operTime", operTime);
                     beanJson.put("agreedDelivery", operTime);
                 } catch(DateTimeParseException e) {
                     try{
                         LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
                         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                         String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                        beanJson.put("operTime", operTime);
                         beanJson.put("agreedDelivery", operTime);
                     } catch (DateTimeParseException e1) {
                         // 記錄
