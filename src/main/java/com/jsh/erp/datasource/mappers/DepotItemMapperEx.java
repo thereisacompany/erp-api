@@ -54,8 +54,13 @@ public interface DepotItemMapperEx {
             @Param("organId") Long organId,
             @Param("depotId") Long depotId,
             @Param("offset") Integer offset,
-            @Param("rows") Integer rows
-    );
+            @Param("rows") Integer rows);
+    int findByAllMaterialCount(
+            @Param("materialParam") String materialParam,
+            @Param("beginTime") String beginTime,
+            @Param("endTime") String endTime,
+            @Param("organId") Long organId,
+            @Param("depotId") Long depotId);
 
     List<DepotItemVo4WithInfoEx> findByAll(
             @Param("materialParam") String materialParam,

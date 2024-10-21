@@ -323,6 +323,37 @@
         </if>
     </select>
 
+    <select id="findByAllMaterialCount" resultType="java.lang.Integer">
+        select count(1) from (select m.id
+        from jsh_material m
+        left join jsh_material_extend me on me.material_id=m.id and ifnull(me.delete_Flag,'0') !='1'
+        left join jsh_depot_item di on di.material_id=m.id and ifnull(di.delete_Flag,'0') !='1'
+        left join jsh_depot_head dh on di.header_id=dh.id and ifnull(dh.delete_flag,'0') !='1'
+        left join jsh_unit u on m.unit_id=u.id and ifnull(u.delete_Flag,'0') !='1'
+        LEFT JOIN jsh_depot jd ON di.depot_id = jd.id
+        LEFT JOIN jsh_supplier js ON dh.organ_id = js.id
+        where 1=1 and me.default_flag=1
+        <if test="materialParam != null and materialParam !=''">
+            <bind name="bindKey" value="'%'+materialParam+'%'"/>
+            and (me.bar_code like #{bindKey} or me.number like #{bindKey}
+            or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
+        </if>
+        <if test="beginTime != null">
+            and dh.create_time >= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            and dh.create_time &lt;= #{endTime}
+        </if>
+        <if test="organId != null">
+            and dh.organ_id = #{organId}
+        </if>
+        <if test="depotId != null">
+            and (di.depot_id = #{depotId} or di.another_depot_id = #{depotId})
+        </if>
+        and ifnull(m.delete_flag,'0') !='1'
+        group by m.id, dh.organ_id) cc
+    </select>
+
     <select id="findByAll" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByMaterial">
         select m.id MId, me.bar_code, CONCAT(dh.organ_id, '-', me.`number`) MNumber,
         m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,

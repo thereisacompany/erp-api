@@ -302,6 +302,17 @@ public class DepotItemService {
         return list;
     }
 
+    public int findByAllMaterialCount(String materialParam, String beginTime, String endTime, Long organId,
+                                                            Long depotId)throws Exception {
+        int result=0;
+        try{
+            result = depotItemMapperEx.findByAllMaterialCount(materialParam, beginTime, endTime, organId, depotId);
+        }catch(Exception e){
+            JshException.readFail(logger, e);
+        }
+        return result;
+    }
+
     public List<DepotItemVo4WithInfoEx> findByAll(String materialParam, String endTime, Integer offset, Integer rows)throws Exception {
         List<DepotItemVo4WithInfoEx> list =null;
         try{

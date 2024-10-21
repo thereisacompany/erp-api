@@ -371,7 +371,7 @@ public class DepotItemController {
                 timeA = Tools.firstDayOfMonth(monthTime) + BusinessConstants.DAY_FIRST_TIME;
                 timeB = Tools.lastDayOfMonth(monthTime) + BusinessConstants.DAY_LAST_TIME;
             }
-            String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+//            String now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
             if(beginDateTime != null && !beginDateTime.isEmpty()) {
                 timeA = beginDateTime;
             } else {
@@ -390,9 +390,11 @@ public class DepotItemController {
             }
             List<DepotItemVo4WithMaterial> dataList = depotItemService.findByAllMaterial(StringUtil.toNull(materialParam),
                     timeA, timeB, findOrganId, depotList.isEmpty()?null:depotList.get(0), (currentPage-1)*pageSize, pageSize);
-            String[] mpArr = mpList.split(",");
+//            String[] mpArr = mpList.split(",");
 //            int total = depotItemService.findByAllCount(StringUtil.toNull(materialParam), timeA, timeB, findOrganId);
-//            map.put("total", total);
+            int total = depotItemService.findByAllMaterialCount(
+                    StringUtil.toNull(materialParam), timeA, timeB, findOrganId, depotList.isEmpty()?null:depotList.get(0));
+            map.put("total", total);
             int totalIn = 0;
             int totalOut = 0;
             int totalThis = 0;
@@ -452,7 +454,7 @@ public class DepotItemController {
                     dataArray.add(item);
                 }
             }
-            map.put("total", dataArray.size());
+//            map.put("total", dataArray.size());
             map.put("totalIn", totalIn);
             map.put("totalOut", totalOut);
             map.put("totalThis", totalThis);
