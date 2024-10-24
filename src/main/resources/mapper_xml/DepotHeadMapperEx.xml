@@ -146,18 +146,14 @@
         </if>
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
-            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
-                or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
-                or m.other_field2 like #{bindKey} or m.other_field3 like #{bindKey})
+            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
             and (dh.number like #{bindKey}
             or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
-            or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
-            or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
-            or m.other_field2 like #{bindKey} or m.other_field3 like #{bindKey})
+            or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="organId != null">
             and dh.organ_id=#{organId}
@@ -294,18 +290,14 @@
         </if>
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
-            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
-            or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
-            or m.other_field2 like #{bindKey} or m.other_field3 like #{bindKey})
+            and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
             and (dh.number like #{bindKey}
             or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
-            or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
-            or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
-            or m.other_field2 like #{bindKey} or m.other_field3 like #{bindKey})
+            or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
         </if>
         <if test="organId != null">
             and dh.organ_id=#{organId}
@@ -658,7 +650,7 @@
         left join jsh_material_extend me on me.id=di.material_extend_id and ifnull(me.delete_Flag,'0') !='1'
         left join jsh_material_category jmc on jmc.id = m.category_id and ifnull(jmc.delete_Flag,'0') !='1'
         left join (select id,name as dName,delete_Flag from jsh_depot ) d on d.id=di.depot_id and ifnull(d.delete_Flag,'0') !='1'
-        <!-- 调出仓库名查询 -->
+        <!-- 調出倉庫名查詢 -->
         left join (select id as aid,name as SName,delete_Flag as adelete_Flag from jsh_depot ) ddd on ddd.aid=di.another_depot_id and ifnull(ddd.adelete_Flag,'0') !='1'
         where 1=1
         <if test="beginTime != null and !beginTime.isEmpty() and endTime != null and !endTime.isEmpty()">
@@ -681,7 +673,7 @@
         </if>
         <if test="number != null and number !=''">
             <bind name="bindNumber" value="'%'+number+'%'"/>
-            and me.number like #{bindNumber}
+            and dh.number like #{bindNumber}
         </if>
         <if test="creatorArray != null">
             and dh.creator in (
@@ -738,7 +730,7 @@
         </if>
         <if test="number != null and number !=''">
             <bind name="bindNumber" value="'%'+number+'%'"/>
-            and me.number like #{bindNumber}
+            and dh.number like #{bindNumber}
         </if>
         <if test="creatorArray != null">
             and dh.creator in (

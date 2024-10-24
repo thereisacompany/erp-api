@@ -246,7 +246,7 @@ public class DepotHeadController {
             if(depotId != null) {
                 depotList.add(depotId);
             } else {
-                //未选择仓库时默认为当前用户有权限的仓库
+                //未選擇倉庫時默認為當前用戶有權限的倉庫
                 JSONArray depotArr = depotService.findDepotByCurrentUser();
                 for(Object obj: depotArr) {
                     JSONObject object = JSONObject.parseObject(obj.toString());
@@ -256,7 +256,7 @@ public class DepotHeadController {
             if(depotIdF != null) {
                 depotFList.add(depotIdF);
             } else {
-                //未选择仓库时默认为当前用户有权限的仓库
+                //未選擇倉庫時默認為當前用戶有權限的倉庫
                 JSONArray depotArr = depotService.findDepotByCurrentUser();
                 for(Object obj: depotArr) {
                     JSONObject object = JSONObject.parseObject(obj.toString());
