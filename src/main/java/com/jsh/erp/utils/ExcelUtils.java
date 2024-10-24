@@ -148,7 +148,7 @@ public class ExcelUtils {
 
 			Row row1 = sheet.getRow(1+startRow);
 			row1.getCell(1).setCellValue(item.getReceiveName());	// 收貨人
-			row1.getCell(3).setCellValue(item.getCellphone());	// 電話
+			row1.getCell(3).setCellValue(formatPhoneNumber(item.getCellphone()));	// 電話
 			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
 
 			StringBuilder receiveNumber = new StringBuilder();
@@ -556,34 +556,41 @@ public class ExcelUtils {
 //        return Base64.getEncoder().encodeToString(imageBytes);
 	}
 
+	private static String formatPhoneNumber(String phoneNumber) {
+		// 使用正則表達式將門號轉換為 0912-345-678 的格式
+		return phoneNumber.replaceAll("(\\d{4})(\\d{3})(\\d{3})", "$1-$2-$3");
+	}
+
 	public static void main(String[] args) throws Exception {
-		String msg = "12345";
-		System.out.println(msg.indexOf("@"));
+		System.out.println(formatPhoneNumber("0912-345-678"));
 
-		DepotHeadVo4List item = new DepotHeadVo4List();
-		item.setId(9l);
-		item.setReceiveName("aaa");
-		item.setCellphone("09123456789");
-		ZonedDateTime dateTime = ZonedDateTime.parse("2023-08-24T06:13:57.000+0000",
-				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
-		LocalDate localDate = dateTime.toLocalDate();
-		item.setCreateTime(java.sql.Date.valueOf(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
-		item.setNumber("S20231123160600");
-		item.setAddress("");
-		LocalDateTime aDateTime = LocalDateTime.parse("2023-08-24 00:00:00",
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//		item.setMainArrival(aDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
-		item.setMaterialsList("大河 4-6坪一級變頻冷暖分離式空調 TAG-S28CYO/TAG-S28CYI     *1");
-		item.setDepotList("台北倉");
-		item.setMaterialNumber("25|00001");
-		JSONObject json = new JSONObject();
-		json.put("memo", "test");
-		json.put("confirm", "冷氣確認書");
-		json.put("install", "標準安裝");
-		json.put("recycle", "是");
-		item.setRemark(json.toJSONString());
-
-
-		exportHAConfirm(item, null);
+//		String msg = "12345";
+//		System.out.println(msg.indexOf("@"));
+//
+//		DepotHeadVo4List item = new DepotHeadVo4List();
+//		item.setId(9l);
+//		item.setReceiveName("aaa");
+//		item.setCellphone("09123456789");
+//		ZonedDateTime dateTime = ZonedDateTime.parse("2023-08-24T06:13:57.000+0000",
+//				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+//		LocalDate localDate = dateTime.toLocalDate();
+//		item.setCreateTime(java.sql.Date.valueOf(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+//		item.setNumber("S20231123160600");
+//		item.setAddress("");
+//		LocalDateTime aDateTime = LocalDateTime.parse("2023-08-24 00:00:00",
+//				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+////		item.setMainArrival(aDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+//		item.setMaterialsList("大河 4-6坪一級變頻冷暖分離式空調 TAG-S28CYO/TAG-S28CYI     *1");
+//		item.setDepotList("台北倉");
+//		item.setMaterialNumber("25|00001");
+//		JSONObject json = new JSONObject();
+//		json.put("memo", "test");
+//		json.put("confirm", "冷氣確認書");
+//		json.put("install", "標準安裝");
+//		json.put("recycle", "是");
+//		item.setRemark(json.toJSONString());
+//
+//
+//		exportHAConfirm(item, null);
 	}
 }
