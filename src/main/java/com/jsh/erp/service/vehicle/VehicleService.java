@@ -277,6 +277,51 @@ public class VehicleService {
                     importError.put(""+i, "品牌型號未填寫");
                     continue;
                 }
+                String testDate = ExcelUtils.getContent(src, i, 6);
+                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                    importError.put(""+i, "檢測日期格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String iDate = ExcelUtils.getContent(src, i, 7);
+                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                    importError.put(""+i, "車險起始日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String iDateEnd = ExcelUtils.getContent(src, i, 8);
+                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                    importError.put(""+i, "車險迄止日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String takeOver = ExcelUtils.getContent(src, i, 9);
+                if(!takeOver.isEmpty() && !ExcelUtils.isValidDate(takeOver)) {
+                    importError.put(""+i, "車輛接手日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String loanDue = ExcelUtils.getContent(src, i, 10);
+                if(!loanDue.isEmpty() && !ExcelUtils.isValidDate(loanDue)) {
+                    importError.put(""+i, "貸款到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String cExpired = ExcelUtils.getContent(src, i, 11);
+                if(!cExpired.isEmpty() && !ExcelUtils.isValidDate(cExpired)) {
+                    importError.put(""+i, "司機合約到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String rDate = ExcelUtils.getContent(src, i, 12);
+                if(!rDate.isEmpty() && !ExcelUtils.isValidDate(rDate)) {
+                    importError.put(""+i, "補換照日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String lValid = ExcelUtils.getContent(src, i, 13);
+                if(!lValid.isEmpty() && !ExcelUtils.isValidDate(lValid)) {
+                    importError.put(""+i, "行照有效日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String cargoDue = ExcelUtils.getContent(src, i, 14);
+                if(!cargoDue.isEmpty() && !ExcelUtils.isValidDate(cargoDue)) {
+                    importError.put(""+i, "貨物險到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
 
                 Vehicle v = new Vehicle();
                 v.setLicensePlateNumber(licensePlateNumber);
@@ -288,15 +333,15 @@ public class VehicleService {
                 }
                 v.setEngineNumber(ExcelUtils.getContent(src, i, 4));
                 v.setManufacture(ExcelUtils.getContent(src, i, 5));
-                v.setTestDate(ExcelUtils.getContent(src, i, 6));
-                v.setInsuranceDate(ExcelUtils.getContent(src, i, 7));
-                v.setInsuranceDateEnd(ExcelUtils.getContent(src, i, 8));
-                v.setTakeOver(ExcelUtils.getContent(src, i, 9));
-                v.setLoanDue(ExcelUtils.getContent(src, i, 10));
-                v.setContractExpired(ExcelUtils.getContent(src, i, 11));
-                v.setRenewalDate(ExcelUtils.getContent(src, i, 12));
-                v.setLicenseValid(ExcelUtils.getContent(src, i, 13));
-                v.setCargoInsuranceDue(ExcelUtils.getContent(src, i, 14));
+                v.setTestDate(testDate);
+                v.setInsuranceDate(iDate);
+                v.setInsuranceDateEnd(iDateEnd);
+                v.setTakeOver(takeOver);
+                v.setLoanDue(loanDue);
+                v.setContractExpired(cExpired);
+                v.setRenewalDate(rDate);
+                v.setLicenseValid(lValid);
+                v.setCargoInsuranceDue(cargoDue);
                 String emissions = ExcelUtils.getContent(src, i, 15);
                 if(StringUtil.isNotEmpty(emissions)) {
                     v.setEmissions(Integer.valueOf(emissions));
