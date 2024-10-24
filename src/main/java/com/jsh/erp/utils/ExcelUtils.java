@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.lang.Boolean;
+import java.util.regex.Pattern;
 
 import static org.apache.poi.ss.usermodel.Workbook.PICTURE_TYPE_PNG;
 
@@ -536,6 +538,27 @@ public class ExcelUtils {
 	public static File getTempFile(String fileName) {
 		String dir = System.getProperty("java.io.tmpdir"); // 获取系统临时目录
 		return new File(dir + File.separator + fileName);
+	}
+
+	public static boolean isValidEmail(String email) {
+		// 定義電子郵件的正則表達式
+		String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+		Pattern pattern = Pattern.compile(emailRegex);
+		return pattern.matcher(email).matches();
+	}
+
+	public static boolean isValidDate(String date) {
+		// 指定日期格式
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false); // 設置為不寬鬆，確保嚴格匹配日期格式
+
+		try {
+			// 嘗試解析日期，如果格式不正確會拋出異常
+			sdf.parse(date);
+			return true;
+		} catch (ParseException e) {
+			return false;
+		}
 	}
 
 	private static byte[] generateQRCodeImage(int width, int height, String type, String contents) throws WriterException, IOException {

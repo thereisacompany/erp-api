@@ -33,8 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.jsh.erp.utils.Tools.getNow3;
+import static com.jsh.erp.utils.Tools.openFile;
 
 @Service
 public class SupplierService {
@@ -669,6 +671,52 @@ public class SupplierService {
                     importError.put(""+i, "人事類別-"+type+"，姓名重覆");
                     continue;
                 }
+                String email = ExcelUtils.getContent(src, i, 8);
+//                if(!email.isEmpty() && !ExcelUtils.isValidEmail(email)) {
+//                    importError.put(""+i, "Email格式有誤");
+//                    continue;
+//                }
+                String bDay = ExcelUtils.getContent(src, i, 4);
+                if(!bDay.isEmpty() && !ExcelUtils.isValidDate(bDay)) {
+                    importError.put(""+i, "生日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String idNumber = ExcelUtils.getContent(src, i, 3);
+                if(!idNumber.isEmpty() && idNumber.length() > 10) {
+                    importError.put(""+i, "身份證字號長度超過10碼");
+                    continue;
+                }
+                String giStart = ExcelUtils.getContent(src, i, 10);
+                if(!giStart.isEmpty() && !ExcelUtils.isValidDate(giStart)) {
+                    importError.put(""+i, "團保加保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String giEnd = ExcelUtils.getContent(src, i, 11);
+                if(!giEnd.isEmpty() && !ExcelUtils.isValidDate(giEnd)) {
+                    importError.put(""+i, "團保退保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String lhiStart = ExcelUtils.getContent(src, i, 12);
+                if(!lhiStart.isEmpty() && !ExcelUtils.isValidDate(lhiStart)) {
+                    importError.put(""+i, "勞健保加保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String lhiEnd = ExcelUtils.getContent(src, i, 13);
+                if(!lhiEnd.isEmpty() && !ExcelUtils.isValidDate(lhiEnd)) {
+                    importError.put(""+i, "勞健保退保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String onBoarding = ExcelUtils.getContent(src, i, 14);
+                if(!onBoarding.isEmpty() && !ExcelUtils.isValidDate(onBoarding)) {
+                    importError.put(""+i, "入職日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+                String resign = ExcelUtils.getContent(src, i, 15);
+                if(!resign.isEmpty() && !ExcelUtils.isValidDate(resign)) {
+                    importError.put(""+i, "離職日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
+                    continue;
+                }
+
                 // 司機帳號
                 String loginName = ExcelUtils.getContent(src, i, 1);
                 // 車牌號碼
@@ -690,19 +738,19 @@ public class SupplierService {
                 Supplier s = new Supplier();
                 s.setType(type);
                 s.setSupplier(supplierName);
-                s.setIdNumber(ExcelUtils.getContent(src, i, 3));
-                s.setBirthday(ExcelUtils.getContent(src, i, 4));
+                s.setIdNumber(idNumber);
+                s.setBirthday(bDay);
                 s.setContacts(ExcelUtils.getContent(src, i, 5));
                 s.setTelephone(ExcelUtils.getContent(src, i, 6));
                 s.setPhoneNum(ExcelUtils.getContent(src, i, 7));
-                s.setEmail(ExcelUtils.getContent(src, i, 8));
+                s.setEmail(email);
                 s.setAddress(ExcelUtils.getContent(src, i, 9));
-                s.setGroupInsuranceStart(ExcelUtils.getContent(src, i, 10));
-                s.setGroupInsuranceEnd(ExcelUtils.getContent(src, i, 11));
-                s.setLaborHealthInsuranceStart(ExcelUtils.getContent(src, i, 12));
-                s.setLaborHealthInsuranceEnd(ExcelUtils.getContent(src, i, 13));
-                s.setOnboarding(ExcelUtils.getContent(src, i, 14));
-                s.setResign(ExcelUtils.getContent(src, i, 15));
+                s.setGroupInsuranceStart(giStart);
+                s.setGroupInsuranceEnd(giEnd);
+                s.setLaborHealthInsuranceStart(lhiStart);
+                s.setLaborHealthInsuranceEnd(lhiEnd);
+                s.setOnboarding(onBoarding);
+                s.setResign(resign);
                 s.setLicensePlate(licensePlate);
 //                s.setDescription(ExcelUtils.getContent(src, i, 5));
 //                s.setSort(ExcelUtils.getContent(src, i, 6));
@@ -777,6 +825,7 @@ public class SupplierService {
 //                    s.setId(id);
 //                    supplierMapper.updateByPrimaryKeySelective(s);
                 }
+                TimeUnit.MILLISECONDS.sleep(100);
             }
             info.code = 200;
             data.put("message", "成功");
