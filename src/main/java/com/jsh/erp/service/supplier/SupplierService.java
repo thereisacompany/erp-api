@@ -677,42 +677,42 @@ public class SupplierService {
 //                    continue;
 //                }
                 String bDay = ExcelUtils.getContent(src, i, 4);
-                if(!bDay.isEmpty() && !ExcelUtils.isValidDate(bDay)) {
+                if(StringUtil.isNotEmpty(bDay) && !ExcelUtils.isValidDate(bDay)) {
                     importError.put(""+i, "生日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String idNumber = ExcelUtils.getContent(src, i, 3);
-                if(!idNumber.isEmpty() && idNumber.length() > 10) {
+                if(StringUtil.isNotEmpty(idNumber) && idNumber.length() > 10) {
                     importError.put(""+i, "身份證字號長度超過10碼");
                     continue;
                 }
                 String giStart = ExcelUtils.getContent(src, i, 10);
-                if(!giStart.isEmpty() && !ExcelUtils.isValidDate(giStart)) {
+                if(StringUtil.isNotEmpty(giStart) && !ExcelUtils.isValidDate(giStart)) {
                     importError.put(""+i, "團保加保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String giEnd = ExcelUtils.getContent(src, i, 11);
-                if(!giEnd.isEmpty() && !ExcelUtils.isValidDate(giEnd)) {
+                if(StringUtil.isNotEmpty(giEnd) && !ExcelUtils.isValidDate(giEnd)) {
                     importError.put(""+i, "團保退保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String lhiStart = ExcelUtils.getContent(src, i, 12);
-                if(!lhiStart.isEmpty() && !ExcelUtils.isValidDate(lhiStart)) {
+                if(StringUtil.isNotEmpty(lhiStart) && !ExcelUtils.isValidDate(lhiStart)) {
                     importError.put(""+i, "勞健保加保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String lhiEnd = ExcelUtils.getContent(src, i, 13);
-                if(!lhiEnd.isEmpty() && !ExcelUtils.isValidDate(lhiEnd)) {
+                if(StringUtil.isNotEmpty(lhiEnd) && !ExcelUtils.isValidDate(lhiEnd)) {
                     importError.put(""+i, "勞健保退保日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String onBoarding = ExcelUtils.getContent(src, i, 14);
-                if(!onBoarding.isEmpty() && !ExcelUtils.isValidDate(onBoarding)) {
+                if(StringUtil.isNotEmpty(onBoarding) && !ExcelUtils.isValidDate(onBoarding)) {
                     importError.put(""+i, "入職日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String resign = ExcelUtils.getContent(src, i, 15);
-                if(!resign.isEmpty() && !ExcelUtils.isValidDate(resign)) {
+                if(StringUtil.isNotEmpty(resign) && !ExcelUtils.isValidDate(resign)) {
                     importError.put(""+i, "離職日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }

@@ -278,47 +278,47 @@ public class VehicleService {
                     continue;
                 }
                 String testDate = ExcelUtils.getContent(src, i, 6);
-                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                if(StringUtil.isNotEmpty(testDate) && !ExcelUtils.isValidDate(testDate)) {
                     importError.put(""+i, "檢測日期格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String iDate = ExcelUtils.getContent(src, i, 7);
-                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                if(StringUtil.isNotEmpty(iDate) && !ExcelUtils.isValidDate(iDate)) {
                     importError.put(""+i, "車險起始日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String iDateEnd = ExcelUtils.getContent(src, i, 8);
-                if(!testDate.isEmpty() && !ExcelUtils.isValidDate(testDate)) {
+                if(StringUtil.isNotEmpty(iDateEnd) && !ExcelUtils.isValidDate(iDateEnd)) {
                     importError.put(""+i, "車險迄止日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String takeOver = ExcelUtils.getContent(src, i, 9);
-                if(!takeOver.isEmpty() && !ExcelUtils.isValidDate(takeOver)) {
+                if(StringUtil.isNotEmpty(takeOver) && !ExcelUtils.isValidDate(takeOver)) {
                     importError.put(""+i, "車輛接手日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String loanDue = ExcelUtils.getContent(src, i, 10);
-                if(!loanDue.isEmpty() && !ExcelUtils.isValidDate(loanDue)) {
+                if(StringUtil.isNotEmpty(loanDue) && !ExcelUtils.isValidDate(loanDue)) {
                     importError.put(""+i, "貸款到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String cExpired = ExcelUtils.getContent(src, i, 11);
-                if(!cExpired.isEmpty() && !ExcelUtils.isValidDate(cExpired)) {
+                if(StringUtil.isNotEmpty(cExpired) && !ExcelUtils.isValidDate(cExpired)) {
                     importError.put(""+i, "司機合約到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String rDate = ExcelUtils.getContent(src, i, 12);
-                if(!rDate.isEmpty() && !ExcelUtils.isValidDate(rDate)) {
+                if(StringUtil.isNotEmpty(rDate) && !ExcelUtils.isValidDate(rDate)) {
                     importError.put(""+i, "補換照日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String lValid = ExcelUtils.getContent(src, i, 13);
-                if(!lValid.isEmpty() && !ExcelUtils.isValidDate(lValid)) {
+                if(StringUtil.isNotEmpty(lValid) && !ExcelUtils.isValidDate(lValid)) {
                     importError.put(""+i, "行照有效日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
                 String cargoDue = ExcelUtils.getContent(src, i, 14);
-                if(!cargoDue.isEmpty() && !ExcelUtils.isValidDate(cargoDue)) {
+                if(StringUtil.isNotEmpty(cargoDue) && !ExcelUtils.isValidDate(cargoDue)) {
                     importError.put(""+i, "貨物險到期日格式有誤, 請按照 yyyy-M-d (EX: 2023-12-1)填寫");
                     continue;
                 }
