@@ -72,7 +72,7 @@ public class SupplierService {
         Supplier result=null;
         try{
             result=supplierMapper.selectByPrimaryKey(id);
-            if(result.getType().contains("司機")) {
+            if(result.getType().contains("司機") || result.getType().contains("師傅")) {
                 result.setLoginName(supplierMapper.selectCarUser(result.getId()));
             }
         }catch(Exception e){
@@ -94,7 +94,7 @@ public class SupplierService {
             example.createCriteria().andIdIn(idList);
             list = supplierMapper.selectByExample(example);
             list.parallelStream().forEach(supplier -> {
-                if(supplier.getType().contains("司機")) {
+                if(supplier.getType().contains("司機") || supplier.getType().contains("師傅")) {
                     supplier.setLoginName(supplierMapper.selectCarUser(supplier.getId()));
                 }
             });
@@ -111,7 +111,7 @@ public class SupplierService {
         try{
             list=supplierMapper.selectByExample(example);
             list.parallelStream().forEach(supplier -> {
-                if(supplier.getType().contains("司機")) {
+                if(supplier.getType().contains("司機") || supplier.getType().contains("師傅")) {
                     supplier.setLoginName(supplierMapper.selectCarUser(supplier.getId()));
                 }
             });
@@ -121,18 +121,18 @@ public class SupplierService {
         return list;
     }
 
-    public List<Supplier> select(String supplier, String type, String phonenum, String telephone, String filter, int offset, int rows) throws Exception{
+    public List<Supplier> select(String supplier, String type, String phoneNum, String telephone, String filter, int offset, int rows) throws Exception{
         List<Supplier> resList = new ArrayList<>();
         try{
             if(filter!= null && !filter.equals("1")) {
                 filter = null;
             }
-            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phonenum, telephone, filter, offset, rows);
+            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phoneNum, telephone, filter, offset, rows);
             List<Vehicle> vList = vehicleService.getVehicle();
             for(Supplier s : list) {
                 Integer supplierId = s.getId().intValue();
                 String endTime = getNow3();
-                String supType = s.getType();
+                String subType = s.getType();
                 BigDecimal sum = BigDecimal.ZERO;
                 BigDecimal beginNeedGet = s.getBeginNeedGet();
                 if(beginNeedGet==null) {
@@ -142,18 +142,18 @@ public class SupplierService {
                 if(beginNeedPay==null) {
                     beginNeedPay = BigDecimal.ZERO;
                 }
-                sum = sum.add(depotHeadService.findTotalPay(supplierId, endTime, supType))
-                        .subtract(accountHeadService.findTotalPay(supplierId, endTime, supType));
-                if(("客户").equals(supType)) {
+                sum = sum.add(depotHeadService.findTotalPay(supplierId, endTime, subType))
+                        .subtract(accountHeadService.findTotalPay(supplierId, endTime, subType));
+                if(("客户").equals(subType)) {
                     String showId = String.format("%03d", s.getId());
                     s.setSupplier(showId + " " + s.getSupplier());
 
                     sum = sum.add(beginNeedGet);
                     s.setAllNeedGet(sum);
-                } else if(("供应商").equals(supType)) {
+                } else if(("供应商").equals(subType)) {
                     sum = sum.add(beginNeedPay);
                     s.setAllNeedPay(sum);
-                } else if(supType.contains("司機")) {
+                } else if(subType.contains("司機") || subType.contains("師傅")) {
                     s.setLoginName(supplierMapper.selectCarUser(s.getId()));
                     Optional<Vehicle> obj = vList.parallelStream()
                             .filter(vehicle -> vehicle.getDriver().equals(s.getId().toString())).findFirst();
@@ -202,7 +202,7 @@ public class SupplierService {
             supplier.setType("客戶");
             supplierMapper.insertSelective(supplier);
         }
-        if(supplier.getType().contains("司機")) {
+        if(supplier.getType().contains("司機") || supplier.getType().contains("師傅")) {
 //            if(!obj.containsKey("loginName") || obj.getString("loginName").isEmpty()) {
 //                throw new BusinessRunTimeException(ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_CODE,
 //                        ExceptionConstants.SUPPLIER_DRIVER_ADD_FAILED_MSG);
@@ -294,7 +294,7 @@ public class SupplierService {
             supplier.setBeginNeedGet(BigDecimal.ZERO);
         }
 
-        if(supplier.getType().contains("司機")) {
+        if(supplier.getType().contains("司機") || supplier.getType().contains("師傅")) {
             Long carUserId = supplierMapper.selectCarUserId(supplier.getId());
             if(carUserId != null && carUserId > 0L) { // 此司機已有建立過登入帳號
                 String passwd = null;
@@ -722,7 +722,7 @@ public class SupplierService {
                 // 車牌號碼
                 String licensePlate = ExcelUtils.getContent(src, i, 16);
 
-                if(type.contains("司機")){
+                if(type.contains("司機") || type.contains("師傅")){
                     if (StringUtil.isNotEmpty(loginName) &&
                             supplierMapper.isDriverLoginNameExist(loginName, null) > 0) {
                         importError.put(""+i, "人事類別-"+type+"，帳號已存在");
@@ -807,7 +807,7 @@ public class SupplierService {
                 if(list.isEmpty()) {
                     supplierMapper.insertSelective(s);
 
-                    if(s.getType().contains("司機")) {
+                    if(s.getType().contains("司機") || s.getType().contains("師傅")) {
                         Long driverId = supplierMapper.selectLastDriverId();
                         if(StringUtil.isNotEmpty(s.getLoginName())) {
                             supplierMapper.insertCarUser(s.getSupplier(), s.getLoginName(), Tools.md5Encryp("123456"), driverId);

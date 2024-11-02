@@ -230,13 +230,13 @@ public class ExceptionConstants {
     public static final String SUPPLIER_EDIT_FAILED_MSG = "修改%s失敗-名稱重覆";
     //新增司機失敗-未帶入帳號
     public static final int SUPPLIER_DRIVER_ADD_FAILED_CODE = 7000003;
-    public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機失敗-未帶入帳號";
+    public static final String SUPPLIER_DRIVER_ADD_FAILED_MSG = "新增司機or師傅失敗-未帶入帳號";
     public static final int SUPPLIER_DRIVER_LOGIN_NAME_FAILED_CODE = 7000004;
-    public static final String SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG = "新增司機失敗-登入帳號已存在";
+    public static final String SUPPLIER_DRIVER_LOGIN_NAME_FAILED_MSG = "新增司機or師傅失敗-登入帳號已存在";
     public static final int SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_CODE = 7000005;
-    public static final String SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_MSG = "修改司機失敗-登入帳號已存在";
+    public static final String SUPPLIER_DRIVER_LOGIN_NAME_EDIT_FAILED_MSG = "修改司機or師傅失敗-登入帳號已存在";
     public static final int SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_CODE = 7000006;
-    public static final String SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG = "司機登入密碼設定長度有誤(6-12碼)";
+    public static final String SUPPLIER_DRIVER_LOGIN_PASSWORD_LENGTH_FAILED_MSG = "司機or師傅登入密碼設定長度有誤(6-12碼)";
 
     /**
      * 商品类别信息
@@ -411,7 +411,7 @@ public class ExceptionConstants {
     public static final int DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE = 8000022;
     public static final String DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG = "查無此配送單資料";
     public static final int DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE = 8000023;
-    public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據可以派發司機";
+    public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據可以派發司機or師傅";
     public static final int DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_CODE = 8000024;
     public static final String DEPOT_HEAD_ITEM_PICKUP_MATERIAL_NAME_FAILED_MSG = "當為自取類別時，必需自行帶入商品名稱";
     public static final int DEPOT_HEAD_UN_TRANSFER_TO_INVALID_FAILED_CODE = 8500025;
@@ -539,23 +539,23 @@ public class ExceptionConstants {
     public static final int VEHICLE_HAD_DRIVER_FAILED_CODE = 12000001;
     public static final String VEHICLE_HAD_DRIVER_FAILED_MSG = "此駕駛已有綁定車輛";
     public static final int VEHICLE_DRIVER_NO_EXIST_CODE = 12000002;
-    public static final String VEHICLE_DRIVER_NO_EXIST_MSG = "查無此司機資料";
+    public static final String VEHICLE_DRIVER_NO_EXIST_MSG = "查無此司機or師傅資料";
     public static final int VEHICLE_NO_BIND_DRIVER_CODE = 12000003;
-    public static final String VEHICLE_NO_BIND_DRIVER_MSG = "此司機未綁定車輛";
+    public static final String VEHICLE_NO_BIND_DRIVER_MSG = "此司機or師傅未綁定車輛";
     public static final int VEHICLE_LICENSE_PLATE_NUMBER_EXIST_CODE = 12000004;
     public static final String VEHICLE_LICENSE_PLATE_NUMBER_EXIST_MSG = "此車牌號碼已建立過";
     public static final int LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_CODE = 12000005;
-    public static final String LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG = "此車牌號碼已有綁定司機";
+    public static final String LICENSE_PLATE_NUMBER_HAD_BIND_DRIVER_MSG = "此車牌號碼已有綁定司機or師傅";
     /**
      * 配送單派發司機
      * type = 130
      */
     public static final int DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_CODE = 13000000;
-    public static final String DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG = "此配送單已派發過司機，請先操作重新指派功能";
+    public static final String DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG = "此配送單已派發過司機or師傅，請先操作重新指派功能";
     public static final int DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE = 13000001;
-    public static final String DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG = "此配送單未派發過司機，請先進行派發司機功能";
+    public static final String DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG = "此配送單未派發過司機or師傅，請先進行派發司機or師傅功能";
     public static final int DEPOT_HEAD_NOT_DRIVER_RESPONSE_CODE = 13000002;
-    public static final String DEPOT_HEAD_NOT_DRIVER_RESPONSE_MSG = "查無此司機回覆資料";
+    public static final String DEPOT_HEAD_NOT_DRIVER_RESPONSE_MSG = "查無此司機or師傅回覆資料";
 
 
     //进销存统计，如果有权限的仓库数量太多则提示要选择仓库
