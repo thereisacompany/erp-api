@@ -822,6 +822,19 @@ public class DepotHeadController {
         return res;
     }
 
+    @PostMapping(value = "/importPickupExcel")
+    @ApiOperation(value = "excel表格匯入門市取貨派送")
+    public BaseResponseInfo importPickupExcel(MultipartFile file,
+                                        HttpServletRequest request, HttpServletResponse response) throws Exception{
+        BaseResponseInfo res = new BaseResponseInfo();
+        try {
+            res = depotHeadService.importPickupExcel(file, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     @GetMapping(value = "/getDeliveryData")
     @ApiOperation(value = "取得配送單狀態")
     public BaseResponseInfo getDeliveryData(@RequestParam("number") String number, HttpServletRequest request) {

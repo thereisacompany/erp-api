@@ -2402,6 +2402,278 @@ public class DepotHeadService {
         return info;
     }
 
+    public BaseResponseInfo importPickupExcel(MultipartFile file, HttpServletRequest request) throws Exception {
+        BaseResponseInfo info = new BaseResponseInfo();
+
+        User userInfo = userService.getCurrentUser();
+
+        try {
+            Long beginTime = System.currentTimeMillis();
+            //文件副檔名只能為 xls
+            String fileName = file.getOriginalFilename();
+            if (StringUtil.isNotEmpty(fileName)) {
+                String fileExt = fileName.substring(fileName.indexOf(".") + 1);
+                if (!"xls".equals(fileExt)) {
+                    throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXTENSION_ERROR_CODE,
+                            ExceptionConstants.MATERIAL_EXTENSION_ERROR_MSG);
+                }
+            }
+
+            List<DepotHead> depotHeadList = getDepotHead();
+
+            Workbook workbook = Workbook.getWorkbook(file.getInputStream());
+            Sheet mainData = workbook.getSheet(0); // 主單資料
+
+            JSONObject saveJson = null;
+            int blockTimes = 0; // 用來判斷excel確認書及客單編號欄位，空白次數是否超過2次
+            int importCount = 0; // 匯入筆數
+            Map<String, String> importError = new HashMap<>(); // 匯入有缺欄位的客單編號+原始編號，或是重複的客單編號+原始編號
+
+            // 門市取貨派送
+            int isPickup = 3;
+
+            Map<String, JSONObject> beanList = new HashMap<>();
+            Map<String, String> rowList = new HashMap<>();
+            for (int i = 1; i < mainData.getRows(); i++) {
+                String nowDatetime = LocalDateTime.now().format(formatterChange);
+                JSONObject beanJson = new JSONObject();
+
+                // 確認書(必填)
+                String confirm = ExcelUtils.getContent(mainData, i, 0);
+                // 客單編號(必填)
+                String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
+                if(!excelCustomNum.isEmpty()) {
+                    excelCustomNum = excelCustomNum.trim();
+                }
+
+                if (confirm == null || (confirm != null && confirm.isEmpty())
+                        && excelCustomNum == null || (excelCustomNum != null && excelCustomNum.isEmpty())) {
+                    blockTimes++;
+                    if (blockTimes >= 2) {
+                        break;
+                    }
+                    continue;
+                }
+
+                // 原始編號(必填)
+                String sourceNumber = ExcelUtils.getContent(mainData, i, 2);
+                if(sourceNumber == null || (sourceNumber != null && sourceNumber.isEmpty())) {
+                    importError.put(""+i, "原始客編未填寫");
+                    continue;
+                }
+                String finalExcelCustomNum = excelCustomNum;
+                Optional<DepotHead> tmpDepotHead = depotHeadList.stream().filter(dh->{
+                    String customStr = "";
+                    String sourceStr = "";
+                    if (dh.getCustomNumber()!=null && !dh.getCustomNumber().isEmpty()) {
+                        customStr = dh.getCustomNumber().trim();
+                    }
+                    if (dh.getSourceNumber()!=null && !dh.getSourceNumber().isEmpty()) {
+                        sourceStr = dh.getSourceNumber().trim();
+                    }
+                    if(!customStr.isEmpty() || !sourceStr.isEmpty()) {
+                        if (customStr.equals(finalExcelCustomNum) || sourceStr.equals(sourceNumber)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).findFirst();
+                if(tmpDepotHead.isPresent()) {
+                    importError.put(""+i, "此筆資料重覆匯入(客單編號:"+excelCustomNum+", 原始客編:"+sourceNumber+")");
+                    continue;
+                }
+
+                // 收貨人
+                String receiveName = ExcelUtils.getContent(mainData, i, 3);
+                // 電話
+                String cellphone = ExcelUtils.getContent(mainData, i, 4);
+                // 發單日(必填)
+                String issueDate = ExcelUtils.getContent(mainData, i, 5);
+                if (StringUtil.isEmpty(issueDate)) {
+                    importError.put(""+i, "發單日未填寫");
+                    continue;
+                }
+                // 裝機地址
+                String address = ExcelUtils.getContent(mainData, i, 6);
+
+                // 商品資料(必填)
+                String materialName = ExcelUtils.getContent(mainData, i, 7);
+                if(StringUtil.isEmpty(materialName)) {
+                    // 記錄
+                    importError.put("" + i, "商品型號未填寫");
+                    continue;
+                }
+                // 數量 (必填)
+                String amount = ExcelUtils.getContent(mainData, i, 8);
+                if (StringUtil.isEmpty(amount)) {
+                    // 記錄
+                    importError.put("" + i, "數量未填寫");
+                    continue;
+                }
+                beanJson.put("amount", amount);
+                beanJson.put("isPickup", isPickup);
+
+                // 安裝方式
+                String install = ExcelUtils.getContent(mainData, i, 9);
+                beanJson.put("install", install);
+                // 舊機回收
+                String recycle = ExcelUtils.getContent(mainData, i, 10);
+                beanJson.put("recycle", recycle);
+                // 配送備註
+                String memo = ExcelUtils.getContent(mainData, i, 11);
+                beanJson.put("memo", memo);
+
+                beanJson.put("operTime", nowDatetime);
+                try {
+                    LocalDate date = LocalDate.parse(issueDate, formatterDate);
+                    String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                    beanJson.put("agreedDelivery", operTime);
+                } catch(DateTimeParseException e) {
+                    try{
+                        LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
+                        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                        beanJson.put("agreedDelivery", operTime);
+                    } catch (DateTimeParseException e1) {
+                        // 記錄
+                        importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                        continue;
+                    }
+                }
+
+                String driver = ExcelUtils.getContent(mainData, i, 12);
+                if(driver != null && !driver.isEmpty()) {
+                    String assignMan = ExcelUtils.getContent(mainData, i, 13);
+                    if(assignMan == null || assignMan.isEmpty()) {
+                        importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
+                        continue;
+                    }
+                }
+
+                JSONObject json = new JSONObject();
+                json.put("confirm", confirm);
+                json.put("install", install);
+                json.put("recycle", recycle);
+                json.put("memo", memo);
+                String remark = json.toJSONString(); // 備註
+
+                // S20231123163920999
+                String number = String.format("S%s", sequenceService.buildNumber(Boolean.TRUE));
+                beanJson.put("number", number);
+                beanJson.put("defaultNumber", number);
+                beanJson.put("organId", null);
+                beanJson.put("changeAmount", 0);
+                beanJson.put("totalPrice", 0);
+                beanJson.put("receiveName", receiveName);
+                beanJson.put("cellphone", cellphone);
+                beanJson.put("address", address);
+                beanJson.put("remark", remark);
+                beanJson.put("importFlag", 1);
+                beanJson.put("customNumber", excelCustomNum);
+                beanJson.put("sourceNumber", sourceNumber);
+                beanJson.put("depotName", null);
+                if (excelCustomNum.split("-").length == 1) {
+                    saveJson = beanJson;
+                }
+
+                JSONArray ary = new JSONArray();
+                JSONObject obj = new JSONObject();
+
+                Long materialId = 0L;
+
+                if(isPickup > 1) {
+                    materialMapperEx.insertMaterialPickup(materialName, Integer.parseInt(amount));
+                    materialId = materialMapperEx.selectMaterialPickupId();
+                }
+                obj.put("materialId", materialId);
+                obj.put("barCode", null);
+                obj.put("unit", "null");
+                obj.put("depotId", null);
+                obj.put("operNumber", amount);
+                obj.put("unitPrice", 0);
+                obj.put("allPrice", 0);
+                obj.put("taxRate", 0);
+                obj.put("taxMoney", 0);
+                obj.put("taxLastMoney", 0);
+                ary.add(obj);
+
+                String rows = ary.toJSONString();
+
+                beanList.put(String.valueOf(i), beanJson);
+                rowList.put(String.valueOf(i), rows);
+
+                importCount++;
+
+                // 匯入時太快執行，導致寫入的number產生重覆
+                TimeUnit.MILLISECONDS.sleep(100);
+            }
+
+            // 顯示匯入失敗的記錄
+            if(importError.size() > 0) {
+                StringBuffer sb= new StringBuffer();
+                sb.append("請檢查文件資料，匯入失敗列數:\n");
+                importError.entrySet().stream().forEach(value->{
+                    sb.append("Excel文件第"+value.getKey()+"列");
+                    sb.append("->");
+                    sb.append(value.getValue());
+                    sb.append("\n");
+                });
+                info.code = 200;
+                info.data = sb.toString();
+                return info;
+            }
+
+            // 先全部檢查無誤，才開始寫入
+            beanList.entrySet().stream().forEach(value -> {
+                try {
+                    String key = value.getKey();
+                    String rows = rowList.get(key);
+                    addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
+
+                    // 派發司機、指派人員
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 14);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
+                    if(driver != null && !driver.isEmpty()) {
+                        try {
+                            // number
+                            Long headerId = depotHeadMapper.selectIdByNumber(value.getValue().getString("number"));
+                            Long userId = userService.getIdByUserName(assignMan);
+                            Integer driverId = supplierService.getSupplierId(driver);
+                            // headerId driverId assignDate assignUser
+                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
+                        } catch (Exception e){
+                            logger.error("指派司機失敗 : "+e.getMessage());
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            logService.insertLog("匯入門市取貨派送",
+                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+            Long endTime = System.currentTimeMillis();
+            logger.info(info.data + "，匯入秏時：{}", endTime - beginTime);
+
+            info.code = 200;
+            info.data = "匯入成功";
+        } catch (BusinessRunTimeException brte) {
+            brte.printStackTrace();
+            info.code = brte.getCode();
+            info.data = brte.getData().get("message");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+            info.code = 500;
+            info.data = "匯入失敗";
+        }
+
+        return info;
+    }
+
     private String getJsonValue(JSONObject json, String key) {
         if(json == null) {
             return "";
