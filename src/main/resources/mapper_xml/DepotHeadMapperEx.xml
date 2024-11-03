@@ -69,7 +69,7 @@
     </resultMap>
 
     <select id="selectByConditionDepotHead" parameterType="com.jsh.erp.datasource.entities.DepotHeadExample" resultMap="ResultMapEx">
-        select dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
+        select dh.*, s.custom_id cid, s.supplier OrganName, u.username userName, a.name AccountName,
         me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName, di.is_print isPrint,
         IFNULL(jdd.status,0) DStatus
         from jsh_depot_head dh

@@ -8,6 +8,7 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String projectName;
 
+    private Long cid;
     private String organName;
 
     private String userName;
@@ -89,6 +90,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 
     public String getOrganName() {

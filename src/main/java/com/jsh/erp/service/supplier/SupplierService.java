@@ -129,6 +129,7 @@ public class SupplierService {
             }
             List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phoneNum, telephone, filter, offset, rows);
             List<Vehicle> vList = vehicleService.getVehicle();
+
             for(Supplier s : list) {
                 Integer supplierId = s.getId().intValue();
                 String endTime = getNow3();
@@ -144,13 +145,12 @@ public class SupplierService {
                 }
                 sum = sum.add(depotHeadService.findTotalPay(supplierId, endTime, subType))
                         .subtract(accountHeadService.findTotalPay(supplierId, endTime, subType));
-                if(("客户").equals(subType)) {
-                    String showId = String.format("%03d", s.getId());
+                if(subType.equals("客戶")){
+                    String showId = String.format("%03d", s.getCustomId());
                     s.setSupplier(showId + " " + s.getSupplier());
-
                     sum = sum.add(beginNeedGet);
                     s.setAllNeedGet(sum);
-                } else if(("供应商").equals(subType)) {
+                } else if(subType.equals("供应商")) {
                     sum = sum.add(beginNeedPay);
                     s.setAllNeedPay(sum);
                 } else if(subType.contains("司機") || subType.contains("師傅")) {
@@ -195,6 +195,10 @@ public class SupplierService {
 
         supplier.setEnabled(true);
 
+        if(supplier.getType().equals("客戶")) {
+            long count = countSupplier(null, "客戶", null, null, null);
+            supplier.setCustomId(count+1);
+        }
         int result=supplierMapper.insertSelective(supplier);
 
         // 新增供應商時，一併新增一筆資料至客戶
@@ -805,9 +809,13 @@ public class SupplierService {
                 example.createCriteria().andSupplierEqualTo(s.getSupplier()).andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
                 List<Supplier> list= supplierMapper.selectByExample(example);
                 if(list.isEmpty()) {
+                    if(type.equals("客戶")) {
+                        long count = countSupplier(null, "客戶", null, null, null);
+                        s.setCustomId(count+1);
+                    }
                     supplierMapper.insertSelective(s);
 
-                    if(s.getType().contains("司機") || s.getType().contains("師傅")) {
+                    if(type.contains("司機") || type.contains("師傅")) {
                         Long driverId = supplierMapper.selectLastDriverId();
                         if(StringUtil.isNotEmpty(s.getLoginName())) {
                             supplierMapper.insertCarUser(s.getSupplier(), s.getLoginName(), Tools.md5Encryp("123456"), driverId);

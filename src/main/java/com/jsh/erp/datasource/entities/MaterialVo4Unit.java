@@ -32,6 +32,7 @@ public class MaterialVo4Unit extends Material{
 
     private Long organId;
 
+    private Long cid;
     private String organName;
 
     private String commodityUnit;
@@ -155,6 +156,14 @@ public class MaterialVo4Unit extends Material{
 
     public void setOrganId(Long organId) {
         this.organId = organId;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 
     public String getOrganName() {

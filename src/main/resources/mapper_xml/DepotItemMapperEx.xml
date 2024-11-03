@@ -41,6 +41,7 @@
         <result column="MId" jdbcType="VARCHAR" property="MId" />
         <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
         <result column="organ_id" jdbcType="BIGINT" property="organId" />
+        <result column="cid" jdbcType="BIGINT" property="cid" />
         <result column="supplier" jdbcType="VARCHAR" property="organName" />
         <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="DepotId" jdbcType="BIGINT" property="depotId" />
@@ -285,7 +286,7 @@
     </select>
 
     <select id="findByAllMaterial" parameterType="com.jsh.erp.datasource.entities.DepotItemExample" resultMap="ResultByWithMaterial">
-        select m.id MId, me.bar_code, dh.organ_id, js.supplier, me.`number` MNumber,
+        select m.id MId, me.bar_code, dh.organ_id, js.custom_id cid, js.supplier, me.`number` MNumber,
         jd.id DepotId, jd.name DepotName, me.counter counterName, di.another_depot_id AnotherDepotId,
         m.name MName, m.mfrs MMfrs, m.model MModel, m.standard MStandard,
         m.other_field1 MOtherField1,m.other_field2 MOtherField2,m.other_field3 MOtherField3,

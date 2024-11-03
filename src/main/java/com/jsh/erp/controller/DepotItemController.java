@@ -416,7 +416,8 @@ public class DepotItemController {
                     Long organId = diEx.getOrganId();
                     item.put("barCode", diEx.getBarCode());
                     item.put("organId", organId);
-                    item.put("organName", diEx.getOrganName());
+                    String showId = String.format("%03d", diEx.getCid());
+                    item.put("organName", showId + " " + diEx.getOrganName());
                     item.put("materialNumber", diEx.getMNumber());
                     item.put("depotName", diEx.getDepotName());
                     item.put("counterName", diEx.getCounterName());

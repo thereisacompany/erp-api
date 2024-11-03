@@ -307,7 +307,7 @@ public class DepotHeadService {
                         dh.setTotalPrice(null);
                         dh.setDiscountLastMoney(null);
                     }
-                    String showId = String.format("%03d", dh.getOrganId());
+                    String showId = String.format("%03d", dh.getCid());
                     if(showId != null && dh.getOrganName()!=null) {
                         dh.setOrganName(showId + " " + dh.getOrganName());
                     } else {

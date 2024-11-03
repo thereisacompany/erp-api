@@ -7,7 +7,7 @@
         where 1=1
         <if test="supplier != null and supplier !=''">
             <bind name="bindSupplier" value="'%'+supplier+'%'"/>
-            and supplier like #{bindSupplier}
+            and (supplier like #{bindSupplier} or custom_id = #{supplier})
         </if>
         <choose>
             <when test="filter != null and filter != ''">
@@ -40,7 +40,7 @@
         WHERE 1=1
         <if test="supplier != null and supplier !=''">
             <bind name="bindSupplier" value="'%'+supplier+'%'"/>
-            and supplier like #{bindSupplier}
+            and (supplier like #{bindSupplier} or custom_id = #{supplier})
         </if>
         <choose>
             <when test="filter != null and filter !=''">

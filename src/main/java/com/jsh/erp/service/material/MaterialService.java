@@ -146,6 +146,9 @@ public class MaterialService {
                     if(m.getOrganId()==null) {
                         m.setOrganId(0L);
                     }
+                    String showId = String.format("%03d", m.getCid());
+                    m.setOrganName(showId + " " + m.getOrganName());
+
                     resList.add(m);
                 }
             }

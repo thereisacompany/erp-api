@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="supplier" jdbcType="VARCHAR" property="supplier" />
     <result column="supplierall" jdbcType="VARCHAR" property="supplierall" />
+    <result column="custom_id" jdbcType="BIGINT" property="customId" />
     <result column="taxid" jdbcType="VARCHAR" property="taxid" />
     <result column="contacts" jdbcType="VARCHAR" property="contacts" />
     <result column="phone_num" jdbcType="VARCHAR" property="phoneNum" />
@@ -169,6 +170,9 @@
       <if test="supplierall != null">
         supplierall,
       </if>
+      <if test="customId != null">
+        custom_id,
+      </if>
       <if test="taxid != null">
         taxid,
       </if>
@@ -284,6 +288,9 @@
       </if>
       <if test="supplierall != null">
         #{supplierall,jdbcType=VARCHAR},
+      </if>
+      <if test="customId != null">
+        #{customId,jdbcType=BIGINT},
       </if>
       <if test="taxid != null">
         #{taxid,jdbcType=VARCHAR},
