@@ -190,6 +190,9 @@ public class MaterialController {
                                   HttpServletRequest request) throws Exception{
         JSONObject object = new JSONObject();
         try {
+            if(pageSize >= 100) {
+                pageSize = 10000;
+            }
             List<MaterialVo4Unit> dataList = materialService.findBySelectWithBarCode(categoryId, q, enableSerialNumber,
                     enableBatchNumber, organId,  (currentPage-1)*pageSize, pageSize);
             String[] mpArr = mpList.split(",");
