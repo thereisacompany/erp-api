@@ -2543,7 +2543,7 @@ public class DepotHeadService {
                 }
 
                 String driver = ExcelUtils.getContent(mainData, i, 12);
-                if(driver != null && !driver.isEmpty()) {
+                if(StringUtil.isNotEmpty(driver)) {
                     String assignMan = ExcelUtils.getContent(mainData, i, 13);
                     if(assignMan == null || assignMan.isEmpty()) {
                         importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
@@ -2632,9 +2632,9 @@ public class DepotHeadService {
                     addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
 
                     // 派發司機、指派人員
-                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 14);
-                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
-                    if(driver != null && !driver.isEmpty()) {
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 12);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 13);
+                    if(StringUtil.isNotEmpty(driver) && StringUtil.isNotEmpty(assignMan)) {
                         try {
                             // number
                             Long headerId = depotHeadMapper.selectIdByNumber(value.getValue().getString("number"));
