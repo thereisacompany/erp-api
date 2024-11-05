@@ -14,8 +14,12 @@
                 and type!='客戶'
             </when>
             <otherwise>
-                <if test="type != null and type !=''">
-                    and type = #{type}
+                <if test="types != null and types !=''">
+                    and type in (
+                    <foreach collection="types" item="type" separator=",">
+                        #{type}
+                    </foreach>
+                    )
                 </if>
             </otherwise>
         </choose>

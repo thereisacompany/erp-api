@@ -13,7 +13,7 @@ public interface SupplierMapperEx {
 
     List<Supplier> selectByConditionSupplier(
             @Param("supplier") String supplier,
-            @Param("type") String type,
+            @Param("types") String[] types,
             @Param("phonenum") String phonenum,
             @Param("telephone") String telephone,
             @Param("filter") String filter,

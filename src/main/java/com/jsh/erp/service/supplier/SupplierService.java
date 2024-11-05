@@ -127,7 +127,18 @@ public class SupplierService {
             if(filter!= null && !filter.equals("1")) {
                 filter = null;
             }
-            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, type, phoneNum, telephone, filter, offset, rows);
+            String[] types = null;
+            List<String> tList = new ArrayList<>();
+            if(StringUtil.isNotEmpty(type)) {
+                tList.add(type);
+            }
+            if(rows >= 1000 && type.equals("家電-司機")) {
+                tList.add("冷氣-師傅");
+            }
+            if(!tList.isEmpty()) {
+                types = tList.toArray(new String[0]);
+            }
+            List<Supplier> list = supplierMapperEx.selectByConditionSupplier(supplier, types, phoneNum, telephone, filter, offset, rows);
             List<Vehicle> vList = vehicleService.getVehicle();
 
             for(Supplier s : list) {
