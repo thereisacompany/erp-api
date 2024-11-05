@@ -132,7 +132,8 @@
         </if>
         <if test="number != null">
             <bind name="bindNumber" value="'%'+number+'%'"/>
-            and dh.number like #{bindNumber}
+            and (dh.number like #{bindNumber}
+            or dh.custom_number like #{bindNumber} or dh.source_number like #{bindNumber})
         </if>
         <if test="linkNumber != null">
             <bind name="bindLinkNumber" value="'%'+linkNumber+'%'"/>
@@ -276,7 +277,8 @@
         </if>
         <if test="number != null">
             <bind name="bindNumber" value="'%'+number+'%'"/>
-            and dh.number like #{bindNumber}
+            and (dh.number like #{bindNumber}
+            or dh.custom_number like #{bindNumber} or dh.source_number like #{bindNumber})
         </if>
         <if test="linkNumber != null">
             <bind name="bindLinkNumber" value="'%'+linkNumber+'%'"/>
