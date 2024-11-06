@@ -151,7 +151,7 @@
         </if>
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
-            and (dh.number like #{bindKey}
+            and (dh.number like #{bindKey} or u.username like #{bindKey}
             or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
             or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
@@ -224,6 +224,7 @@
         (select dh.* FROM jsh_depot_head dh
         left join jsh_depot_item di on dh.Id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
+        left join jsh_user u on dh.creator=u.id and ifnull(u.Status,'0') !='1'
         left join jsh_material m on di.material_id = m.Id and ifnull(m.delete_Flag,'0') !='1'
         left join jsh_material_extend me on di.material_extend_id = me.id and ifnull(me.delete_flag,'0') !='1'
         left join jsh_depot_detail jdd on dh.id = jdd.header_id
@@ -296,7 +297,7 @@
         </if>
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
-            and (dh.number like #{bindKey}
+            and (dh.number like #{bindKey} or u.username like #{bindKey}
             or dh.receive_name like #{bindKey} or dh.telephone like #{bindKey} or dh.cellphone like #{bindKey} or dh.address like #{bindKey}
             or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
             or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey})
