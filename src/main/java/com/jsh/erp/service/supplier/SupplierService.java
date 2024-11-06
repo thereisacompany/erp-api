@@ -165,10 +165,10 @@ public class SupplierService {
                     sum = sum.add(beginNeedPay);
                     s.setAllNeedPay(sum);
                 } else if(subType.contains("司機") || subType.contains("師傅")) {
-                    if(rows >= 1000) {
-                        String showId = String.format("%03d", s.getId());
-                        s.setSupplier(showId + " " + s.getSupplier());
-                    }
+//                    if(rows >= 1000) {
+//                        String showId = String.format("%03d", s.getId());
+//                        s.setSupplier(showId + " " + s.getSupplier());
+//                    }
 
                     s.setLoginName(supplierMapper.selectCarUser(s.getId()));
                     Optional<Vehicle> obj = vList.parallelStream()
