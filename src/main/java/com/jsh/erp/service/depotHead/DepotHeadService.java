@@ -2042,7 +2042,7 @@ public class DepotHeadService {
                 String confirm = ExcelUtils.getContent(mainData, i, 0);
                 // 客單編號(必填)
                 String excelCustomNum = ExcelUtils.getContent(mainData, i, 1);
-                if(!excelCustomNum.isEmpty()) {
+                if(StringUtil.isNotEmpty(excelCustomNum)) {
                     excelCustomNum = excelCustomNum.trim();
                 }
 //                String customNumber = excelCustomNum.split("-")[0];
