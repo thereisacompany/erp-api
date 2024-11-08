@@ -2090,16 +2090,13 @@ public class DepotHeadService {
 
                 // 收貨人
                 String receiveName = ExcelUtils.getContent(mainData, i, 3);
-//                if (receiveName == null || (receiveName != null && receiveName.isEmpty())) {
-//                    importError.put(""+i, "收貨人未填寫");
-//                    continue;
-//                }
                 // 電話
                 String cellphone = ExcelUtils.getContent(mainData, i, 4);
-//                if (cellphone == null || (cellphone != null && cellphone.isEmpty())) {
-//                    importError.put(""+i, "電話未填寫");
-//                    continue;
-//                }
+                //[>99999999]0981352352--
+                if(cellphone.contains("[>99999999]")) {
+                    cellphone = cellphone.replace("[>99999999]", "").replace("--", "");
+                    cellphone = ExcelUtils.formatPhoneNumber(cellphone);
+                }
                 // 發單日(必填)
                 String issueDate = ExcelUtils.getContent(mainData, i, 5);
                 if (issueDate == null || (issueDate != null && issueDate.isEmpty())) {
@@ -2108,10 +2105,6 @@ public class DepotHeadService {
                 }
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 6);
-//                if (address == null || (address != null && address.isEmpty())) {
-//                    importError.put(""+i, "裝機地址未填寫");
-//                    continue;
-//                }
                 // 出貨倉別(必填)
                 String depotName = ExcelUtils.getContent(mainData, i, 7);
                 if (depotName == null || (depotName != null && depotName.isEmpty())) {
@@ -2179,7 +2172,7 @@ public class DepotHeadService {
                 // 客戶id
                 Long organId = materialVo4Unit.getOrganId();
 
-                // TODO 檢查庫存是否足夠
+                // 檢查庫存是否足夠
                 if(isPickup == 1) {
                     String stockKey = depot.getId()+"-"+materialVo4Unit.getId()+"-"+organId;
                     BigDecimal stock = BigDecimal.ZERO;
@@ -2200,27 +2193,14 @@ public class DepotHeadService {
                 beanJson.put("amount", amount);
                 // 安裝方式
                 String install = ExcelUtils.getContent(mainData, i, 11);
-//                if (install == null || (install != null && install.isEmpty())) {
-//                    install = getJsonValue(saveJson, "install");
-//                }
                 beanJson.put("install", install);
                 // 舊機回收
                 String recycle = ExcelUtils.getContent(mainData, i, 12);
-//                if (recycle == null || (recycle != null && recycle.isEmpty())) {
-//                    recycle = getJsonValue(saveJson, "recycle");
-//                }
                 beanJson.put("recycle", recycle);
                 // 配送備註
                 String memo = ExcelUtils.getContent(mainData, i, 13);
-//                if (memo == null || (memo != null && memo.isEmpty())) {
-//                    memo = getJsonValue(saveJson, "memo");
-//                }
                 beanJson.put("memo", memo);
 
-//                String[] organAndNumber = mNumber.split("-");
-//                if(organAndNumber.length > 0) {
-//                    organId = Long.valueOf(organAndNumber[0]);
-//                }
                 beanJson.put("operTime", nowDatetime);
                 try {
                     LocalDate date = LocalDate.parse(issueDate, formatterDate);
@@ -2352,7 +2332,7 @@ public class DepotHeadService {
                 return info;
             }
 
-            // TODO 先全部檢查無誤，才開始寫入
+            // 先全部檢查無誤，才開始寫入
             beanList.entrySet().stream().forEach(value -> {
                 try {
                     String key = value.getKey();
@@ -2487,6 +2467,10 @@ public class DepotHeadService {
                 String receiveName = ExcelUtils.getContent(mainData, i, 3);
                 // 電話
                 String cellphone = ExcelUtils.getContent(mainData, i, 4);
+                if(cellphone.contains("[>99999999]")) {
+                    cellphone = cellphone.replace("[>99999999]", "").replace("--", "");
+                    cellphone = ExcelUtils.formatPhoneNumber(cellphone);
+                }
                 // 發單日(必填)
                 String issueDate = ExcelUtils.getContent(mainData, i, 5);
                 if (StringUtil.isEmpty(issueDate)) {

@@ -579,7 +579,7 @@ public class ExcelUtils {
 //        return Base64.getEncoder().encodeToString(imageBytes);
 	}
 
-	private static String formatPhoneNumber(String phoneNumber) {
+	public static String formatPhoneNumber(String phoneNumber) {
 		// 使用正則表達式將門號轉換為 0912-345-678 的格式
 		return phoneNumber.replaceAll("(\\d{4})(\\d{3})(\\d{3})", "$1-$2-$3");
 	}
