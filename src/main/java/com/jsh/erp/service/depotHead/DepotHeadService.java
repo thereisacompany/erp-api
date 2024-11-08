@@ -1391,6 +1391,13 @@ public class DepotHeadService {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE,
                     String.format(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG));
         }
+        String status = detail.getStatus();
+        if(StringUtil.isNotEmpty(status)) {
+            if(status.equals("6") || status.equals("7")) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_MSG));
+            }
+        }
 
         try {
             detail.setStatus("0");
@@ -1712,10 +1719,17 @@ public class DepotHeadService {
         }
 
         try{
-            depotHeadMapper.updateByPrimaryKeySelective(depotHead);
-
             DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
+//            detail.getStatus()
+
             if(detail != null) {
+                String status = detail.getStatus();
+                if(StringUtil.isNotEmpty(status)) {
+                    if(status.equals("6") || status.equals("7")) {
+                        throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_CODE,
+                                String.format(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_MSG));
+                    }
+                }
                 // agreed_delivery insert to agreed table
                 if (depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
                     depotHeadMapper.updateAgreedDelivery(detail.getId());
@@ -1728,6 +1742,8 @@ public class DepotHeadService {
                     depotHeadMapper.insertAgreedDeliver(agreedDelivery);
                 }
             }
+
+            depotHeadMapper.updateByPrimaryKeySelective(depotHead);
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
