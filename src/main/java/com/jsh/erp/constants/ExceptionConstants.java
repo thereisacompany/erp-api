@@ -342,6 +342,9 @@ public class ExceptionConstants {
     //EXCEL中存在重复的条码
     public static final int MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_CODE = 8000021;
     public static final String MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_MSG = "抱歉，EXCEL中存在重复的条码，具体条码为：%s";
+    //EXCEL版本有誤
+    public static final int MATERIAL_EXCEL_IMPORT_OLD_VERSION_CODE = 8000022;
+    public static final String MATERIAL_EXCEL_IMPORT_OLD_VERSION_MSG = "抱歉，匯入EXCEL文件版本有誤，請取得新文件後再行匯入";
 
     /**
      *  单据信息

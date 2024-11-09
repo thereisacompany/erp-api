@@ -100,7 +100,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, supplier, supplierall, taxid, contacts, phone_num, email, description, isystem, type, enabled, advance_in,
+    id, supplier, supplierall, custom_id, taxid, contacts, phone_num, email, description, isystem, type, enabled, advance_in,
     begin_need_get, begin_need_pay, all_need_get, all_need_pay, fax, telephone, emergency_phone, address, license_plate,
     tax_num, bank_name, account_number, tax_rate, group_insurance_start, group_insurance_end,
     labor_health_insurance_start, labor_health_insurance_end, onboarding, resign, id_number,

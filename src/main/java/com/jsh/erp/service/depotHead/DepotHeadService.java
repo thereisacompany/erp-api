@@ -2422,6 +2422,12 @@ public class DepotHeadService {
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
 
+            // 若不是客戶，代表為舊excel，需使用新的文件
+            if(!ExcelUtils.getContent(mainData, 0, 7).equals("客戶")) {
+                throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_CODE,
+                        ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_MSG);
+            }
+
             JSONObject saveJson = null;
             int blockTimes = 0; // 用來判斷excel確認書及客單編號欄位，空白次數是否超過2次
             int importCount = 0; // 匯入筆數
@@ -2429,6 +2435,8 @@ public class DepotHeadService {
 
             // 門市取貨派送
             int isPickup = 3;
+
+            List<Supplier> supplierList = supplierService.select(null, "客戶", null, null, null, 0, 10000);
 
             Map<String, JSONObject> beanList = new HashMap<>();
             Map<String, String> rowList = new HashMap<>();
@@ -2498,15 +2506,29 @@ public class DepotHeadService {
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 6);
 
+                // 客戶 (customer id)
+                Long organId = null;
+                String customId = ExcelUtils.getContent(mainData, i, 7);
+                if(StringUtil.isNotEmpty(customId)) {
+                    Optional<Supplier> supplier =
+                            supplierList.stream().filter(m -> m.getCustomId().equals(Long.parseLong(customId))).findFirst();
+                    if(supplier.isPresent()) {
+                        organId = supplier.get().getId();
+                    } else {
+                        importError.put(""+i, "查無此客戶id");
+                        continue;
+                    }
+                }
+
                 // 商品資料(必填)
-                String materialName = ExcelUtils.getContent(mainData, i, 7);
+                String materialName = ExcelUtils.getContent(mainData, i, 8);
                 if(StringUtil.isEmpty(materialName)) {
                     // 記錄
                     importError.put("" + i, "商品型號未填寫");
                     continue;
                 }
                 // 數量 (必填)
-                String amount = ExcelUtils.getContent(mainData, i, 8);
+                String amount = ExcelUtils.getContent(mainData, i, 9);
                 if (StringUtil.isEmpty(amount)) {
                     // 記錄
                     importError.put("" + i, "數量未填寫");
@@ -2516,13 +2538,13 @@ public class DepotHeadService {
                 beanJson.put("isPickup", isPickup);
 
                 // 安裝方式
-                String install = ExcelUtils.getContent(mainData, i, 9);
+                String install = ExcelUtils.getContent(mainData, i, 10);
                 beanJson.put("install", install);
                 // 舊機回收
-                String recycle = ExcelUtils.getContent(mainData, i, 10);
+                String recycle = ExcelUtils.getContent(mainData, i, 11);
                 beanJson.put("recycle", recycle);
                 // 配送備註
-                String memo = ExcelUtils.getContent(mainData, i, 11);
+                String memo = ExcelUtils.getContent(mainData, i, 12);
                 beanJson.put("memo", memo);
 
                 beanJson.put("operTime", nowDatetime);
@@ -2544,9 +2566,9 @@ public class DepotHeadService {
                     }
                 }
 
-                String driver = ExcelUtils.getContent(mainData, i, 12);
+                String driver = ExcelUtils.getContent(mainData, i, 17);
                 if(StringUtil.isNotEmpty(driver)) {
-                    String assignMan = ExcelUtils.getContent(mainData, i, 13);
+                    String assignMan = ExcelUtils.getContent(mainData, i, 18);
                     if(assignMan == null || assignMan.isEmpty()) {
                         importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
                         continue;
@@ -2559,13 +2581,27 @@ public class DepotHeadService {
                 json.put("recycle", recycle);
                 json.put("memo", memo);
                 // store "store":{"address":"1","phone":"1","name":"1","man":"zora"}
+                JSONObject store = new JSONObject();
+                String man = ExcelUtils.getContent(mainData, i, 13);
+                store.put("man", man);
+                String phone = ExcelUtils.getContent(mainData, i, 14);
+                if(phone.contains("[>99999999]")) {
+                    phone = phone.replace("[>99999999]", "").replace("--", "");
+                    phone = ExcelUtils.formatPhoneNumber(phone);
+                }
+                store.put("phone", phone);
+                String name = ExcelUtils.getContent(mainData, i, 15);
+                store.put("name", name);
+                String address1 = ExcelUtils.getContent(mainData, i, 16);
+                store.put("address", address1);
+                json.put("store", store);
                 String remark = json.toJSONString(); // 備註
 
                 // S20231123163920999
                 String number = String.format("S%s", sequenceService.buildNumber(Boolean.TRUE));
                 beanJson.put("number", number);
                 beanJson.put("defaultNumber", number);
-                beanJson.put("organId", null);
+                beanJson.put("organId", organId);
                 beanJson.put("changeAmount", 0);
                 beanJson.put("totalPrice", 0);
                 beanJson.put("receiveName", receiveName);
@@ -2635,8 +2671,8 @@ public class DepotHeadService {
                     addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
 
                     // 派發司機、指派人員
-                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 12);
-                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 13);
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 17);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 18);
                     if(StringUtil.isNotEmpty(driver) && StringUtil.isNotEmpty(assignMan)) {
                         try {
                             // number

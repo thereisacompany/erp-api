@@ -10,10 +10,8 @@ import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.systemConfig.SystemConfigService;
 import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.service.userBusiness.UserBusinessService;
-import com.jsh.erp.utils.BaseResponseInfo;
-import com.jsh.erp.utils.FileUtils;
-import com.jsh.erp.utils.StringUtil;
-import com.jsh.erp.utils.Tools;
+import com.jsh.erp.utils.*;
+import com.jsh.erp.utils.file.MimeTypeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -31,6 +29,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -221,14 +220,33 @@ public class SystemConfigController {
                 imgPath = imgPath.substring(0, imgPath.length() - 1);
             }
             String fileUrl = filePath + File.separator + imgPath;
-            File file = new File(fileUrl);
-            if(!file.exists()){
-                response.setStatus(404);
-                throw new RuntimeException("文件不存在..");
+            if (imgPath.contains("https")) {
+                imgPath = imgPath.replaceFirst("/", "//");
+                int index = imgPath.lastIndexOf("/") + 1;
+                String fileName = imgPath.substring(index);
+                String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+                response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+                String contentType = MimeTypeUtils.getContentType(imgPath);
+                if (StringUtil.isEmpty(contentType)) {
+                    contentType = MimeTypeUtils.getResponseContentType(fileType);
+                    response.setContentType(contentType);
+                } else {
+                    response.setContentType(contentType + ";charset=utf-8");
+                }
+                response.setCharacterEncoding("UTF-8");
+                inputStream = HttpUtil.getHttpInputStream(imgPath);
+            } else {
+                File file = new File(fileUrl);
+                if (!file.exists()) {
+                    response.setStatus(404);
+                    throw new RuntimeException("文件不存在..");
+                }
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + new String(file.getName().getBytes("UTF-8"), "iso-8859-1"));
+                inputStream = new BufferedInputStream(new FileInputStream(fileUrl));
             }
-            response.setContentType("application/force-download");// 设置强制下载不打开
-            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(file.getName().getBytes("UTF-8"),"iso-8859-1"));
-            inputStream = new BufferedInputStream(new FileInputStream(fileUrl));
+
             outputStream = response.getOutputStream();
             byte[] buf = new byte[1024];
             int len;

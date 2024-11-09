@@ -2,6 +2,7 @@ package com.jsh.erp.exception;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,10 @@ public class BusinessRunTimeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private int code;
     private Map<String, Object> data;
+
+    public BusinessRunTimeException(String message) {
+        this(400, message);
+    }
 
     public BusinessRunTimeException(int code, String reason) {
         super(reason);
