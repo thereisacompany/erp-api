@@ -602,18 +602,6 @@ public class DepotHeadController {
                 });
             }
 
-//            Map<String, MaterialsListVo> findMaterialsListMapByHeaderIdList =
-//                    depotHeadService.findMaterialsListMapByHeaderIdList(idList, Boolean.TRUE);
-//            if(findMaterialsListMapByHeaderIdList.size()==1) {
-//                File file = ExcelUtils.exportHAConfirm(dhl, null);
-//                files.add(file);
-//            } else {
-//                findMaterialsListMapByHeaderIdList.entrySet().stream().forEach(materialMap->{
-//                    File file = ExcelUtils.exportHAConfirm(dhl, materialMap.getValue());
-//                    files.add(file);
-//                });
-//
-//            }
             if(!files.isEmpty()) {
 //                if(files.size() == 1) {
 //                    File file = files.get(0);

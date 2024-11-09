@@ -277,10 +277,9 @@ public class ExcelUtils {
 
 //			row4.getCell(7).setCellValue("QRCode");	// QRCode
 
-			Row row7 = sheet.getRow(7+startRow);
+			Row row7 = sheet.getRow(7);
 			if(remarkJson != null) {
 				row7.getCell(1).setCellValue(remarkJson.getString("memo"));    // 配送備註
-
 				if(isPickup1) {
 					JSONObject store = remarkJson.getJSONObject("store");
 
