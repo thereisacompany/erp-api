@@ -1021,8 +1021,9 @@ public class DepotHeadService {
             depotHeadMapper.insertDetailRecord(record);
         }
 
-        // TODO 作廢後，配送單才需將數量還原
-        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+        // TODO 作廢後，配送單且非未審核的才需將數量還原
+        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                && !depotHead.getStatus().equals("0")) {
             List<DepotItem> items = depotItemService.getListByHeaderId(headerId);
             items.stream().forEach(depotItem -> {
                 depotItemService.updateCurrentStockFun(headerId, depotItem.getMaterialId(), depotItem.getDepotId());
