@@ -823,6 +823,18 @@ public class DepotHeadController {
         return res;
     }
 
+    @PostMapping(value = "/setInvalid/{id}")
+    @ApiOperation(value = "配送單設置作廢")
+    public String setInvalid(@PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        int res = depotHeadService.invalidSingleStatus(id, request);
+        if(res > 0) {
+            return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
+        } else {
+            return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
+        }
+    }
+
     @GetMapping(value = "/getDeliveryData")
     @ApiOperation(value = "取得配送單狀態")
     public BaseResponseInfo getDeliveryData(@RequestParam("number") String number, HttpServletRequest request) {

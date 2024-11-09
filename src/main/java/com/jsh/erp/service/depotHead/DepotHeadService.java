@@ -973,6 +973,68 @@ public class DepotHeadService {
         return sum;
     }
 
+    /**
+     * 配送單作廢
+     * @param id
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public int invalidSingleStatus(Long id, HttpServletRequest request) throws Exception {
+        int result = 0;
+        DepotHead depotHead = getDepotHead(id);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        }
+        Long headerId = depotHead.getId();
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
+        System.out.println("detail>>>"+detail);
+        if(detail != null) {
+            if(detail.getStatus().equals("7")) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_ALREADY_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_DETAIL_STATUS_WARNING_ALREADY_MSG));
+            }
+
+            detail.setStatus("7");
+            result = depotHeadMapper.updateDetail(detail);
+
+            // insert jsh_depot_record
+            DepotRecord record = new DepotRecord();
+            record.setDetailId(detail.getId());
+            record.setStatus("7");
+            record.setDate(LocalDateTime.now().format(formatterChange));
+            depotHeadMapper.insertDetailRecord(record);
+        } else {
+            detail = new DepotDetail();
+            detail.setHeaderId(headerId);
+            detail.setStatus("7");
+            result = depotHeadMapper.insertDetail(detail);
+
+            // insert jsh_depot_record
+            detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+            DepotRecord record = new DepotRecord();
+            record.setDetailId(detail.getId());
+            record.setStatus("7");
+            record.setDate(LocalDateTime.now().format(formatterChange));
+            depotHeadMapper.insertDetailRecord(record);
+        }
+
+        // TODO 作廢後，配送單才需將數量還原
+        if(depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+            List<DepotItem> items = depotItemService.getListByHeaderId(headerId);
+            items.stream().forEach(depotItem -> {
+                depotItemService.updateCurrentStockFun(headerId, depotItem.getMaterialId(), depotItem.getDepotId());
+            });
+        }
+        logService.insertLog("單據(作廢)",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(depotHead.getNumber())
+                        .append(BusinessConstants.LOG_OPERATION_TYPE_INVALID).toString(),
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        return result;
+    }
+
     public List<DepotHeadVo4List> getDetailByNumber(String[] number)throws Exception {
         List<DepotHeadVo4List> resList = new ArrayList<>();
         try{

@@ -435,7 +435,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_TRANSFER_AMOUNT_ZERO_MSG = "建立移倉單時，不得有商品數量為空或為0";
     public static final int DEPOT_HEAD_DETAIL_STATUS_WARNING_CODE = 8500033;
     public static final String DEPOT_HEAD_DETAIL_STATUS_WARNING_MSG = "抱歉，此單據派送狀態為配送異常或作廢單，不可修改或重新派發!!";
-
+    public static final int DEPOT_HEAD_DETAIL_STATUS_WARNING_ALREADY_CODE = 8500034;
+    public static final String DEPOT_HEAD_DETAIL_STATUS_WARNING_ALREADY_MSG = "抱歉，此單據派送狀態已為作廢單，請勿重覆作廢指令";
     /**
      *  单据明细信息
      * type = 90

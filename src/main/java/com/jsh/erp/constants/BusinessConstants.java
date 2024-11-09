@@ -84,7 +84,7 @@ public class BusinessConstants {
     public static final String PURCHASE_STATUS_SKIPED = "2";
     public static final String PURCHASE_STATUS_SKIPING = "3";
     /**
-     * 單據-移倉狀態 purchaseStatus '4'完成移倉、'5'移倉中
+     * 單據-移倉狀態 purchaseStatus '4'完成移倉、'5'移倉中'、'6'移倉作廢'
      */
     public static final String PURCHASE_STATUS_TRANSFER_SKIPPED = "4";
     public static final String PURCHASE_STATUS_TRANSFER_SKIPPING = "5";
