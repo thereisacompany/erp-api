@@ -200,8 +200,15 @@
             <bind name="bindRemark" value="'%'+remark+'%'"/>
             and (dh.remark like #{bindRemark} or di.remark like #{bindRemark})
         </if>
-        <if test="dStatus != null and dStatus !=0">
-            and jdd.status = ${dStatus}
+        <if test="dStatus != null">
+            <choose>
+                <when test="dStatus > 0">
+                    and jdd.status = ${dStatus}
+                </when>
+                <otherwise>
+                    and jdd.id IS NULL
+                </otherwise>
+            </choose>
         </if>
         <if test="driverId != null and driverId !=0">
             and jdd.driver_id = ${driverId}
@@ -343,8 +350,15 @@
             <bind name="bindRemark" value="'%'+remark+'%'"/>
             and (dh.remark like #{bindRemark} or di.remark like #{bindRemark})
         </if>
-        <if test="dStatus != null and dStatus !=0">
-            and jdd.status = ${dStatus}
+        <if test="dStatus != null">
+            <choose>
+                <when test="dStatus > 0">
+                    and jdd.status = ${dStatus}
+                </when>
+                <otherwise>
+                    and jdd.id IS NULL
+                </otherwise>
+            </choose>
         </if>
         <if test="driverId != null and driverId !=0">
             and jdd.driver_id = ${driverId}

@@ -174,9 +174,6 @@ public class DepotHeadService {
             Map<Long,String> accountMap = accountService.getAccountMap();
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
-            if(dStatus != null && dStatus > 0) {
-                dStatus-=1;
-            }
 
             List<DepotHeadVo4List> list = depotHeadMapperEx.selectByConditionDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
                  materialParam, keyword, organId, organArray, MNumber, creator, depotId, counterId, depotArray, accountId, remark,
@@ -362,9 +359,7 @@ public class DepotHeadService {
             String [] organArray = getOrganArray(subType, purchaseStatus);
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
-            if(dStatus != null && dStatus > 0) {
-                dStatus-=1;
-            }
+
             result=depotHeadMapperEx.countsByDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
                    materialParam, keyword, organId, organArray, MNumber, creator, depotId, depotArray, accountId, remark, dStatus, driverId, beginDateTime, endDateTime);
         }catch(Exception e){
@@ -1420,7 +1415,7 @@ public class DepotHeadService {
                 record.setDate(LocalDateTime.now().format(formatterChange));
                 depotHeadMapper.insertDetailRecord(record);
 
-                // agreed_delivery insert to agreed table
+                // agreed_delivery 約配日 insert to agreed table
                 if(depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
                     depotHeadMapper.updateAgreedDelivery(detail.getId());
                     AgreedDelivery agreedDelivery = new AgreedDelivery();
