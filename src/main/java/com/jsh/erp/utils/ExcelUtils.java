@@ -488,8 +488,6 @@ public class ExcelUtils {
 		return excelFile.getName();
 	}
 
-
-
 	public static String getContent(Sheet src, int rowNum, int colNum) {
 		if(colNum < src.getRow(rowNum).length) {
 			return src.getRow(rowNum)[colNum].getContents().trim();

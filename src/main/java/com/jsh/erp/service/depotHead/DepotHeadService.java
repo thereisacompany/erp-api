@@ -2573,7 +2573,12 @@ public class DepotHeadService {
                 // 客戶 (customer id)
                 Long organId = null;
                 String customId = ExcelUtils.getContent(mainData, i, 7);
+                if(!StringUtil.isPositiveLong(customId)) {
+                    importError.put(""+i, "請輸入客戶id(ex: 016 征利，只需輸入16)");
+                    continue;
+                }
                 if(StringUtil.isNotEmpty(customId)) {
+                    // 檢查excel的客戶欄位，應為id
                     Optional<Supplier> supplier =
                             supplierList.stream().filter(m -> m.getCustomId().equals(Long.parseLong(customId))).findFirst();
                     if(supplier.isPresent()) {
