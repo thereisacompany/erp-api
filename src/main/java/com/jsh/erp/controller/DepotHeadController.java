@@ -622,14 +622,13 @@ public class DepotHeadController {
     public void exportPicking(@ApiParam(value = "配送單單號") @RequestParam(value = "numbers") String[] numbers,
                                @ApiParam(value = "細單單號") @RequestParam(value = "subIds") Long[] subIds,
                                HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if(numbers.length > 20) {
-            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_CODE,
-                    ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_MSG);
-        }
+//        if(numbers.length > 20) {
+//            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_CODE,
+//                    ExceptionConstants.DEPOT_HEAD_EXPORT_PICKING_MAX_MSG);
+//        }
 
         List<DepotHeadVo4List> list = depotHeadService.getDetailByNumber(numbers);
         File outputFile;
-        List<File> files = new ArrayList<>();
         for (DepotHeadVo4List depotHeadVo4List : list) {
             List<Long> idList = new ArrayList<>();
 
@@ -663,9 +662,27 @@ public class DepotHeadController {
                 if(userInfo!=null) {
                     name = userInfo.getUsername();
                 }
-                File file = ExcelUtils.exportPicking(list, name);
-                ExportExecUtil.showExec(file, file.getName(), response);
-                file.delete();
+                int pageSize = 20;
+                int page = (int) Math.ceil((double) list.size() / pageSize);
+
+                List<File> files = new ArrayList<>();
+                int fromIndex = 0;
+                while(page > 0 && ((fromIndex = (page - 1) * pageSize) < list.size() || fromIndex >= 0)) {
+                    int toIndex = Math.min(fromIndex + pageSize, list.size());
+
+                    File file = ExcelUtils.exportPicking(list.subList(fromIndex, toIndex), name, page);
+                    files.add(file);
+                    page--;
+                }
+
+                if(!files.isEmpty()) {
+                    ExportExecUtil.showExecs(files, response);
+                    files.stream().forEach(File::delete);
+                }
+
+//                File file = ExcelUtils.exportPicking(list, name);
+//                ExportExecUtil.showExec(file, file.getName(), response);
+//                file.delete();
             }
 
         } catch (Exception e) {
@@ -1097,4 +1114,5 @@ public class DepotHeadController {
         }
         return "";
     }
+
 }

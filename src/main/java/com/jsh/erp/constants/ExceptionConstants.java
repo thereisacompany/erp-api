@@ -430,7 +430,7 @@ public class ExceptionConstants {
     public static final int DEPOT_HEAD_EXPORT_PICKING_MAX_CODE = 8500030;
     public static final String DEPOT_HEAD_EXPORT_PICKING_MAX_MSG = "匯出揀貨單數量超過20筆，請重新選擇";
     public static final int DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_CODE = 8500031;
-    public static final String DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_MSG = "匯出揀貨單內含門市取貨單據，請重新選擇";
+    public static final String DEPOT_HEAD_EXPORT_PICKING_TYPE_ERROR_MSG = "匯出揀貨單內含門市取貨(派送)單據，請重新選擇";
     public static final int DEPOT_HEAD_TRANSFER_AMOUNT_ZERO_CODE = 8500032;
     public static final String DEPOT_HEAD_TRANSFER_AMOUNT_ZERO_MSG = "建立移倉單時，不得有商品數量為空或為0";
     public static final int DEPOT_HEAD_DETAIL_STATUS_WARNING_CODE = 8500033;

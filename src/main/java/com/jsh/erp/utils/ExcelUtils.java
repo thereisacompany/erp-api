@@ -45,7 +45,7 @@ public class ExcelUtils {
 	public static final int EMU_PER_PIXEL = 9525;
 	public static final int EMU_PER_POINT = 12700;
 
-	public static File exportPicking(List<DepotHeadVo4List> items, String name) {
+	public static File exportPicking(List<DepotHeadVo4List> items, String name, int page) {
 		File excelFile = null;
 		try{
 			String filePath = "./excelFile/配送單-撿貨總表.xlsx";
@@ -54,7 +54,7 @@ public class ExcelUtils {
 			LocalDateTime now = LocalDateTime.now();
 
 			// 匯出檔名
-			outputName = String.format(outputName, now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+			outputName = String.format(outputName, now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + "-" + page);
 
 			FileInputStream templateFile = new FileInputStream(filePath);
 			XSSFWorkbook workbook = new XSSFWorkbook(templateFile);
