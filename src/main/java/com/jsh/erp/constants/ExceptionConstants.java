@@ -269,19 +269,21 @@ public class ExceptionConstants {
      * */
     //添加商品信息信息失败
     public static final int MATERIAL_ADD_FAILED_CODE = 7500000;
-    public static final String MATERIAL_ADD_FAILED_MSG = "添加商品信息失败";
+    public static final String MATERIAL_ADD_FAILED_MSG = "新增商品資料失敗";
     //删除商品信息失败
     public static final int MATERIAL_DELETE_FAILED_CODE = 7500001;
-    public static final String MATERIAL_DELETE_FAILED_MSG = "删除商品信息失败";
+    public static final String MATERIAL_DELETE_FAILED_MSG = "删除商品資料失敗";
     //修改商品信息失败
     public static final int MATERIAL_EDIT_FAILED_CODE = 7500002;
-    public static final String MATERIAL_EDIT_FAILED_MSG = "修改商品信息失败";
+    public static final String MATERIAL_EDIT_FAILED_MSG = "修改商品資料失敗";
+    public static final int MATERIAL_ADD_NO_ORGAN_ID_CODE = 7500003;
+    public static final String MATERIAL_ADD_NO_ORGAN_ID_MSG = "新增商品資料需帶入客戶";
     //商品信息不存在
     public static final int MATERIAL_NOT_EXISTS_CODE = 8000000;
-    public static final String MATERIAL_NOT_EXISTS_MSG = "商品信息不存在";
+    public static final String MATERIAL_NOT_EXISTS_MSG = "商品資料不存在";
     //商品信息不唯一
     public static final int MATERIAL_NOT_ONLY_CODE = 8000001;
-    public static final String MATERIAL_NOT_ONLY_MSG = "商品信息不唯一";
+    public static final String MATERIAL_NOT_ONLY_MSG = "商品資料不唯一";
     //该商品未开启序列号
     public static final int MATERIAL_NOT_ENABLE_SERIAL_NUMBER_CODE = 8000002;
     public static final String MATERIAL_NOT_ENABLE_SERIAL_NUMBER_MSG = "该商品未开启序列号功能";

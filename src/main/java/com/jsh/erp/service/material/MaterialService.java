@@ -179,6 +179,12 @@ public class MaterialService {
     public int insertMaterial(JSONObject obj, HttpServletRequest request)throws Exception {
         Material m = JSONObject.parseObject(obj.toJSONString(), Material.class);
         m.setEnabled(true);
+
+        if(!obj.containsKey("organId") || StringUtil.isEmpty(obj.getString("organId"))) {
+            throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_ADD_NO_ORGAN_ID_CODE,
+                    ExceptionConstants.MATERIAL_ADD_NO_ORGAN_ID_MSG);
+        }
+
         try{
             materialMapperEx.insertSelectiveEx(m);
             Long mId = m.getId();
