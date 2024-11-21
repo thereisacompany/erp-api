@@ -6,6 +6,7 @@ import com.jsh.erp.constants.ExceptionConstants;
 import com.jsh.erp.datasource.entities.Depot;
 import com.jsh.erp.datasource.entities.SystemConfig;
 import com.jsh.erp.exception.BusinessRunTimeException;
+import com.jsh.erp.service.GcsFileService;
 import com.jsh.erp.service.depot.DepotService;
 import com.jsh.erp.service.systemConfig.SystemConfigService;
 import com.jsh.erp.service.user.UserService;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -54,6 +56,9 @@ public class SystemConfigController {
 
     @Resource
     private SystemConfigService systemConfigService;
+
+    @Resource
+    private GcsFileService gcsFileService;
 
     @Value(value="${file.path}")
     private String filePath;
@@ -136,7 +141,8 @@ public class SystemConfigController {
             String token = request.getHeader("X-Access-Token");
             Long tenantId = Tools.getTenantIdByToken(token);
             bizPath = bizPath + File.separator + tenantId;
-            savePath = this.uploadLocal(file, bizPath, name);
+            savePath = gcsFileService.uploadFile(file, bizPath);
+//            savePath = this.uploadLocal(file, bizPath, name);
             if(StringUtil.isNotEmpty(savePath)){
                 res.code = 200;
                 res.data = savePath;
