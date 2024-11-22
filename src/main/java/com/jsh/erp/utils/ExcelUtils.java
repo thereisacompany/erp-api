@@ -25,15 +25,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.lang.Boolean;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.lang.Boolean;
 import java.util.regex.Pattern;
 
 import static org.apache.poi.ss.usermodel.Workbook.PICTURE_TYPE_PNG;
@@ -151,7 +150,12 @@ public class ExcelUtils {
 			Row row1 = sheet.getRow(1+startRow);
 			row1.getCell(1).setCellValue(item.getReceiveName());	// 收貨人
 			row1.getCell(3).setCellValue(formatPhoneNumber(item.getCellphone()));	// 電話
-			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
+//			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
+			if(StringUtil.isNotEmpty(item.getAgreedDelivery())) {
+				LocalDate adDate = LocalDate.parse(item.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+				row1.getCell(5).setCellValue(adDate.toString());
+			}
+
 
 			StringBuilder receiveNumber = new StringBuilder();
 			receiveNumber.append(item.getNumber());
@@ -582,7 +586,12 @@ public class ExcelUtils {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(formatPhoneNumber("0912-345-678"));
+//		System.out.println(formatPhoneNumber("0912-345-678"));
+
+		String ad = "2024-10-28 13:13:55.0";
+		LocalDate adDate = LocalDate.parse(ad, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+		System.out.println(">>>"+adDate);
+		System.out.println(adDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
 //		String msg = "12345";
 //		System.out.println(msg.indexOf("@"));
