@@ -187,7 +187,8 @@ public class BusinessConstants {
     public static final String LOG_OPERATION_TYPE_BATCH_ADD = "批量新增";
     public static final String LOG_OPERATION_TYPE_EDIT = "修改";
     public static final String LOG_OPERATION_TYPE_DELETE = "删除";
-    public static final String LOG_OPERATION_TYPE_LOGIN = "登录";
+    public static final String LOG_OPERATION_TYPE_LOGIN = "登入";
+    public static final String LOG_OPERATION_TYPE_LOGOUT = "登出";
     public static final String LOG_OPERATION_TYPE_IMPORT = "匯入";
     public static final String LOG_OPERATION_TYPE_ENABLED = "更新状态";
     public static final String LOG_OPERATION_TYPE_INVALID = "作廢";

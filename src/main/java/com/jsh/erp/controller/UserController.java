@@ -138,7 +138,7 @@ public class UserController {
                 default:
                     break;
             }
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             data.put("msgTip", msgTip);
             if(user!=null){
                 Role role = userService.getRoleTypeByUserId(user.getId());
@@ -165,7 +165,7 @@ public class UserController {
             e.printStackTrace();
             logger.error(e.getMessage());
             res.code = 500;
-            res.data = "用户登录失败";
+            res.data = "用户登入失敗";
         }
         return res;
     }
@@ -195,7 +195,15 @@ public class UserController {
     public BaseResponseInfo logout(HttpServletRequest request, HttpServletResponse response)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
+            Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"userId").toString());
+            User user = userService.getUser(userId);
+
             redisService.deleteObjectBySession(request,"userId");
+
+            logService.insertLogWithUserId(user.getId(), user.getTenantId(), "用户",
+                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGOUT).append(user.getLoginName()).toString(),
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
