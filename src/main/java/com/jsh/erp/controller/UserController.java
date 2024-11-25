@@ -196,18 +196,23 @@ public class UserController {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
             Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"userId").toString());
-            User user = userService.getUser(userId);
+            if(userId != null) {
+                User user = userService.getUser(userId);
+                redisService.deleteObjectBySession(request, "userId");
 
-            redisService.deleteObjectBySession(request,"userId");
-
-            logService.insertLogWithUserId(user.getId(), user.getTenantId(), "用户",
-                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGOUT).append(user.getLoginName()).toString(),
-                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-
+                logService.insertLogWithUserId(user.getId(), user.getTenantId(), "用户",
+                        new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGOUT).append(user.getLoginName()).toString(),
+                        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+                res.code = 200;
+                res.data = "退出成功";
+            } else {
+                res.code = 200;
+                res.data = "查無userId, 或token已被刪除";
+            }
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "退出失败";
+            res.data = "退出失敗";
         }
         return res;
     }
