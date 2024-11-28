@@ -1353,7 +1353,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void assignDelivery(Long headerId, Integer driverId, String assignDate, String assignUser, HttpServletRequest request) throws Exception {
+    public void assignDelivery(Long headerId, Integer driverId, String assignDate, String assignUser, String username, HttpServletRequest request) throws Exception {
         // 是否有此配送單
         DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
         if(depotHead == null) {
@@ -1417,17 +1417,20 @@ public class DepotHeadService {
 
                 // agreed_delivery 約配日 insert to agreed table
                 if(depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
-                    depotHeadMapper.updateAgreedDelivery(detail.getId());
+//                    depotHeadMapper.updateAgreedDelivery(detail.getId());
                     AgreedDelivery agreedDelivery = new AgreedDelivery();
                     agreedDelivery.setDetailId(detail.getId());
                     agreedDelivery.setDatetime(depotHead.getAgreedDelivery());
-                    User user = userService.getCurrentUser();
-                    agreedDelivery.setName(user.getUsername());
+                    if(username == null) {
+                        User user = userService.getCurrentUser();
+                        username = user.getUsername();
+                    }
+                    agreedDelivery.setName(username);
                     agreedDelivery.setIsDefault(1);
                     depotHeadMapper.insertAgreedDeliver(agreedDelivery);
                 }
 
-                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD+", 單號("+depotHead.getNumber()+")", request);
             }
         } catch (Exception e) {
             JshException.writeFail(logger, e);
@@ -1475,7 +1478,7 @@ public class DepotHeadService {
             record.setDate(LocalDateTime.now().format(formatterChange));
             depotHeadMapper.insertDetailRecord(record);
 
-            logService.insertLog("重新派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+            logService.insertLog("重新派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT+", 單號("+depotHead.getNumber()+")", request);
         } catch (Exception e) {
             JshException.writeFail(logger, e);
         }
@@ -2420,7 +2423,6 @@ public class DepotHeadService {
                     String key = value.getKey();
                     String rows = rowList.get(key);
                     addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
-
                     // 派發司機、指派人員
                     String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 14);
                     String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
@@ -2431,7 +2433,7 @@ public class DepotHeadService {
                             Long userId = userService.getIdByUserName(assignMan);
                             Integer driverId = supplierService.getSupplierId(driver);
                             // headerId driverId assignDate assignUser
-                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
+                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
                         } catch (Exception e){
                             logger.error("指派司機失敗 : "+e.getMessage());
                             System.out.println(e.getMessage());
@@ -2452,8 +2454,9 @@ public class DepotHeadService {
             info.data = "匯入成功";
         } catch (BusinessRunTimeException brte) {
             brte.printStackTrace();
-            info.code = brte.getCode();
-            info.data = brte.getData().get("message");
+            logger.error(brte.toString());
+            info.code = 500;
+            info.data = brte.toString(); //brte.getData().get("message");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.toString());
@@ -2749,7 +2752,7 @@ public class DepotHeadService {
                             Long userId = userService.getIdByUserName(assignMan);
                             Integer driverId = supplierService.getSupplierId(driver);
                             // headerId driverId assignDate assignUser
-                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), request);
+                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
                         } catch (Exception e){
                             logger.error("指派司機失敗 : "+e.getMessage());
                             System.out.println(e.getMessage());
