@@ -64,5 +64,6 @@ public interface DepotHeadMapper {
     List<AgreedDelivery> selectAgreedDelivery(@Param("detailId") Long detailId);
 
     List<AgreedDeliveryVoList> selectAgreedDeliveryByHeader(@Param("idList") List<Long> idList);
+    List<AgreedDeliveryVoList> selectAllAgreedDelivery();
 
 }

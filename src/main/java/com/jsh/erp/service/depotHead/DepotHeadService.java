@@ -138,10 +138,10 @@ public class DepotHeadService {
         List<DepotHead> list=null;
         try{
             list=depotHeadMapper.selectByExample(example);
-            List<Long> ids = new ArrayList<>();
-            list.stream().forEach(dh->ids.add(dh.getId()));
-            if(!ids.isEmpty()) {
-                List<AgreedDeliveryVoList> agreedList = depotHeadMapper.selectAgreedDeliveryByHeader(ids);
+//            List<Long> ids = new ArrayList<>();
+//            list.stream().forEach(dh->ids.add(dh.getId()));
+//            if(!ids.isEmpty()) {
+                List<AgreedDeliveryVoList> agreedList = depotHeadMapper.selectAllAgreedDelivery();
                 list.stream().forEach(dh->{
                     Optional<AgreedDeliveryVoList> findAd =
                             agreedList.stream().filter(ad->ad.getHeaderId()==dh.getId()).findFirst();
@@ -150,7 +150,7 @@ public class DepotHeadService {
                         dh.setAgreedDelivery(vo.getDatetime());
                     }
                 });
-            }
+//            }
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
@@ -2103,6 +2103,8 @@ public class DepotHeadService {
                             ExceptionConstants.MATERIAL_EXTENSION_ERROR_MSG);
                 }
             }
+            List<String> customList = new ArrayList<>();
+            List<String> sourceList = new ArrayList<>();
 
 //            List<Supplier> supplierList = supplierService.findBySelectSup();
             List<Depot> depotList = depotService.getAllList();
@@ -2169,6 +2171,9 @@ public class DepotHeadService {
                         if (customStr.equals(finalExcelCustomNum) || sourceStr.equals(sourceNumber)) {
                             return true;
                         }
+                        if (customList.contains(finalExcelCustomNum) || sourceList.contains(sourceNumber)) {
+                            return true;
+                        }
                     }
                     return false;
                 }).findFirst();
@@ -2176,6 +2181,8 @@ public class DepotHeadService {
                     importError.put(""+i, "此筆資料重覆匯入(客單編號:"+excelCustomNum+", 原始客編:"+sourceNumber+")");
                     continue;
                 }
+                customList.add(excelCustomNum);
+                sourceList.add(sourceNumber);
 
                 // 收貨人
                 String receiveName = ExcelUtils.getContent(mainData, i, 3);
@@ -2504,6 +2511,9 @@ public class DepotHeadService {
                         ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_MSG);
             }
 
+            List<String> customList = new ArrayList<>();
+            List<String> sourceList = new ArrayList<>();
+
             JSONObject saveJson = null;
             int blockTimes = 0; // 用來判斷excel確認書及客單編號欄位，空白次數是否超過2次
             int importCount = 0; // 匯入筆數
@@ -2543,6 +2553,7 @@ public class DepotHeadService {
                     importError.put(""+i, "原始客編未填寫");
                     continue;
                 }
+
                 String finalExcelCustomNum = excelCustomNum;
                 Optional<DepotHead> tmpDepotHead = depotHeadList.stream().filter(dh->{
                     String customStr = "";
@@ -2557,6 +2568,9 @@ public class DepotHeadService {
                         if (customStr.equals(finalExcelCustomNum) || sourceStr.equals(sourceNumber)) {
                             return true;
                         }
+                        if (customList.contains(finalExcelCustomNum) || sourceList.contains(sourceNumber)) {
+                            return true;
+                        }
                     }
                     return false;
                 }).findFirst();
@@ -2564,6 +2578,8 @@ public class DepotHeadService {
                     importError.put(""+i, "此筆資料重覆匯入(客單編號:"+excelCustomNum+", 原始客編:"+sourceNumber+")");
                     continue;
                 }
+                customList.add(excelCustomNum);
+                sourceList.add(sourceNumber);
 
                 // 收貨人
                 String receiveName = ExcelUtils.getContent(mainData, i, 3);

@@ -1059,4 +1059,12 @@
     and jdad.is_default = 1
   </select>
 
+  <select id="selectAllAgreedDelivery" resultType="com.jsh.erp.datasource.vo.AgreedDeliveryVoList">
+    select
+    header_id headerId, `datetime`
+    from jsh_depot_detail jdd
+    left join jsh_depot_agreed_delivery jdad on jdad.detail_id = jdd.id
+    where jdad.is_default = 1
+  </select>
+
 </mapper>
