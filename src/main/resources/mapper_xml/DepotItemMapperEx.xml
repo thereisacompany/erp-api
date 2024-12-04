@@ -944,7 +944,7 @@
             and (di.depot_id=#{depotId} or di.another_depot_id=#{depotId})
         </if>
         and dh.status not in (0,6)
-        and (case when jdd.status>0 then jdd.status else '0' end) not in ('6')
+        and (case when jdd.status>0 then jdd.status else '0' end) not in ('6', '7')
         and ifnull(m.delete_flag,'0') !='1'
     </select>
 </mapper>
