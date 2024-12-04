@@ -1031,7 +1031,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <insert id="insertAgreedDeliver" parameterType="com.jsh.erp.datasource.vo.AgreedDelivery">
+  <insert id="insertAgreedDelivery" parameterType="com.jsh.erp.datasource.vo.AgreedDelivery">
     INSERT INTO jsh_depot_agreed_delivery (detail_id, datetime, datetime_end, creator, is_default)
     VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{datetimeEnd,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
   </insert>

@@ -1353,7 +1353,7 @@ public class DepotHeadService {
      * @throws Exception
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void assignDelivery(Long headerId, Integer driverId, String assignDate, String assignUser, String username, HttpServletRequest request) throws Exception {
+    public void assignDelivery(boolean isImport, Long headerId, Integer driverId, String assignDate, String assignUser, String username, HttpServletRequest request) throws Exception {
         // 是否有此配送單
         DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
         if(depotHead == null) {
@@ -1396,7 +1396,9 @@ public class DepotHeadService {
                 record.setDate(LocalDateTime.now().format(formatterChange));
                 depotHeadMapper.insertDetailRecord(record);
 
-                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+                if(!isImport) {
+                    logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+                }
             } else {
                 // insert jsh_depot_detail
                 detail = new DepotDetail();
@@ -1417,7 +1419,7 @@ public class DepotHeadService {
 
                 // agreed_delivery 約配日 insert to agreed table
                 if(depotHead.getAgreedDelivery() != null && !depotHead.getAgreedDelivery().isEmpty()) {
-//                    depotHeadMapper.updateAgreedDelivery(detail.getId());
+                    depotHeadMapper.updateAgreedDelivery(detail.getId());
                     AgreedDelivery agreedDelivery = new AgreedDelivery();
                     agreedDelivery.setDetailId(detail.getId());
                     agreedDelivery.setDatetime(depotHead.getAgreedDelivery());
@@ -1427,10 +1429,12 @@ public class DepotHeadService {
                     }
                     agreedDelivery.setName(username);
                     agreedDelivery.setIsDefault(1);
-                    depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+                    depotHeadMapper.insertAgreedDelivery(agreedDelivery);
                 }
 
-                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD+", 單號("+depotHead.getNumber()+")", request);
+                if(!isImport) {
+                    logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_ADD + ", 單號(" + depotHead.getNumber() + ")", request);
+                }
             }
         } catch (Exception e) {
             JshException.writeFail(logger, e);
@@ -1808,7 +1812,7 @@ public class DepotHeadService {
                     User user = userService.getCurrentUser();
                     agreedDelivery.setName(user.getUsername());
                     agreedDelivery.setIsDefault(1);
-                    depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+                    depotHeadMapper.insertAgreedDelivery(agreedDelivery);
                 }
             }
 
@@ -2417,6 +2421,7 @@ public class DepotHeadService {
                 return info;
             }
 
+            AtomicInteger driverCount = new AtomicInteger(0);
             // 先全部檢查無誤，才開始寫入
             beanList.entrySet().stream().forEach(value -> {
                 try {
@@ -2433,7 +2438,8 @@ public class DepotHeadService {
                             Long userId = userService.getIdByUserName(assignMan);
                             Integer driverId = supplierService.getSupplierId(driver);
                             // headerId driverId assignDate assignUser
-                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
+                            assignDelivery(true, headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
+                            driverCount.addAndGet(1);
                         } catch (Exception e){
                             logger.error("指派司機失敗 : "+e.getMessage());
                             System.out.println(e.getMessage());
@@ -2444,8 +2450,11 @@ public class DepotHeadService {
                 }
             });
 
-            logService.insertLog("匯入配送單",
-                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
+            String msg = new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT)
+                    .append(" ,及司機派送共 ").append(driverCount.get()).append(BusinessConstants.LOG_DATA_UNIT)
+                    .toString();
+
+            logService.insertLog("匯入配送單", msg,
                     ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             Long endTime = System.currentTimeMillis();
             logger.info(info.data + "，匯入秏時：{}", endTime - beginTime);
@@ -2735,6 +2744,7 @@ public class DepotHeadService {
                 return info;
             }
 
+            AtomicInteger driverCount = new AtomicInteger(0);
             // 先全部檢查無誤，才開始寫入
             beanList.entrySet().stream().forEach(value -> {
                 try {
@@ -2752,7 +2762,8 @@ public class DepotHeadService {
                             Long userId = userService.getIdByUserName(assignMan);
                             Integer driverId = supplierService.getSupplierId(driver);
                             // headerId driverId assignDate assignUser
-                            assignDelivery(headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
+                            assignDelivery(true, headerId, driverId, LocalDateTime.now().format(formatterChange), String.valueOf(userId), userInfo.getUsername(), request);
+                            driverCount.addAndGet(1);
                         } catch (Exception e){
                             logger.error("指派司機失敗 : "+e.getMessage());
                             System.out.println(e.getMessage());
@@ -2763,8 +2774,12 @@ public class DepotHeadService {
                 }
             });
 
+            String msg = new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT)
+                    .append(" ,及司機派送共 ").append(driverCount.get()).append(BusinessConstants.LOG_DATA_UNIT)
+                    .toString();
+
             logService.insertLog("匯入門市取貨派送",
-                    new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_IMPORT).append(importCount).append(BusinessConstants.LOG_DATA_UNIT).toString(),
+                    msg,
                     ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
             Long endTime = System.currentTimeMillis();
             logger.info(info.data + "，匯入秏時：{}", endTime - beginTime);

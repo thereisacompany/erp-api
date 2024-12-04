@@ -942,7 +942,7 @@ public class DepotHeadController {
     public Object deliveryAssign(@RequestBody DepotDetailVo4Body body,
                                  HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        depotHeadService.assignDelivery(body.getHeaderId(), body.getDriverId(), body.getAssignDate(), body.getAssignUser(), null, request);
+        depotHeadService.assignDelivery(false, body.getHeaderId(), body.getDriverId(), body.getAssignDate(), body.getAssignUser(), null, request);
         return result;
     }
 

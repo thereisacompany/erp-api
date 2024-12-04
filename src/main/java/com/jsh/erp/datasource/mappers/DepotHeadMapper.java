@@ -58,7 +58,7 @@ public interface DepotHeadMapper {
                         @Param("endTime") String endTime,
                        @Param("keyword") String keyword);
 
-    int insertAgreedDeliver(AgreedDelivery record);
+    int insertAgreedDelivery(AgreedDelivery record);
     int updateAgreedDelivery(@Param("detailId") Long detailId);
 
     List<AgreedDelivery> selectAgreedDelivery(@Param("detailId") Long detailId);
