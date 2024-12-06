@@ -1287,7 +1287,7 @@ public class DepotHeadService {
         list.stream().forEach(ad->{
             String datetime = ad.getDatetime();
             String end = ad.getDatetimeEnd();
-            if(!datetime.equals(end)) {
+            if(end != null && !end.isEmpty() && !datetime.equals(end)) {
                 String[] endStr = end.split(" ");
                 ad.setDatetime(datetime.concat("-").concat(endStr[1]));
             }
