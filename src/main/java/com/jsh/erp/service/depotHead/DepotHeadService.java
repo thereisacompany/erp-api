@@ -48,6 +48,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -1379,6 +1380,16 @@ public class DepotHeadService {
         if(vehicleMapper.isDriverBind(driverId) == 0) {
             throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_CODE,
                     String.format(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_MSG));
+        }
+
+        // todo 檢查指派日期是否小於約配日期
+        if(depotHead.getAgreedDelivery() != null) {
+            LocalDate assign = LocalDate.parse(assignDate, formatterChangeDate);
+            LocalDateTime opertime = LocalDateTime.parse(depotHead.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            if(ChronoLocalDate.from(opertime).isBefore(assign)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_MSG));
+            }
         }
 
         try {
@@ -2832,46 +2843,10 @@ public class DepotHeadService {
     }
 
     public static void main(String[] args) throws Exception {
-//        String datetimeStr = "10/10/23 17:10:10";
-//        String dateStr = "12/4/23";
-
-        String dateStr = "2023/11/6";
-
-        try {
-            LocalDate date = LocalDate.parse(dateStr, formatterDate);
-        } catch (Exception e){
-            try {
-                LocalDate date1 = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("M/d/yy"));
-                System.out.println(">>>"+date1);
-            } catch (Exception e1) {
-
-            }
-        }
-
-//        JSONArray arr = new JSONArray();
-//        int[] datas = new int[]{1,1,1,1,1};
-//        for(int i =0;i<5;i++) {
-//            JSONObject json = new JSONObject();
-//            json.put("depotId", datas[i]);
-//            arr.add(json);
-//        }
-//
-//        List<JSONObject> list = arr.toJavaList(JSONObject.class);
-//        System.out.println(">>>"+countNumberOfDepot(list));
-
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//        System.out.println(time);
-//        String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-//        System.out.println("operTime>>"+operTime);
-
-//        String number = String.format("S%s", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-//        System.out.println(">>>"+number);
-
-//        System.out.println(">>>"+LocalDateTime.parse(datetimeStr, formatter).format(formatterChange));
-//        System.out.println(LocalDate.parse(dateStr));
-//        System.out.println(">>>"+LocalDate.parse(dateStr, formatterDate));
-//        System.out.println(">>>"+ LocalDate.parse(dateStr, formatterDate).format(formatterChangeDate));
-
-//        String a = "【】";
+        LocalDate now = LocalDate.now();
+        String ad = "2024-12-05 21:42:31.0";
+        LocalDateTime opertime = LocalDateTime.parse(ad, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        System.out.println(">>>"+opertime);
+        System.out.println(ChronoLocalDate.from(opertime).isBefore(now));
     }
 }
