@@ -1382,15 +1382,15 @@ public class DepotHeadService {
                     String.format(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_MSG));
         }
 
-        // todo 檢查指派日期是否小於約配日期
-        if(depotHead.getAgreedDelivery() != null) {
-            LocalDate assign = LocalDate.parse(assignDate, formatterChangeDate);
-            LocalDateTime opertime = LocalDateTime.parse(depotHead.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
-            if(ChronoLocalDate.from(opertime).isBefore(assign)) {
-                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_CODE,
-                        String.format(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_MSG));
-            }
-        }
+        // 檢查指派日期是否小於約配日期 (2024/12/09 客戶說不用擋)
+//        if(depotHead.getAgreedDelivery() != null) {
+//            LocalDate assign = LocalDate.parse(assignDate, formatterChangeDate);
+//            LocalDateTime opertime = LocalDateTime.parse(depotHead.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+//            if(ChronoLocalDate.from(opertime).isBefore(assign)) {
+//                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_CODE,
+//                        String.format(ExceptionConstants.DEPOT_HEAD_ASSIGN_DATE_OVER_OPER_DATE_MSG));
+//            }
+//        }
 
         try {
             if (detail != null) {
@@ -2129,6 +2129,11 @@ public class DepotHeadService {
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
 
+            if(!ExcelUtils.getContent(mainData, 0, 3).contains("發單日")) {
+                throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_CODE,
+                        ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_MSG);
+            }
+
             JSONObject saveJson = null;
             int blockTimes = 0; // 用來判斷excel確認書及客單編號欄位，空白次數是否超過2次
             int importCount = 0; // 匯入筆數
@@ -2137,7 +2142,7 @@ public class DepotHeadService {
             Map<String, JSONObject> beanList = new HashMap<>();
             Map<String, String> rowList = new HashMap<>();
             for (int i = 1; i < mainData.getRows(); i++) {
-                String nowDatetime = LocalDateTime.now().format(formatterChange);
+//                String nowDatetime = LocalDateTime.now().format(formatterChange);
                 JSONObject beanJson = new JSONObject();
 
                 // 確認書(必填)
@@ -2195,25 +2200,30 @@ public class DepotHeadService {
                 customList.add(excelCustomNum);
                 sourceList.add(sourceNumber);
 
+                // 發單日(必填)
+                String issueDate = ExcelUtils.getContent(mainData, i, 3);
+                if (issueDate == null || (issueDate != null && issueDate.isEmpty())) {
+                    importError.put(""+i, "發單日未填寫");
+                    continue;
+                }
+
                 // 收貨人
-                String receiveName = ExcelUtils.getContent(mainData, i, 3);
+                String receiveName = ExcelUtils.getContent(mainData, i, 4);
                 // 電話
-                String cellphone = ExcelUtils.getContent(mainData, i, 4);
+                String cellphone = ExcelUtils.getContent(mainData, i, 5);
                 //[>99999999]0981352352--
                 if(cellphone.contains("[>99999999]")) {
                     cellphone = cellphone.replace("[>99999999]", "").replace("--", "");
                     cellphone = ExcelUtils.formatPhoneNumber(cellphone);
                 }
-                // 發單日(必填)
-                String issueDate = ExcelUtils.getContent(mainData, i, 5);
-                if (issueDate == null || (issueDate != null && issueDate.isEmpty())) {
-                    importError.put(""+i, "發單日未填寫");
-                    continue;
-                }
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 6);
+
+                // 約配日
+                String assignDate = ExcelUtils.getContent(mainData, i, 7);
+
                 // 出貨倉別(必填)
-                String depotName = ExcelUtils.getContent(mainData, i, 7);
+                String depotName = ExcelUtils.getContent(mainData, i, 8);
                 if (depotName == null || (depotName != null && depotName.isEmpty())) {
                     importError.put(""+i, "出貨倉別未填寫");
                     continue;
@@ -2245,7 +2255,7 @@ public class DepotHeadService {
 //                }
 
                 // 品號 (必填)
-                String mNumber = ExcelUtils.getContent(mainData, i, 8);
+                String mNumber = ExcelUtils.getContent(mainData, i, 9);
                 MaterialVo4Unit materialVo4Unit=new MaterialVo4Unit();
                 if(mNumber ==null || (mNumber != null && mNumber.isEmpty())){
                     // 記錄
@@ -2268,9 +2278,9 @@ public class DepotHeadService {
                 }
 
                 // 商品型號
-                String materialName = ExcelUtils.getContent(mainData, i, 9);
+                String materialName = ExcelUtils.getContent(mainData, i, 10);
                 // 數量 (必填)
-                String amount = ExcelUtils.getContent(mainData, i, 10);
+                String amount = ExcelUtils.getContent(mainData, i, 11);
                 if (amount == null || (amount != null && amount.isEmpty())) {
                     // 記錄
                     importError.put("" + i, "數量未填寫");
@@ -2299,37 +2309,56 @@ public class DepotHeadService {
 
                 beanJson.put("amount", amount);
                 // 安裝方式
-                String install = ExcelUtils.getContent(mainData, i, 11);
+                String install = ExcelUtils.getContent(mainData, i, 12);
                 beanJson.put("install", install);
                 // 舊機回收
-                String recycle = ExcelUtils.getContent(mainData, i, 12);
+                String recycle = ExcelUtils.getContent(mainData, i, 13);
                 beanJson.put("recycle", recycle);
                 // 配送備註
-                String memo = ExcelUtils.getContent(mainData, i, 13);
+                String memo = ExcelUtils.getContent(mainData, i, 14);
                 beanJson.put("memo", memo);
 
-                beanJson.put("operTime", nowDatetime);
                 try {
                     LocalDate date = LocalDate.parse(issueDate, formatterDate);
                     String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                    beanJson.put("agreedDelivery", operTime);
+                    beanJson.put("operTime", operTime);
                 } catch(DateTimeParseException e) {
                     try{
                         LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
                         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                         String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                        beanJson.put("agreedDelivery", operTime);
+                        beanJson.put("operTime", operTime);
                     } catch (DateTimeParseException e1) {
                         // 記錄
-                        importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                        importError.put("" + i, "["+issueDate+"] 發單日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
                         continue;
                     }
                 }
 
-                String driver = ExcelUtils.getContent(mainData, i, 14);
+                if(StringUtil.isNotEmpty(assignDate)) {
+                    try {
+                        LocalDate date = LocalDate.parse(assignDate, formatterDate);
+                        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String assignTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                        beanJson.put("agreedDelivery", assignTime);
+                    } catch (DateTimeParseException e) {
+                        try {
+                            LocalDate date = LocalDate.parse(assignDate, DateTimeFormatter.ofPattern("M/d/yy"));
+                            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                            String assignTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                            beanJson.put("agreedDelivery", assignTime);
+                        } catch (DateTimeParseException e1) {
+                            // 記錄
+                            importError.put("" + i, "[" + assignDate + "] 約配日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                            continue;
+                        }
+                    }
+                }
+
+                String driver = ExcelUtils.getContent(mainData, i, 15);
                 if(driver != null && !driver.isEmpty()) {
-                    String assignMan = ExcelUtils.getContent(mainData, i, 15);
+                    String assignMan = ExcelUtils.getContent(mainData, i, 16);
                     if(assignMan == null || assignMan.isEmpty()) {
                         importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
                         continue;
@@ -2421,7 +2450,7 @@ public class DepotHeadService {
                 importCount++;
 
                 // 匯入時太快執行，導致寫入的number產生重覆
-                TimeUnit.MILLISECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(30);
             }
 
             // 顯示匯入失敗的記錄
@@ -2447,8 +2476,8 @@ public class DepotHeadService {
                     String rows = rowList.get(key);
                     addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
                     // 派發司機、指派人員
-                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 14);
-                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 15);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 16);
                     if(driver != null && !driver.isEmpty()) {
                         try {
                             // number
@@ -2517,7 +2546,7 @@ public class DepotHeadService {
             Sheet mainData = workbook.getSheet(0); // 主單資料
 
             // 若不是客戶，代表為舊excel，需使用新的文件
-            if(!ExcelUtils.getContent(mainData, 0, 7).equals("客戶")) {
+            if(!ExcelUtils.getContent(mainData, 0, 3).contains("發單日")) {
                 throw new BusinessRunTimeException(ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_CODE,
                         ExceptionConstants.MATERIAL_EXCEL_IMPORT_OLD_VERSION_MSG);
             }
@@ -2538,7 +2567,7 @@ public class DepotHeadService {
             Map<String, JSONObject> beanList = new HashMap<>();
             Map<String, String> rowList = new HashMap<>();
             for (int i = 1; i < mainData.getRows(); i++) {
-                String nowDatetime = LocalDateTime.now().format(formatterChange);
+//                String nowDatetime = LocalDateTime.now().format(formatterChange);
                 JSONObject beanJson = new JSONObject();
 
                 // 確認書(必填)
@@ -2592,26 +2621,29 @@ public class DepotHeadService {
                 customList.add(excelCustomNum);
                 sourceList.add(sourceNumber);
 
-                // 收貨人
-                String receiveName = ExcelUtils.getContent(mainData, i, 3);
-                // 電話
-                String cellphone = ExcelUtils.getContent(mainData, i, 4);
-                if(cellphone.contains("[>99999999]")) {
-                    cellphone = cellphone.replace("[>99999999]", "").replace("--", "");
-                    cellphone = ExcelUtils.formatPhoneNumber(cellphone);
-                }
                 // 發單日(必填)
-                String issueDate = ExcelUtils.getContent(mainData, i, 5);
+                String issueDate = ExcelUtils.getContent(mainData, i, 3);
                 if (StringUtil.isEmpty(issueDate)) {
                     importError.put(""+i, "發單日未填寫");
                     continue;
                 }
+                // 收貨人
+                String receiveName = ExcelUtils.getContent(mainData, i, 4);
+                // 電話
+                String cellphone = ExcelUtils.getContent(mainData, i, 5);
+                if(cellphone.contains("[>99999999]")) {
+                    cellphone = cellphone.replace("[>99999999]", "").replace("--", "");
+                    cellphone = ExcelUtils.formatPhoneNumber(cellphone);
+                }
                 // 裝機地址
                 String address = ExcelUtils.getContent(mainData, i, 6);
 
+                // 約配日
+                String assignDate = ExcelUtils.getContent(mainData, i, 7);
+
                 // 客戶 (customer id)
                 Long organId = null;
-                String customId = ExcelUtils.getContent(mainData, i, 7);
+                String customId = ExcelUtils.getContent(mainData, i, 8);
                 if(!StringUtil.isPositiveLong(customId)) {
                     importError.put(""+i, "請輸入客戶id(ex: 016 征利，只需輸入16)");
                     continue;
@@ -2629,14 +2661,14 @@ public class DepotHeadService {
                 }
 
                 // 商品資料(必填)
-                String materialName = ExcelUtils.getContent(mainData, i, 8);
+                String materialName = ExcelUtils.getContent(mainData, i, 9);
                 if(StringUtil.isEmpty(materialName)) {
                     // 記錄
                     importError.put("" + i, "商品型號未填寫");
                     continue;
                 }
                 // 數量 (必填)
-                String amount = ExcelUtils.getContent(mainData, i, 9);
+                String amount = ExcelUtils.getContent(mainData, i, 10);
                 if (StringUtil.isEmpty(amount)) {
                     // 記錄
                     importError.put("" + i, "數量未填寫");
@@ -2646,37 +2678,55 @@ public class DepotHeadService {
                 beanJson.put("isPickup", isPickup);
 
                 // 安裝方式
-                String install = ExcelUtils.getContent(mainData, i, 10);
+                String install = ExcelUtils.getContent(mainData, i, 11);
                 beanJson.put("install", install);
                 // 舊機回收
-                String recycle = ExcelUtils.getContent(mainData, i, 11);
+                String recycle = ExcelUtils.getContent(mainData, i, 12);
                 beanJson.put("recycle", recycle);
                 // 配送備註
-                String memo = ExcelUtils.getContent(mainData, i, 12);
+                String memo = ExcelUtils.getContent(mainData, i, 13);
                 beanJson.put("memo", memo);
 
-                beanJson.put("operTime", nowDatetime);
                 try {
                     LocalDate date = LocalDate.parse(issueDate, formatterDate);
                     String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                    beanJson.put("agreedDelivery", operTime);
+                    beanJson.put("operTime", operTime);
                 } catch(DateTimeParseException e) {
                     try{
                         LocalDate date = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("M/d/yy"));
                         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                         String operTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
-                        beanJson.put("agreedDelivery", operTime);
+                        beanJson.put("operTime", operTime);
                     } catch (DateTimeParseException e1) {
                         // 記錄
                         importError.put("" + i, "["+issueDate+"] 日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
                         continue;
                     }
                 }
+                if(StringUtil.isNotEmpty(assignDate)) {
+                    try {
+                        LocalDate date = LocalDate.parse(assignDate, formatterDate);
+                        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                        String assignTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                        beanJson.put("agreedDelivery", assignTime);
+                    } catch (DateTimeParseException e) {
+                        try {
+                            LocalDate date = LocalDate.parse(assignDate, DateTimeFormatter.ofPattern("M/d/yy"));
+                            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                            String assignTime = LocalDateTime.parse(date.toString().concat(" ").concat(time), formatterChange).toString(); // 出庫時間
+                            beanJson.put("agreedDelivery", assignTime);
+                        } catch (DateTimeParseException e1) {
+                            // 記錄
+                            importError.put("" + i, "[" + assignDate + "] 約配日期格式有誤，請按照 yyyy/M/d (EX: 2023/12/1)填寫，日月不需補0");
+                            continue;
+                        }
+                    }
+                }
 
-                String driver = ExcelUtils.getContent(mainData, i, 17);
+                String driver = ExcelUtils.getContent(mainData, i, 18);
                 if(StringUtil.isNotEmpty(driver)) {
-                    String assignMan = ExcelUtils.getContent(mainData, i, 18);
+                    String assignMan = ExcelUtils.getContent(mainData, i, 19);
                     if(assignMan == null || assignMan.isEmpty()) {
                         importError.put("" + i, "派送司機及指派人員，二個欄位需同時填寫");
                         continue;
@@ -2690,17 +2740,17 @@ public class DepotHeadService {
                 json.put("memo", memo);
                 // store "store":{"address":"1","phone":"1","name":"1","man":"zora"}
                 JSONObject store = new JSONObject();
-                String man = ExcelUtils.getContent(mainData, i, 13);
+                String man = ExcelUtils.getContent(mainData, i, 14);
                 store.put("man", man);
-                String phone = ExcelUtils.getContent(mainData, i, 14);
+                String phone = ExcelUtils.getContent(mainData, i, 15);
                 if(phone.contains("[>99999999]")) {
                     phone = phone.replace("[>99999999]", "").replace("--", "");
                     phone = ExcelUtils.formatPhoneNumber(phone);
                 }
                 store.put("phone", phone);
-                String name = ExcelUtils.getContent(mainData, i, 15);
+                String name = ExcelUtils.getContent(mainData, i, 16);
                 store.put("name", name);
-                String address1 = ExcelUtils.getContent(mainData, i, 16);
+                String address1 = ExcelUtils.getContent(mainData, i, 17);
                 store.put("address", address1);
                 json.put("store", store);
                 String remark = json.toJSONString(); // 備註
@@ -2753,7 +2803,7 @@ public class DepotHeadService {
                 importCount++;
 
                 // 匯入時太快執行，導致寫入的number產生重覆
-                TimeUnit.MILLISECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(30);
             }
 
             // 顯示匯入失敗的記錄
@@ -2780,8 +2830,8 @@ public class DepotHeadService {
                     addDepotHeadAndDetail(value.getValue().toJSONString(), rows, request, userInfo);
 
                     // 派發司機、指派人員
-                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 17);
-                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 18);
+                    String driver = ExcelUtils.getContent(mainData, Integer.parseInt(key), 18);
+                    String assignMan = ExcelUtils.getContent(mainData, Integer.parseInt(key), 19);
                     if(StringUtil.isNotEmpty(driver) && StringUtil.isNotEmpty(assignMan)) {
                         try {
                             // number

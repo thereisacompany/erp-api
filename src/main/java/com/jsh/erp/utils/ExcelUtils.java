@@ -151,10 +151,11 @@ public class ExcelUtils {
 			row1.getCell(1).setCellValue(item.getReceiveName());	// 收貨人
 			row1.getCell(3).setCellValue(formatPhoneNumber(item.getCellphone()));	// 電話
 //			row1.getCell(5).setCellValue(item.getCreateTime());	// 發單日
-			if(StringUtil.isNotEmpty(item.getAgreedDelivery())) {
-				LocalDate adDate = LocalDate.parse(item.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
-				row1.getCell(5).setCellValue(adDate.toString());
-			}
+			row1.getCell(5).setCellValue(item.getOperTimeStr());
+//			if(StringUtil.isNotEmpty(item.getAgreedDelivery())) {
+//				LocalDate adDate = LocalDate.parse(item.getAgreedDelivery(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+//				row1.getCell(5).setCellValue(adDate.toString());
+//			}
 
 
 			StringBuilder receiveNumber = new StringBuilder();
