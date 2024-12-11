@@ -206,7 +206,7 @@
                     and jdd.status = ${dStatus}
                 </when>
                 <otherwise>
-                    and jdd.id IS NULL
+                    and (jdd.status = 0 or jdd.id IS NULL)
                 </otherwise>
             </choose>
         </if>
@@ -356,7 +356,7 @@
                     and jdd.status = ${dStatus}
                 </when>
                 <otherwise>
-                    and jdd.id IS NULL
+                    and (jdd.status = 0 or jdd.id IS NULL)
                 </otherwise>
             </choose>
         </if>
