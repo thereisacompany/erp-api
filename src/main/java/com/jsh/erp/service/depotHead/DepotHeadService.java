@@ -131,10 +131,10 @@ public class DepotHeadService {
         return result;
     }
 
-    public List<DepotHead> getDepotHead()throws Exception {
+    public List<DepotHead> getImportDepotHead(String subType)throws Exception {
         DepotHeadExample example = new DepotHeadExample();
         // TODO 先在此直接加上型態為配送單，若之後有使用到此method，需要再調整作法
-        example.createCriteria().andSubTypeEqualTo(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+        example.createCriteria().andSubTypeEqualTo(subType)
                 .andDeleteFlagNotEqualTo(BusinessConstants.DELETE_FLAG_DELETED);
         List<DepotHead> list=null;
         try{
@@ -2119,7 +2119,7 @@ public class DepotHeadService {
 
 //            List<Supplier> supplierList = supplierService.findBySelectSup();
             List<Depot> depotList = depotService.getAllList();
-            List<DepotHead> depotHeadList = getDepotHead();
+            List<DepotHead> depotHeadList = getImportDepotHead(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT);
 //            List<DepotCounter> depotCountList = depotCounterService.getAllList();
 //            List<Material> materialList = materialService.getMaterial();
             List<MaterialVo4Unit> materialList =  materialMapperEx.selectByConditionMaterial(null, null, null, null, null,
@@ -2540,7 +2540,7 @@ public class DepotHeadService {
                 }
             }
 
-            List<DepotHead> depotHeadList = getDepotHead();
+            List<DepotHead> depotHeadList = getImportDepotHead(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1);
 
             Workbook workbook = Workbook.getWorkbook(file.getInputStream());
             Sheet mainData = workbook.getSheet(0); // 主單資料
@@ -2847,6 +2847,7 @@ public class DepotHeadService {
                         }
                     }
                 } catch (Exception e) {
+                    System.out.println(">>>"+e.toString());
                     e.printStackTrace();
                 }
             });
