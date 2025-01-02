@@ -214,7 +214,7 @@
     SUM(CASE WHEN jdd.status = 6 THEN 1 ELSE 0 END) AS Status6Count
     FROM jsh_depot_head dh
     LEFT JOIN jsh_depot_detail jdd on dh.id = jdd.header_id
-    LEFT JOIN jsh_supplier s on jdd.driver_id =s.id and IFNULL(s.delete_Flag,'0') !='1'
+    INNER JOIN jsh_supplier s on jdd.driver_id =s.id and IFNULL(s.delete_Flag,'0') !='1'
     LEFT JOIN jsh_vehicle jv on jdd.driver_id = jv.driver
     WHERE 1=1
     AND dh.type='出庫'
@@ -250,7 +250,7 @@
     SELECT COUNT(1) as count_per_group
     FROM jsh_depot_head dh
     LEFT JOIN jsh_depot_detail jdd on dh.id = jdd.header_id
-    LEFT JOIN jsh_supplier s on jdd.driver_id =s.id and IFNULL(s.delete_Flag,'0') !='1'
+    INNER JOIN jsh_supplier s on jdd.driver_id =s.id and IFNULL(s.delete_Flag,'0') !='1'
     LEFT JOIN jsh_vehicle jv on jdd.driver_id = jv.driver
     WHERE 1=1
     AND dh.type='出庫'
