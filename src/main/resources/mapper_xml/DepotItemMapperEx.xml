@@ -929,10 +929,10 @@
         LEFT JOIN jsh_depot jd2 ON di.another_depot_id = jd2.id
         WHERE 1 = 1
         <if test="beginTime != null">
-            and dh.oper_time >= #{beginTime}
+            and dh.create_time >= #{beginTime}
         </if>
         <if test="endTime != null">
-            and dh.oper_time &lt;= #{endTime}
+            and dh.create_time &lt;= #{endTime}
         </if>
         <if test="MNumber != null">
             and me.`number` = #{MNumber}
